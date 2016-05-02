@@ -1,0 +1,40 @@
+<form class="form-horizontal" name="registerForm" novalidate>
+
+  <!-- EMAIL -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Email</label>
+    <div class="col-sm-6">
+      <input name="email" type="email" class="form-control" placeholder="Email" ng-model="user.email" required>
+    </div>
+  </div>
+
+  <!-- NAME -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Name</label>
+    <div class="col-sm-6">
+      <input name="name" type="text" class="form-control" placeholder="Name" ng-model="user.name" required>
+    </div>
+  </div>
+
+  <!-- PASSWORD -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Password</label>
+    <div class="col-sm-6">
+      <input name="password" type="password" class="form-control" placeholder="Password" ng-model="user.password" required>
+    </div>
+  </div>
+
+ <!-- PASSWORD2 -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Repeat pass</label>
+    <div class="col-sm-6">
+      <input name="password2" type="password" class="form-control" placeholder="Password" ng-model="user.password2" required>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-default" ng-disabled="registerForm.$invalid" ng-click="register()">Register</button>
+    </div>
+  </div>
+</form>
