@@ -1,4 +1,16 @@
-<div class="jumbotron">
-	<h1>{{currentUser.name}}</h1>
-	<h2>This is your Cabinet!</h2>
+<hr/>
+<div class="row">
+	<div class="col-md-8">
+		<p class="lead">Your collections</p>
+	</div>
+	<div class="col-md-4">
+		<button class="btn btn-success pull-right">Add new Collection</button>
+	</div>
+</div>	
+
+
+<div class="list-group">
+  <a href="" class="list-group-item" ng-repeat="collection in collections">{{collection.name}}
+  	<span class="badge">{{collection.elements.length}}</span>
+  </a>
 </div>

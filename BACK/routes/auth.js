@@ -26,23 +26,23 @@ var eventEmitter = new events.EventEmitter();
 
 //REGISTER NEW USER  ---------------------------------------------------------------------------------
 app.post('/register', function(req, res) {
-    var user = req.body; 
+    
 
     var listner0001 = function listner0001() {
         //PASSWORD ENCRYPTION
         bcrypt.genSalt(10, function(err, salt) {
             bcrypt.hash(req.body.password, salt, function(err, hash) {
-                 user.password = hash;
+                 req.body.password = hash;
             });
         });
 
-        delete user.password2;
+        delete req.body.password2;
      
         MongoClient.connect(url, function(err, db) {
 
             var collection = db.collection('users');
 
-            collection.insert(user,function(err, data) {
+            collection.insert(req.body,function(err, data) {
                 var body = "200";
                 res.end(body);
                 db.close();
@@ -58,13 +58,15 @@ app.post('/register', function(req, res) {
 
         var collection = db.collection('users');
         console.log("EMAIL IN QUERY");
-        console.log(user.email);
-        collection.find({'email':user.email}).toArray(function(err, xxx) {
+        console.log(req.body.email);
+        collection.find({'email':req.body.email}).toArray(function(err, xxx) {
             var length = xxx.length;
             
             if(length>0){
+              eventEmitter.removeListener('allowedToCreateUser', listner0001);
               var body = "409";
               res.end(body);
+
             }
             if(length==0){
               eventEmitter.emit('allowedToCreateUser');
@@ -238,6 +240,7 @@ app.post('/change-email', function(req, res) {
             if(length>0){
               var body = "409";
               res.end(body);
+              eventEmitter.removeListener('allowedToChangeEmail', listner0002);
             }
             if(length==0){
               eventEmitter.emit('allowedToChangeEmail');
