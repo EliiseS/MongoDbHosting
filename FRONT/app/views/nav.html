@@ -1,12 +1,21 @@
-<div class="header clearfix">
+<div class="header clearfix" ng-controller="RegistrationController">
   <nav>
+    <ul class="nav nav-pills pull-left">
+      <h3 class="text-muted" ui-sref="main"><span class="pointer">MongoMango</span></h3>
+    </ul>
     <ul class="nav nav-pills pull-right">
       <li role="presentation" class="active"><a ui-sref="main">Home</a></li>
       <li role="presentation"><a ui-sref="about">About</a></li>
       <li role="presentation"><a ui-sref="contact">Contact</a></li>
-      <li role="presentation"><a ui-sref="login">Login</a></li>
-      <li role="presentation"><a ui-sref="register">Register</a></li>
+      <li role="presentation" ng-hide="currentUser"><a ui-sref="login">Login</a></li>
+      <li role="presentation" ng-hide="currentUser"><a ui-sref="register">Register</a></li>
+       <li role="presentation" ng-show="currentUser"><a ui-sref="profile.default">Profile</a></li>
+      <li role="presentation" ng-show="currentUser"><a href='' ng-click="logout()">Logout</a></li>
     </ul>
   </nav>
-  <h3 class="text-muted" ui-sref="main">Project name</h3>
 </div>
+  <div class="row" ng-show="currentUser" ng-controller="RegistrationController">
+    <div class="container">
+      <p class="text-right"><a ui-sref="cabinet">Hello, <strong>{{currentUser.name}}</strong></a></p>
+    </div>
+  </div>

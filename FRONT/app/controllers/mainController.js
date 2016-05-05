@@ -1,6 +1,5 @@
-myApp.controller('MainController',
-  ['$scope',function($scope, Authentication) {
+myApp.controller('MainController', function($scope, Authentication) {
   
   $scope.test = "ЖØПÅ";
 
-}]); // Controller
+}); // Controller

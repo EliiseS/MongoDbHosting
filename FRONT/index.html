@@ -14,29 +14,34 @@
   
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
     <!-- JUMBO TRON CSS -->
     <link href="css/jumbotron-narrow.css" rel="stylesheet">
 
     <!-- ANGULAR JS-->
     <script src="node_modules/angular/angular.min.js"></script>
     <script src="node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="node_modules/angular-cookies/angular-cookies.js"></script>
 
     <script>
-        var myApp = angular.module("myApp",['ui.router']);
+        var myApp = angular.module("myApp",['ui.router','ngCookies']);
     </script>
 
     <!-- ANGULAR CONTROLLER-->
     <script src="app/controllers/mainController.js"></script>
     <script src="app/controllers/cabinetController.js"></script>
+    <script src="app/controllers/registrationController.js"></script>
+    <script src="app/controllers/profileController.js"></script>
+    <script src="app/controllers/testeriumController.js"></script>
     <!-- CUSTOM SERVICES -->
-    <script src="app/controllers/registration.js"></script>
+    <script src="app/services/authentication.js"></script>
+    <script src="app/services/userPersistenceService.js"></script>
+    <script src="app/services/profileService.js"></script>
     <!-- ANGULAR ROUTER-->
     <script src="app/router.js"></script>
-    <!-- SERVICES-->
-    <script src="app/services/authentication.js"></script>
+
     </head>
   <body>
-
     <div class="container">
       <nav ng-include="'app/views/nav.html'"></nav>
 
@@ -45,9 +50,6 @@
       <!-- VIEWS  LOADING HERE END -->
 
       <nav ng-include="'app/views/footer.html'"></nav>
-      
-
     </div> <!-- /container -->
-
   </body>
 </html>

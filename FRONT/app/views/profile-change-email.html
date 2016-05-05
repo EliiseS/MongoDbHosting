@@ -1,0 +1,30 @@
+<p class="lead">Change your email</p>
+
+<!-- INFORM USER ABOUT ERROR  -->
+<div class="form-group" ng-show="errorMessage">
+	<p class="alert alert-danger"><strong>{{errorMessage}}</strong></p> 
+</div>
+<!-- INFORM USER ABOUT SUCCESSFULL OPERATION -->
+<div class="form-group" ng-show="successMessage">
+	<p class="alert alert-success"><strong>{{successMessage}}</strong></p> 
+</div>
+
+<!-- FORM FOR UPDATING PASSWORD -->
+<form name="changeEmailForm" novalidate>
+
+    <div class="form-group">
+        <label>New email</label>
+        <input type="email" class="form-control" placeholder="New password" ng-model="profile.email" required>
+    </div>
+
+    <div class="form-group">
+        <label>Repeat new email</label>
+        <input type="email" class="form-control" placeholder="New password" ng-model="profile.email2" required>
+    </div>
+  
+	<div class="form-group">
+		<button type="submit" class="btn btn-default" ng-disabled="changeEmailForm.$invalid" ng-click="changeEmail()">Change email</button>
+	</div>
+
+</form>
+
