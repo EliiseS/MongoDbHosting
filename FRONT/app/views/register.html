@@ -1,9 +1,12 @@
-<form class="form-horizontal" name="registerForm" novalidate>
-
-  
-  <div class="form-group" ng-show="succesRegistration">
+ <div class="form-group" ng-show="succesRegistration">
     <div class="col-sm-12">
       <p class="alert alert-success"><strong>{{succesRegistration}}</strong></p> 
+    </div>
+  </div>
+
+  <div class="form-group" ng-show="errorMessage">
+    <div class="col-sm-12">
+      <p class="alert alert-danger"><strong>{{errorMessage}}</strong></p> 
     </div>
   </div>
 
@@ -13,6 +16,7 @@
     </div>
   </div>
 
+<form class="form-horizontal" name="registerForm" novalidate ng-hide="succesRegistration">
   <!-- EMAIL -->
   <div class="form-group">
     <label class="col-sm-2 control-label">Email</label>

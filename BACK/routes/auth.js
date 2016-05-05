@@ -35,6 +35,8 @@ app.post('/register', function(req, res) {
                  user.password = hash;
             });
         });
+
+        delete user.password2;
      
         MongoClient.connect(url, function(err, db) {
 
@@ -42,7 +44,7 @@ app.post('/register', function(req, res) {
 
             collection.insert(user,function(err, data) {
                 var body = "200";
-                res.send(body);
+                res.end(body);
                 db.close();
             });
         });
@@ -51,62 +53,57 @@ app.post('/register', function(req, res) {
     eventEmitter.addListener('allowedToCreateUser', listner0001);
 
     //================================================================
-      MongoClient.connect(url, function(err, db) {
-
-        var collection = db.collection('users');
-
-        collection.find({'email':user.email},function(err, data) {
-        if(data==null){
-           eventEmitter.emit('allowedToCreateUser'); 
-         }else{
-            var body = "409";
-            res.end(body);
-          }
-        });
-
-        db.close();
-    });
-
-    //===================================================================================
-});
-
-//LOGIN NEW USER  ---------------------------------------------------------------------------------
-app.post('/login', function(req, res) {
-    
-    var login = req.body;
-    //var response = res;
 
     MongoClient.connect(url, function(err, db) {
 
         var collection = db.collection('users');
+        console.log("EMAIL IN QUERY");
+        console.log(user.email);
+        collection.find({'email':user.email}).toArray(function(err, xxx) {
+            var length = xxx.length;
+            
+            if(length>0){
+              var body = "409";
+              res.end(body);
+            }
+            if(length==0){
+              eventEmitter.emit('allowedToCreateUser');
+            }
+            db.close();
+        });
+    });
+}); // END of REGISTER
 
-        //FIND USER WITH EMAIL PROVIDED BY USER
-        collection.findOne({'email':login.email},function(err, data) {
-           
-           var userFromDB = data;
+//LOGIN NEW USER  ---------------------------------------------------------------------------------
+app.post('/login', function(req, res) {
+   var user = req.body;
 
-           if(err){
+        MongoClient.connect(url, function(err, db) {
 
-           }else{// IF THERE IS NO USER WITH THIS EMAIL
-                if(data==null){
-                 res.send("404");
-              }
-              else{//IF PASSWORDS MATCH
-                // DECRYPT PASSWORDS AND COMPARE THEM 
-                bcrypt.compare(login.password, userFromDB.password, function(err, answer) {
+        var collection = db.collection('users');
+
+        collection.find({'email':user.email}).toArray(function(err, data) {
+            var length = data.length;
+            
+            if(length==0){
+              var body = "404";
+              res.end(body);
+            }
+            if(length>0){
+              var userFromDb = data[0];
+              // DECRYPT PASSWORDS AND COMPARE THEM 
+                bcrypt.compare(user.password, userFromDb.password, function(err, answer) {
                     if(answer==true){
-                        delete userFromDB.password;
-                        res.send(userFromDB);
+                        delete userFromDb.password;
+                        res.send(userFromDb);
                     }else{//IF PASSWORDS DON'T MATCH
-                        res.send("401");
+                        res.end("401");
                     }
                 });
-              }
-           }
+            }
+            db.close();
         });
-
-    });//mongoClient
-
+    });
 });//login
 
 //RESET PASS  ---------------------------------------------------------------------------------
@@ -163,7 +160,7 @@ app.post('/reset-pass', function(req, res) {
                }// END OF = WE HAVE EMAIL MATCH
            }// END OF // IF THERE IS NO USER WITH THIS EMAIL
         });// END OF collection.findOne
-
+    db.close();
     });//END OF MongoClient.connect
  
 
@@ -209,10 +206,7 @@ app.post('/change-password', function(req, res) {
 
 //CHANGE PASSWORD  ---------------------------------------------------------------------------------
 app.post('/change-email', function(req, res) {
-    console.log("inside change-email");
     var profile = req.body;
-    console.log("PROFILE:");
-    console.log(profile);
 
     var listner0002 = function listner0002() {
       MongoClient.connect(url, function(err, db) { 
@@ -237,30 +231,20 @@ app.post('/change-email', function(req, res) {
 
     MongoClient.connect(url, function(err, db) {
 
-        var collection2 = db.collection('users');
-
-        collection2.find({'email':profile.email},function(err, data) {
-          console.log("QUERY:");
-          console.log(profile.email);
-          console.log("2");console.log(data.email);
-          console.log("5");console.log(data==null);
-          console.log("6");console.log(data===null);
-          console.log("7");console.log(data==undefined);
-          console.log("8");console.log(data===null);
-        if(data==null){
-          console.log("EMAIL FREE");
-          console.log(data);
-           eventEmitter.emit('allowedToChangeEmail'); 
-         }else{
-          console.log("EMAIL TAKEN");
-            console.log(data);
-            var body = "409";
-            res.end(body);
-          }
+        var collection = db.collection('users');
+        collection.find({'email':profile.email}).toArray(function(err, xxx) {
+            var length = xxx.length;
+            
+            if(length>0){
+              var body = "409";
+              res.end(body);
+            }
+            if(length==0){
+              eventEmitter.emit('allowedToChangeEmail');
+            }
+            db.close();
         });
-
-        db.close();
-     });
+    });
 });//END OF CHANGE EMAIL
 
 //Generate some random string in order to have material for creating HASH for tem password

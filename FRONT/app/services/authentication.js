@@ -41,6 +41,7 @@ myApp.factory('Authentication',['$rootScope','$http','$location','$q','userPersi
         }).success(function (response) {
             if(response==='200'){
               $rootScope.succesRegistration = "New user Successfully created. Please login using you username and password";
+              $rootScope.errorRegistration  = null;
             }
             if(response==='409'){
               $rootScope.errorRegistration = "Error! Email: " + user.email + " is already in use";

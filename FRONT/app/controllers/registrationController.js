@@ -13,8 +13,9 @@ myApp.controller('RegistrationController',
   $scope.register = function() {
     if(angular.equals($scope.user.password, $scope.user.password2)){
         Authentication.register($scope.user);
+        $scope.errorMessage = null;
      }else{
-      console.log("User passwords are not equal");
+      $scope.errorMessage = "Passwords you entered are not equal";
      }
   }; // register
 
