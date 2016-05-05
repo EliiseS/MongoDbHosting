@@ -204,7 +204,7 @@ app.post('/change-password', function(req, res) {
     
 });//END OF CHANGE PASSWORD
 
-//CHANGE PASSWORD  ---------------------------------------------------------------------------------
+//CHANGE EMAIL  ---------------------------------------------------------------------------------
 app.post('/change-email', function(req, res) {
     var profile = req.body;
 
