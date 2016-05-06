@@ -62,10 +62,11 @@ app.put('/collections/:id', function(req, res) {
 
 //UPDATE COLLECTION
 app.patch('/collections/:id', function(req, res) {
+    var deleteOne = req.query.deleteOne;
     //REMOVE ELEMENT
     /*
-    Syntax for req.body:
-    One array:
+     Syntax for req.body:
+     One array:
      {
      "Elements" : {"Dog1":"Charlie"}
      }
@@ -73,16 +74,19 @@ app.patch('/collections/:id', function(req, res) {
      {
      "Elements.dogs" : {"Dog1":"Charlie"}
      }
-    */
-    collections.update({'_id': ObjectId(req.params.id)},{
-        $pull:req.body
-    },function(err) {
-        if (err){
-            console.log(err);
-            return;
-        }
-        res.send({'msg': 'User updated'});
-    });
+     */
+    if (deleteOne) {
+
+        collections.update({'_id': ObjectId(req.params.id)}, {
+            $pull: req.body
+        }, function (err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            res.send({'msg': 'Element deleted from array'});
+        });
+    }
 }); // END OF UPDATE AN EXISTING COLLECTION
 
 

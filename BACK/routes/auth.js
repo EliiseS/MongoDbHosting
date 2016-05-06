@@ -30,7 +30,7 @@ MongoClient.connect(url, function(err, db) {
         res.send({'msg': 'Server crashed'});
         return;
     }
-    var collection = db.collection('users');
+    collection = db.collection('users');
 });
 
 
@@ -111,15 +111,15 @@ app.post('/login', function(req, res) {
 app.post('/reset-pass', function(req, res) {
     var user = req.body;
 
-
         //FIND USER WITH EMAIL PROVIDED BY USER
            collection.find({'email':user.email},function(err, data) {
            //console.log("DATA FROM DB " + data);
-           var userFromDB = data;
-
            if(err){
-
-           }else{// IF THERE IS NO USER WITH THIS EMAIL
+               console.log(err);
+               return;
+           }
+               var userFromDB = data;
+               // IF THERE IS NO USER WITH THIS EMAIL
                 if(data==undefined){
                     console.log("data==undefined");
                  res.send("404");
@@ -154,7 +154,7 @@ app.post('/reset-pass', function(req, res) {
                             });
                         });//bcrypt.genSalt
                }// END OF = WE HAVE EMAIL MATCH
-           }// END OF // IF THERE IS NO USER WITH THIS EMAIL
+               // END OF // IF THERE IS NO USER WITH THIS EMAIL
         });// END OF collection.findOne
  
 
