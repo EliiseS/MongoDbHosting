@@ -3,8 +3,9 @@ var app = express();
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectId;
 var url = 'mongodb://localhost:27017/hosting';
+var collection;
 var bcrypt = require('bcryptjs');
-var BodyParser = require('body-parser'); // middle
+
 
 //FOR GENERATING HASH
 var md5 = require('js-md5');
@@ -23,6 +24,15 @@ var events = require('events');
 // Create an eventEmitter object
 var eventEmitter = new events.EventEmitter();
 
+MongoClient.connect(url, function(err, db) {
+    if (err) {
+        res.status(500);
+        res.send({'msg': 'Server crashed'});
+        return;
+    }
+    var collection = db.collection('users');
+});
+
 
 //REGISTER NEW USER  ---------------------------------------------------------------------------------
 app.post('/register', function(req, res) {
@@ -37,26 +47,22 @@ app.post('/register', function(req, res) {
         });
 
         delete req.body.password2;
-     
-        MongoClient.connect(url, function(err, db) {
 
-            var collection = db.collection('users');
 
-            collection.insert(req.body,function(err, data) {
+            collection.insert(req.body,function(err) {
+                if (err){
+                    console.log(err);
+                    return;
+                }
                 var body = "200";
                 res.end(body);
-                db.close();
             });
-        });
     };// END of listner0001
 
     eventEmitter.addListener('allowedToCreateUser', listner0001);
 
     //================================================================
 
-    MongoClient.connect(url, function(err, db) {
-
-        var collection = db.collection('users');
         console.log("EMAIL IN QUERY");
         console.log(req.body.email);
         collection.find({'email':req.body.email}).toArray(function(err, xxx) {
@@ -71,18 +77,13 @@ app.post('/register', function(req, res) {
             if(length==0){
               eventEmitter.emit('allowedToCreateUser');
             }
-            db.close();
-        });
+
     });
 }); // END of REGISTER
 
 //LOGIN NEW USER  ---------------------------------------------------------------------------------
 app.post('/login', function(req, res) {
    var user = req.body;
-
-        MongoClient.connect(url, function(err, db) {
-
-        var collection = db.collection('users');
 
         collection.find({'email':user.email}).toArray(function(err, data) {
             var length = data.length;
@@ -103,21 +104,16 @@ app.post('/login', function(req, res) {
                     }
                 });
             }
-            db.close();
         });
-    });
 });//login
 
 //RESET PASS  ---------------------------------------------------------------------------------
 app.post('/reset-pass', function(req, res) {
     var user = req.body;
-    
-    MongoClient.connect(url, function(err, db) {
 
-        var collection = db.collection('users');
 
         //FIND USER WITH EMAIL PROVIDED BY USER
-           collection.findOne({'email':user.email},function(err, data) {
+           collection.find({'email':user.email},function(err, data) {
            //console.log("DATA FROM DB " + data);
            var userFromDB = data;
 
@@ -133,18 +129,17 @@ app.post('/reset-pass', function(req, res) {
                    
                    // listener #1
                    var listner1 = function listner1(passForUser,passForDB) {
-                       MongoClient.connect(url, function(err, db) { // UPDATE USER OLD PASSWORD TO NEWLY GENERATED HASH
-
-                            var collection = db.collection('users');
 
                             collection.update({'email':user.email},{
                                 $set:{"password":passForDB}
-                            },function(err, results) {
+                            },function(err) {
+                                if (err){
+                                    console.log(err);
+                                    return;
+                                }
                                 sendEmail(userFromDB,passForUser);
                                 res.send("200");
-                                db.close();
                             });
-                        });
                     };//listener #1
 
                     // Bind the connection event with the listner1 function
@@ -155,111 +150,91 @@ app.post('/reset-pass', function(req, res) {
                        //PASSWORD ENCRYPTION
                         bcrypt.genSalt(10, function(err, salt) {
                             bcrypt.hash(password, salt, function(err, hash) {
-                                 var newPass = hash;
-                                 eventEmitter.emit('passChanged',password,newPass);
+                                 eventEmitter.emit('passChanged',password,hash);
                             });
                         });//bcrypt.genSalt
                }// END OF = WE HAVE EMAIL MATCH
            }// END OF // IF THERE IS NO USER WITH THIS EMAIL
         });// END OF collection.findOne
-    db.close();
-    });//END OF MongoClient.connect
  
 
 });///END reset-pass
 
 //CHANGE PASSWORD  ---------------------------------------------------------------------------------
 app.post('/change-password', function(req, res) {
-    
+
     var profile = {};
     profile.email = req.body.email;
     profile.password = req.body.password;
 
 
+    // listener #1
+    var updatePassword = function updatePassword(encyptedPass) {
 
-      // listener #1
-     var updatePassword = function updatePassword(encyptedPass) {
-         MongoClient.connect(url, function(err, db) { 
-
-              var collection = db.collection('users');
-
-              collection.update({'email':profile.email},{
-                  $set:{"password":encyptedPass}
-              },function(err, results) {
-                    var body = "200";
-                    res.end(body);
-                    db.close();
-                 });
-            });
-        };//listener #1
+        collection.update({'email': profile.email}, {
+            $set: {"password": encyptedPass}
+        }, function (err, results) {
+            var body = "200";
+            res.end(body);
+        });
+    };//listener #1
 
     // Bind the connection event with the listner1 function
     eventEmitter.addListener('passEncrypted', updatePassword);
 
     //PASSWORD ENCRYPTION
-    bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(profile.password, salt, function(err, hash) {
-             var encyptedPass = hash;
-             eventEmitter.emit('passEncrypted',encyptedPass);
+    bcrypt.genSalt(10, function (err, salt) {
+        bcrypt.hash(profile.password, salt, function (err, hash) {
+            var encyptedPass = hash;
+            eventEmitter.emit('passEncrypted', encyptedPass);
         });
     });
-    
 });//END OF CHANGE PASSWORD
 
 //CHANGE EMAIL  ---------------------------------------------------------------------------------
-app.post('/change-email', function(req, res) {
-    var profile = req.body;
+    app.post('/change-email', function (req, res) {
+        var profile = req.body;
 
-    var listner0002 = function listner0002() {
-      MongoClient.connect(url, function(err, db) { 
+        var listner0002 = function listner0002() {
 
-              var collection = db.collection('users');
-
-              collection.update({'_id':ObjectID(profile._id)},{
-                  $set:{"email":profile.email}
-              },function(err, results) {
-                if(err){
-                  console.log("ERROR");
-                }else{
+            collection.update({'_id': ObjectID(profile._id)}, {
+                $set: {"email": profile.email}
+            }, function (err, results) {
+                if (err) {
+                    console.log("ERROR");
+                } else {
                     var body = "200";
                     res.end(body);
-                    db.close();
                 }
-                 });
             });
-    };// END of listner0002
+        };// END of listner0002
 
-    eventEmitter.addListener('allowedToChangeEmail', listner0002);
+        eventEmitter.addListener('allowedToChangeEmail', listner0002);
 
-    MongoClient.connect(url, function(err, db) {
-
-        var collection = db.collection('users');
-        collection.find({'email':profile.email}).toArray(function(err, xxx) {
+        collection.find({'email': profile.email}).toArray(function (err, xxx) {
             var length = xxx.length;
-            
-            if(length>0){
-              var body = "409";
-              res.end(body);
-              eventEmitter.removeListener('allowedToChangeEmail', listner0002);
+
+            if (length > 0) {
+                var body = "409";
+                res.end(body);
+                eventEmitter.removeListener('allowedToChangeEmail', listner0002);
             }
-            if(length==0){
-              eventEmitter.emit('allowedToChangeEmail');
+            if (length == 0) {
+                eventEmitter.emit('allowedToChangeEmail');
             }
-            db.close();
         });
-    });
-});//END OF CHANGE EMAIL
+    });//END OF CHANGE EMAIL
 
 //Generate some random string in order to have material for creating HASH for tem password
-function generateRandomString(){
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    function generateRandomString() {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    for( var i=0; i < 5; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
+        for (var i = 0; i < 5; i++)
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
 
-    return text;
-};
+        return text;
+    };
 
 //Send email with temp password
 function sendEmail(user,password){
@@ -270,7 +245,7 @@ function sendEmail(user,password){
 
     server.send({
        text:    "Hello " + user.name + ", as per your request, here is your temporary password: " + password,
-       from:    "mongo.mango.dbhosting@gmail.com", 
+       from:    "mongo.mango.dbhosting@gmail.com",
        to:       recipient,
        subject: "Password reseted"
     }, function(err, message) { console.log(err || message); });
