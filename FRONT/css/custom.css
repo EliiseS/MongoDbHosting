@@ -1,3 +1,7 @@
 .pointer{
   cursor: pointer;
 }
+
+.selected-collection{
+	color:#4da6ff;
+}

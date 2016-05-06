@@ -45,10 +45,15 @@ app.get('/collections/:id', function(req, res) {
 app.post('/collections', function(req, res) {
     collections.insert(req.body,function(err, data) {
         if (err) {
-            console.log(err);
+            var body = "400";
+            res.end(body);
         } else {
+            var body = "200";
+            res.end(body);
+            /*
             res.status(404);
             res.send({'msg': 'Collections created'});
+            */
         }
     });
 }); // END OF POST A NEW COLLECTION

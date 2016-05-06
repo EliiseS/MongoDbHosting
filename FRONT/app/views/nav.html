@@ -4,9 +4,10 @@
       <h3 class="text-muted" ui-sref="main"><span class="pointer">MongoMango</span></h3>
     </ul>
     <ul class="nav nav-pills pull-right">
-      <li role="presentation" class="active"><a ui-sref="main">Home</a></li>
-      <li role="presentation"><a ui-sref="about">About</a></li>
-      <li role="presentation"><a ui-sref="contact">Contact</a></li>
+      <li role="presentation" class="active" ng-hide="currentUser"><a ui-sref="main">Home</a></li>
+      <li role="presentation" class="active" ng-show="currentUser"><a ui-sref="cabinet">Cabinet</a></li>
+      <li role="presentation"><a ui-sref="about" ng-hide="currentUser">About</a></li>
+      <li role="presentation"><a ui-sref="contact" ng-hide="currentUser">Contact</a></li>
       <li role="presentation" ng-hide="currentUser"><a ui-sref="login">Login</a></li>
       <li role="presentation" ng-hide="currentUser"><a ui-sref="register">Register</a></li>
        <li role="presentation" ng-show="currentUser"><a ui-sref="profile.default">Profile</a></li>

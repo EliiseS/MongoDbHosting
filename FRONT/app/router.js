@@ -75,6 +75,13 @@
         resolve: { authenticate: authenticate }
       });
 
+    $stateProvider.state('cabinet.collection', {
+        url: '/collection',
+        templateUrl: 'app/views/collection.html',
+        controller: 'CabinetController',
+        resolve: { authenticate: authenticate }
+      });
+
     //PROFILE -----------------------------------------------------------
     $stateProvider.state('profile', {
         abstract: true,

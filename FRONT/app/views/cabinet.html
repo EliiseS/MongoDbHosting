@@ -4,13 +4,35 @@
 		<p class="lead">Your collections</p>
 	</div>
 	<div class="col-md-4">
-		<button class="btn btn-success pull-right">Add new Collection</button>
+		<button class="btn btn-primary pull-right" ng-click="showCollectionForm()">{{addCollectionBtnText}}</button>
 	</div>
-</div>	
-
-
-<div class="list-group">
-  <a href="" class="list-group-item" ng-repeat="collection in collections">{{collection.name}}
-  	<span class="badge">{{collection.elements.length}}</span>
-  </a>
 </div>
+
+<!-- ADD NEW COLLECTION -->
+<div class="row" ng-show="showAddCollectionForm">
+	<div class="col-md-12">
+		<div class="panel panel-default">
+		  <div class="panel-body">
+			<form class="form-inline" name="newColForm" novalidate>
+				<div class="form-group">
+					<label for="email">New collection Name:</label>
+					<input type="text" class="form-control" placeholder="collection name" ng-model="newCollectionName">
+				</div>
+					<button type="submit" class="btn btn-success pull-right" ng-disabled="newColForm.$invalid" ng-click="addNewCollection(newCollectionName)">Submit</button>
+			</form>
+		  </div>
+		</div>
+	</div>
+</div>		
+
+
+<!-- SHOW ALL COLLECTIONS -->
+<ul class="list-group">
+  <li class="list-group-item pointer" ng-repeat="currentCollection in collections" ng-click="selectCollection(currentCollection)" ui-sref="cabinet.collection">
+  	<span class="badge">{{currentCollection.Elements.length}}</span> {{currentCollection.name | uppercase}}
+  </li>
+</ul>
+
+<!-- CHILDREN VIEWS  LOADING HERE START -->
+    <div ui-view></div>
+<!-- CHILDREN VIEWS  LOADING HERE END -->

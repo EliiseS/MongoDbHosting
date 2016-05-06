@@ -1,4 +1,4 @@
-myApp.controller('CabinetController',function($rootScope,$scope, Authentication) {
+myApp.controller('CabinetController',function($rootScope,$scope,$state, CollectionsService) {
   
   $scope.test = "Cabinet controiller is connected - Enviroment established!";
 
@@ -6,39 +6,74 @@ myApp.controller('CabinetController',function($rootScope,$scope, Authentication)
 
   $scope.collections = [];
 
-  $scope.collections.push({
-  	name:'Cats',
-  	elements:[
-  	{name:'Cat1'},
-  	{name:'Cat2'},
-  	{name:'Cat3'},
-  	{name:'Cat4'},
-  	{name:'Cat5'},
-  	{name:'Cat6'},
-  	{name:'Cat7'},
-  	]
-  });
+  $scope.displayMode = 'tableView';
+  $scope.showAddCollectionForm = false;
+  $scope.addCollectionBtnText = 'Add new Collection';
 
-   $scope.collections.push({
-  	name:'Dogs',
-  	elements:[
-  	{name:'Dog1'},
-  	{name:'Dog2'},
-  	{name:'Dog3'}
-  	]
-  });
+  $scope.getCollections = function() {
 
-   $scope.collections.push({
-  	name:'Birds',
-  	elements:[
-  	{name:'Bird1'},
-  	{name:'Bird2'},
-  	{name:'Bird3'},
-  	{name:'Bird4'},
-  	{name:'Bird5'}
-  	]
-  });
+    CollectionsService.getCollections()
+    .then(function(data){
+      $scope.collections = data;
+    },function(error){
+      console.log("ERROR while GETTING COLLECTIONS....");
+    });
 
+  }; // getCollections
+
+  $scope.getCollections();
+
+   $scope.selectCollection = function(data){
+   		$scope.selectedCollection = data;
+   		$scope.collectionAsJson = makeJsonView(data);
+   };
+
+    function makeJsonView(collection){
+
+   		console.log("INSIDE makeJsonView");
+
+   		var tempString = '';
+
+   		for(var i=0; i<collection.Elements.length-1; i++){
+   			var element = collection.Elements[i];
+   			delete element.$$hashKey;
+   			element = JSON.stringify(element);
+   			tempString = tempString +  element + ', \n';
+   		}
+   		tempString = tempString +  element + '\n';
+
+   		return tempString;
+   };
+
+
+   $scope.addNewCollection = function(name){
+   		$scope.newCollectionName = '';
+
+   		var collection      = {};
+   		collection.name     = name;
+   		collection.user_id  = $rootScope.currentUser._id;
+   		collection.Elements = [];
+
+   		CollectionsService.createCollection(collection)
+   		.then(function(data){
+      	$scope.collections = data;
+	    },function(error){
+	      console.log("ERROR while GETTING COLLECTIONS....");
+	    });
+   		
+	};
+
+   $scope.showCollectionForm = function(){
+   	$scope.showAddCollectionForm =! $scope.showAddCollectionForm;
+
+   	if($scope.showAddCollectionForm === true){
+   		$scope.addCollectionBtnText = 'Close Form';
+   	}
+   	if($scope.showAddCollectionForm === false){
+   		$scope.addCollectionBtnText = 'Add new Collection';
+   	}
+   	
+   };
 
 
 // TESTING VARIABLE //////////////////////////////////////////////////////////

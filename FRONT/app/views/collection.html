@@ -1,0 +1,26 @@
+<a ui-sref="cabinet" class="btn btn-danger pull-right">Close collection</a>
+
+<h3 class="selected-collection">{{selectedCollection.name}} collection</h3>
+
+<!--CHOOSE BETWEEN TABLE AND JSON DISPLAY VIEW -->
+<p>Data display mode:</p>
+<form role="form">
+	<label class="radio-inline">
+		<input type="radio" name="optradio" value="tableView" ng-model="displayMode" checked>Table view
+	</label>
+	<label class="radio-inline">
+		<input type="radio" name="optradio" value="jsonView" ng-model="displayMode" ng-change='makeJsonView()'>JSON view
+	</label>
+</form>
+<br>
+
+<!--SHOW DOCUMENTS IN COLLECTION AS A TABLE -->
+<ul class="list-group" ng-show="displayMode==='tableView'">
+  <li class="list-group-item" ng-repeat="element in selectedCollection.Elements">
+  	{{selectedCollection.name}}[{{$index+1}}] 
+  </li>
+</ul>
+<!--SHOW DOCUMENTS IN COLLECTION AS A JSON -->
+<div class="form-group" ng-show="displayMode==='jsonView'">
+	<textarea class="form-control" rows="15" ng-model="collectionAsJson"></textarea>
+</div>
