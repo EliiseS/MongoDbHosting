@@ -1,16 +1,9 @@
 var express = require('express');
 var app = express();
 var MongoClient = require('mongodb').MongoClient;
-var ObjectID = require('mongodb').ObjectId;
-var url = 'mongodb://localhost:27017/hosting';
-var BodyParser = require('body-parser'); // middle
-var collections;
 var ObjectId = require('mongodb').ObjectId;
-
-// Import events module
-var events = require('events');
-// Create an eventEmitter object
-var eventEmitter = new events.EventEmitter();
+var url = 'mongodb://localhost:27017/hosting';
+var collections;
 
 MongoClient.connect(url, function(err, db) {
     if (err) {
@@ -31,6 +24,7 @@ app.get('/collections/:id', function(req, res) {
                 res.send({'msg': 'No collections found'});
             }
             else{
+                res.status(200);
                 res.send(data);
             }
             });
@@ -43,17 +37,13 @@ app.get('/collections/:id', function(req, res) {
 
 // POST A NEW COLLECTION
 app.post('/collections', function(req, res) {
-    collections.insert(req.body,function(err, data) {
+    collections.insert(req.body,function(err) {
         if (err) {
             var body = "400";
             res.end(body);
         } else {
             var body = "200";
             res.end(body);
-            /*
-            res.status(404);
-            res.send({'msg': 'Collections created'});
-            */
         }
     });
 }); // END OF POST A NEW COLLECTION
@@ -62,37 +52,66 @@ app.post('/collections', function(req, res) {
 app.put('/collections/:id', function(req, res) {
     collections.update({'_id': ObjectId(req.params.id)},{
         $set:req.body
-    },function(err, data) {
+    },function(err) {
+        if (err){
+            console.log(err);
+        }
         res.send({'msg': 'User updated'});
     });
 }); // END OF UPDATE AN EXISTING COLLECTION
 
-/* NOT IMPLEMENTED UPDATE METHOD
-app.update('/collections/:id', function(req, res) {
+//UPDATE COLLECTION
+app.patch('/collections/:id', function(req, res) {
+    var deleteOne = req.query.deleteOne;
+    //REMOVE ELEMENT
+    /*
+     Syntax for req.body:
+     One array:
+     {
+     "Elements" : {"Dog1":"Charlie"}
+     }
+     Array inside an array:
+     {
+     "Elements.dogs" : {"Dog1":"Charlie"}
+     }
+     */
+    if (deleteOne) {
 
-
-    collections.update({'_id': ObjectId(req.params.id)},{
-        $pull:req.body
-    },function(err, data) {
-        res.send({'msg': 'User updated'});
-    });
+        collections.update({'_id': ObjectId(req.params.id)}, {
+            $pull: req.body
+        }, function (err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            res.send({'msg': 'Element deleted from array'});
+        });
+    }
 }); // END OF UPDATE AN EXISTING COLLECTION
-*/
 
 
 
 //DELETE ALL COLLECTIONS FOR USER OR ONE COLLECTION  ---------------------------------------------------------------------------------
 app.delete('/collections/:id', function(req, res) {
+    //noinspection JSUnresolvedVariable
     var deleteAll = req.query.deleteAll;
 
     if(req.params.id.length === 12 || req.params.id.length === 24) {
         if (deleteAll) {
-            collections.remove({'user_id': req.params.id}, function (err, data) {
+            collections.remove({'user_id': req.params.id}, function (err) {
+                if (err){
+                    console.log(err);
+                    return;
+                }
                 res.send({'msg': 'ALL COLLECTIONS REMOVED FOR USER'});
+
             });
         } else {
-            collections.remove({'_id': ObjectId(req.params.id)}, function (err, data) {
-
+            collections.remove({'_id': ObjectId(req.params.id)}, function (err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
                 res.send({'msg': 'Collections removed'});
             });
         }
