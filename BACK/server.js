@@ -6,6 +6,7 @@ var cors = require('cors');
 var bcrypt = require('bcryptjs');
 
 var authentication = require('./routes/auth.js');
+var collections = require('./routes/collections.js');
 
 app.use(cors());
 
@@ -16,6 +17,7 @@ app.use(BodyParser.urlencoded({
 app.use(BodyParser.json());
 
 app.use(authentication);
+app.use(collections);
 
 app.use(function(req,res){
     res.status(404);
