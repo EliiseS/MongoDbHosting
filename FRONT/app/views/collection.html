@@ -1,26 +1,148 @@
-<a ui-sref="cabinet" class="btn btn-danger pull-right">Close collection</a>
+<div ng-hide="selectedCollection">
+	<div class="alert alert-danger">
+	  <strong>Attention!</strong> Collection is not selected.
+	</div>
+</div>	
+<div ng-show="selectedCollection">
+	<hr/>
+	<!-- BUTTONS FOR INTEERACTION WITH CURRENTLY SELECTED COLLECTION -->
+	<a ui-sref="cabinet" class="btn btn-danger pull-right" ng-hide="ShowAddNewItemForm">Close collection</a>
+	<a class="btn btn-primary collection-btn pull-right" ng-click="ShowAddNewItemForm=true" ng-hide="ShowAddNewItemForm">Add new item</a>
 
-<h3 class="selected-collection">{{selectedCollection.name}} collection</h3>
+	<h3 class="selected-collection">{{selectedCollection.name}} collection</h3>
 
-<!--CHOOSE BETWEEN TABLE AND JSON DISPLAY VIEW -->
-<p>Data display mode:</p>
-<form role="form">
-	<label class="radio-inline">
-		<input type="radio" name="optradio" value="tableView" ng-model="displayMode" checked>Table view
-	</label>
-	<label class="radio-inline">
-		<input type="radio" name="optradio" value="jsonView" ng-model="displayMode" ng-change='makeJsonView()'>JSON view
-	</label>
-</form>
-<br>
+	<!-- ADD NEW ITEM FORM -->
+	<div ng-show="ShowAddNewItemForm">
+		
+		<!-- INFORM USER ABOUT WRONG JSON OR ERROR FORMAT -->
+		<div ng-show="errorMessage">
+			  <div class="alert alert-danger"><strong>Error! </strong>{{errorMessage}}</div>
+		</div>
 
-<!--SHOW DOCUMENTS IN COLLECTION AS A TABLE -->
-<ul class="list-group" ng-show="displayMode==='tableView'">
-  <li class="list-group-item" ng-repeat="element in selectedCollection.Elements">
-  	{{selectedCollection.name}}[{{$index+1}}] 
-  </li>
-</ul>
-<!--SHOW DOCUMENTS IN COLLECTION AS A JSON -->
-<div class="form-group" ng-show="displayMode==='jsonView'">
-	<textarea class="form-control" rows="15" ng-model="collectionAsJson"></textarea>
+		<form class="form-horizontal" name="newItemForm" novalidate>
+			<div class="form-group">
+				<div class="col-sm-12">
+					
+					<h4 >Enter your object in the below form. <small>Please follow the <span class="badge pointer">JSON format</span> used in example</small></h4>
+					<label class="radio-inline">
+					What you want to add? :
+					</label>
+					<label class="radio-inline">
+				      <input type="radio" value="{{newItem}}" ng-model="xxx" ng-checked='true'>Single Item
+				    </label>
+				    <label class="radio-inline">
+				      <input type="radio" value="{{newItems}}" ng-model="xxx">Many Items
+				    </label>
+				</div>
+			</div>
+
+
+			<div class="form-group">
+				<div class="col-sm-12">
+					<textarea class="form-control" rows="10" ng-model="xxx"></textarea>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-10">
+					<button type="submit" class="btn btn-success" ng-disabled="newItemForm.$invalid" ng-click="addNewItem()">Add new Item</button>
+					<button type="submit" class="btn btn-danger " ng-click="ShowAddNewItemForm=false">Cancel</button>
+				</div>
+			</div>	  
+		</form>
+	</div>
+
+	<!-- INFORM USER ABOUT SUCCESSFULL OPERATION - NEW ITEM ADDED INTO COLLECTION -->
+	<div class="alert alert-success" ng-show="successMessage">
+	  <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+	  <strong>{{successMessage}}</strong>
+	</div>
+
+	<div ng-hide="ShowAddNewItemForm">
+		<!--CHOOSE BETWEEN TABLE AND JSON DISPLAY VIEW -->
+		<p>Data display mode:</p>
+		<form role="form">
+			<label class="radio-inline">
+				<input type="radio" name="optradio" value="tableView" ng-model="displayMode" checked>Table view
+			</label>
+			<label class="radio-inline">
+				<input type="radio" name="optradio" value="jsonView" ng-model="displayMode" ng-change='makeJsonView()'>JSON view
+			</label>
+		</form>
+		<br>
+
+		<!-- IF COLLECTION IS EMPTY -->
+		<div ng-if="selectedCollection.Elements.length==0">
+			<div class="alert alert-danger">
+				<p class="text-center"><strong>Achtung!</strong> {{selectedCollection.name}} collection has no elements yet<p>
+			</div>
+		</div>	
+
+		<!--SHOW DOCUMENTS IN COLLECTION AS A TABLE -->
+		<ul class="list-group" ng-show="displayMode==='tableView'">
+		  <li class="list-group-item" ng-repeat="element in selectedCollection.Elements" data-toggle="tooltip" data-placement="right" title="{{element}}">
+		  	{{selectedCollection.name}}[{{$index+1}}] 
+
+		  	<button class="btn btn-xs btn-danger pull-right" ng-click="deleteItem(element)">DELETE</button>
+		  	<button class="btn btn-xs btn-primary collection-btn pull-right" ng-click="previewObject(element,$index)" data-toggle="modal" data-target="#myModal">PREVIEW</button>
+		  </li>
+		</ul>
+
+		<!--SHOW DOCUMENTS IN COLLECTION AS A JSON -->
+		<div class="form-group" ng-show="displayMode==='jsonView'">
+			<pre>{{collectionAsJson | json}}</pre>
+
+			<!--
+				<textarea class="form-control" rows="15" ng-model="collectionAsJson"></textarea>
+
+			-->
+		</div>
+	</div>
+
+	</div>	
+
+	<!--SHOW CONCRETE DOCUMENT IN MODAL WINDOW -->
+	<div class="modal fade" id="myModal" role="dialog">
+		<div class="modal-dialog modal-lg">
+		  <div class="modal-content">
+			    <div class="modal-header">
+			      <button type="button" class="close" data-dismiss="modal">&times;</button>
+			      <h4 class="modal-title">Contents of object {{selectedCollection.name}}[{{elementIndex}}]</h4>
+			    </div>
+			    <div class="modal-body">
+					<pre id="default-spacing">{{selectedElement | json}}</pre>
+					<button class="btn btn-primary" ng-click="showUpdateArea=true;getObjectAsText()" ng-hide="showUpdateArea">Edit item</button>
+					 <div ng-show="showUpdateArea">
+						<hr/>
+						  <!-- INFORM ABOUT SUCCESSFULL UPDATE -->
+						  <div ng-show="itemUpdateSuccess">
+						     <p class="alert alert-success"><strong>{{itemUpdateSuccess}}</strong></p> 
+						  </div>
+						  <!-- INFORM ABOUT ERROR DURING UPDATE -->
+						  <div ng-show="itemUpdateError">
+						     <p class="alert alert-danger"><strong>{{itemUpdateError}}</strong></p> 
+						  </div>
+						<textarea ng-model="itemForUpdate" rows="10" cols="50"></textarea>
+						<button class="btn btn-primary" ng-click="updateItem()">Update item</button>
+						<button class="btn btn-danger" ng-click="showUpdateArea=false">Cancel</button>
+					</div>
+			    </div>
+			    <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			    </div>
+		  </div>
+		</div>
 </div>
+
+
+
+<!-- TOOLTIP SCRIPT -->
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover(); 
+});
+</script>
+
+
+
+

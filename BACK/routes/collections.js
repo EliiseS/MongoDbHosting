@@ -5,10 +5,11 @@ var ObjectId = require('mongodb').ObjectId;
 var url = 'mongodb://localhost:27017/hosting';
 var collections;
 
+
+//HOW IS IT POSSIBLE? send response(res) if you don't have this object
 MongoClient.connect(url, function(err, db) {
     if (err) {
-        res.status(500);
-        res.send({'msg': 'Server crashed'});
+        console.log("Server crashed");
         return;
     }
     collections = db.collection('collections');
@@ -48,16 +49,40 @@ app.post('/collections', function(req, res) {
     });
 }); // END OF POST A NEW COLLECTION
 
+// PUSH A NEW ITEM INTO COLLECTION
+app.post('/collections/:id', function(req, res) {
+        var newItem = req.body;
+
+        //if(addMany){
+            collections.update({'_id': ObjectId(req.params.id)},{
+             $push:{ Elements : {$each : newItem}}}, function (err) {
+                if (err) {
+                    var body = "666";
+                    res.end(body);
+                }
+                else{
+                    var body = "200";
+                    res.end(body);
+                }
+            });
+    
+}); // END OF UPDATE AN EXISTING COLLECTION
+
 // UPDATE AN EXISTING COLLECTION
 app.put('/collections/:id', function(req, res) {
-    collections.update({'_id': ObjectId(req.params.id)},{
-        $set:req.body
-    },function(err) {
-        if (err){
-            console.log(err);
-        }
-        res.send({'msg': 'User updated'});
-    });
+
+        collections.update({'_id': ObjectId(req.params.id),Elements:req.body.originalItem},{
+            $set:{"Elements.$" : req.body.updatedItem}
+        },function(err) {
+            if (err){
+                console.log(err);
+                var body = '666';
+                res.end(body);
+            }
+            var body = '200';
+            res.end(body);
+        });
+    
 }); // END OF UPDATE AN EXISTING COLLECTION
 
 //UPDATE COLLECTION
@@ -78,13 +103,13 @@ app.patch('/collections/:id', function(req, res) {
     if (deleteOne) {
 
         collections.update({'_id': ObjectId(req.params.id)}, {
-            $pull: req.body
+            $pull: {Elements:req.body}
         }, function (err) {
             if (err) {
                 console.log(err);
                 return;
             }
-            res.send({'msg': 'Element deleted from array'});
+            res.send({'msg': 'Element deleted from array','status':'200'});
         });
     }
 }); // END OF UPDATE AN EXISTING COLLECTION

@@ -21,6 +21,8 @@ myApp.controller('RegistrationController',
 
   $scope.resetPassword = function() {
 
+    console.log("RESET PASSWORD");
+
     Authentication.resetPass($scope.credentials)
     .then(function(data){
       switch(data){

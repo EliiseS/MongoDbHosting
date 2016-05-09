@@ -1,11 +1,16 @@
 <hr/>
 <div class="row">
-	<div class="col-md-8">
-		<p class="lead">Your collections</p>
+	<div class="col-md-12">
+		<p class="lead pull-left">Your collections</p>
+
+		<button class="btn btn-primary pull-right" ng-click="showAddCollectionForm=true" ng-hide="showAddCollectionForm">Add new collection</button>
 	</div>
-	<div class="col-md-4">
-		<button class="btn btn-primary pull-right" ng-click="showCollectionForm()">{{addCollectionBtnText}}</button>
-	</div>
+</div>
+
+<!-- INFORM USER ABOUT SUCCESSFULL OPERATION - NEW COLLECTION IS CREATED -->
+<div class="alert alert-success" ng-show="newCollectionSuccess">
+  <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>{{newCollectionSuccess}}</strong>
 </div>
 
 <!-- ADD NEW COLLECTION -->
@@ -15,10 +20,12 @@
 		  <div class="panel-body">
 			<form class="form-inline" name="newColForm" novalidate>
 				<div class="form-group">
-					<label for="email">New collection Name:</label>
+					<h4>Create new Collection</h4>
+					<p>Please enter name for your new collection<p>
 					<input type="text" class="form-control" placeholder="collection name" ng-model="newCollectionName">
 				</div>
 					<button type="submit" class="btn btn-success pull-right" ng-disabled="newColForm.$invalid" ng-click="addNewCollection(newCollectionName)">Submit</button>
+					<button type="submit" class="btn btn-danger pull-right collection-btn" ng-click="showAddCollectionForm=false">Cancel</button>
 			</form>
 		  </div>
 		</div>
