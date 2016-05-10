@@ -149,7 +149,7 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 			//we can update item in db
 			var items = {};
 			items.originalItem = $scope.selectedElement;
-			items.updatedItem  = JSON.parse($scope.itemForUpdate)
+			items.updatedItem  = JSON.parse($scope.itemForUpdate);
 
 			CollectionsService.updateItem(items,$scope.selectedCollection._id)
 			.then(function(data){
@@ -169,28 +169,65 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 
    };
 
+   $scope.updateCollection = function(){
+   		
+        var collection = document.getElementById('CollectionTextArea').value;
+        var formatTest = IsJsonString(collection);
+        console.log("formatTest = " + formatTest);
+
+        if(formatTest){
+			//we can update item in db
+			var updatedCollection = JSON.parse(collection);
+			var item = {};
+			item.UpdatedElements = updatedCollection.Elements;
+
+			CollectionsService.updateCollection(item.UpdatedElements,$scope.collectionAsJson._id)
+			.then(function(data){
+					if(data==='200'){
+						//inform user that Item is uccessfully removed from collection
+						$scope.CollectionUpdateError = null;
+						$scope.CollectionUpdateSuccess= "Collection successfully Updated!";
+						$scope.showUpdateCollectionArea = false;
+					}
+					console.log(data);
+		    },function(error){
+		      $scope.CollectionUpdateError = "ERROR while UPDATING COLLECTION...";
+			
+		    });
+
+		}else{
+			$scope.itemUpdateError = "Error, Wring JSON format, please review your code.";
+			
+			console.log("WRONG SUKA FORMAT!");
+		}
+
+   		
+		
+   };
+
    $scope.getObjectAsText = function () {
    		delete $scope.selectedElement.$$hashKey;
-
-   		var FileAsString = "{\n";
-   		for(var propt in $scope.selectedElement){
-   			var typeTest = typeof $scope.selectedElement[propt];
-   			if(typeTest==='string'){
-   				// IF OBJECT's PROPERTY IS STRING");
-   				FileAsString += '    "' + propt + '" : "' + $scope.selectedElement[propt] + '",\n';
-   			}else{
-   				// IF OBJECT's PROPERTY IS NOT STRING");
-   				FileAsString += '    "' + propt + '" : ' + $scope.selectedElement[propt] + ',\n';
-   			}
-   			
-		    console.log(propt + ': ' + $scope.selectedElement[propt]);
-		}
-		var indexOfComa = FileAsString.lastIndexOf(',');
-		FileAsString = FileAsString.substring(0,indexOfComa);
-		FileAsString+= "\n}";
-
-		$scope.itemForUpdate = FileAsString;
+   		var str = JSON.stringify($scope.selectedElement, undefined, 4);
+		document.getElementById('itemTextArea').innerHTML = str;
 	};
+
+	$scope.getArraytAsText = function () {
+   		//delete $scope.selectedElement.$$hashKey;
+   		for(var i = 0; i<$scope.collectionAsJson.Elements.length; i++){
+   			delete $scope.collectionAsJson.Elements[i].$$hashKey;
+			}//object loop
+
+		var copiedObject = jQuery.extend({}, $scope.collectionAsJson); // CLONE OBJECT, TO SOLVE PROBLEMS WITH CAUSED BY DOUBLE BINDING
+		delete copiedObject._id;
+		delete copiedObject.name;
+		delete copiedObject.$$hashKey;
+	    // REMOVE HASHKEY
+        //REMOVE COLLECTION ID -- "_id": "572f52f1dca365700b5f409a" ---> Because we don't want user to play with it
+   		var str = JSON.stringify(copiedObject, undefined, 4);
+		document.getElementById('CollectionTextArea').innerHTML = str;
+   		
+	};
+
 
    function IsJsonString(str) {
 	    try {

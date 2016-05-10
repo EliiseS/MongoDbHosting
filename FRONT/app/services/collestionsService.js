@@ -53,7 +53,7 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
             var deffered = $q.defer();
 
             $http({
-                method: 'PATCH',
+                method: 'DELETE',
                 url: 'http://localhost:7000/collections/' + collection_id + '?deleteOne=true',
                 data: item
             }).success(function (response) {
@@ -71,7 +71,7 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
 
             $http({
                 method: 'PUT',
-                url: 'http://localhost:7000/collections/' + collection_id,
+                url: 'http://localhost:7000/collections/' + collection_id + '?updateOne=true',
                 data: items
             }).success(function (response) {
                 console.log(response.status);
@@ -81,7 +81,26 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
             });
 
             return deffered.promise;
-        }
+        },//updateItem
+        updateCollection: function(collection,collection_id) {
+
+            console.log("collection_id = " + collection_id);
+
+            var deffered = $q.defer();
+
+            $http({
+                method: 'PATCH',
+                url: 'http://localhost:7000/collections/' + collection_id + '?updateAll=true',
+                data: collection
+            }).success(function (response) {
+                console.log(response.status);
+                deffered.resolve(response);
+            }).error(function(data, status) {
+               deffered.reject("505");
+            });
+
+            return deffered.promise;
+        }//updateCollection
     };
 
   return collectionObject;

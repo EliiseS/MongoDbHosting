@@ -36,6 +36,26 @@ app.get('/collections/:id', function(req, res) {
 
 }); // END OF VIEW ALL COLLECTIONS FOR USER
 
+//GET ONE COLLECTION  ---------------------------------------------------------------------------------
+app.get('/collection/:id', function(req, res) {
+    if(req.params.id.length === 12 || req.params.id.length === 24){
+        collections.find({'_id': ObjectId(req.params.id)}).toArray(function(err, data) {
+            if (data==null){
+                res.status(404);
+                res.send({'msg': 'No collections found'});
+            }
+            else{
+                res.status(200);
+                res.send(data);
+            }
+            });
+    }  else{
+        res.status(400);
+        res.send({'msg' : '400 Bad Request'});
+    }
+
+}); // END OF VIEW ALL COLLECTIONS FOR USER
+
 // POST A NEW COLLECTION
 app.post('/collections', function(req, res) {
     collections.insert(req.body,function(err) {
@@ -71,6 +91,35 @@ app.post('/collections/:id', function(req, res) {
 // UPDATE AN EXISTING COLLECTION
 app.put('/collections/:id', function(req, res) {
 
+        
+    
+}); // END OF UPDATE AN EXISTING COLLECTION
+
+//UPDATE COLLECTION
+app.patch('/collections/:id', function(req, res) {
+    
+    
+    var updateAll = req.query.updateAll;
+    var updateOne = req.query.updateOne;
+    
+    //UPDATE WHOLE 'Elements array'
+    if (updateAll) {
+        var collectionForUpdate = req.body;
+        console.log(collectionForUpdate);
+        collections.update({'_id': ObjectId(req.params.id)}, {
+            $set:{"Elements":collectionForUpdate}
+        }, function (err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            var body = '200';
+            res.end(body);
+        });
+    }
+    //UPDATE ONE ITem
+    if (updateOne) {
+
         collections.update({'_id': ObjectId(req.params.id),Elements:req.body.originalItem},{
             $set:{"Elements.$" : req.body.updatedItem}
         },function(err) {
@@ -82,36 +131,8 @@ app.put('/collections/:id', function(req, res) {
             var body = '200';
             res.end(body);
         });
-    
-}); // END OF UPDATE AN EXISTING COLLECTION
-
-//UPDATE COLLECTION
-app.patch('/collections/:id', function(req, res) {
-    var deleteOne = req.query.deleteOne;
-    //REMOVE ELEMENT
-    /*
-     Syntax for req.body:
-     One array:
-     {
-     "Elements" : {"Dog1":"Charlie"}
-     }
-     Array inside an array:
-     {
-     "Elements.dogs" : {"Dog1":"Charlie"}
-     }
-     */
-    if (deleteOne) {
-
-        collections.update({'_id': ObjectId(req.params.id)}, {
-            $pull: {Elements:req.body}
-        }, function (err) {
-            if (err) {
-                console.log(err);
-                return;
-            }
-            res.send({'msg': 'Element deleted from array','status':'200'});
-        });
     }
+
 }); // END OF UPDATE AN EXISTING COLLECTION
 
 
@@ -120,18 +141,33 @@ app.patch('/collections/:id', function(req, res) {
 app.delete('/collections/:id', function(req, res) {
     //noinspection JSUnresolvedVariable
     var deleteAll = req.query.deleteAll;
-
+    var deleteOne = req.query.deleteOne;
     if(req.params.id.length === 12 || req.params.id.length === 24) {
+        //DELETE ALL ELEMENTS FROM COLLECTION
         if (deleteAll) {
             collections.remove({'user_id': req.params.id}, function (err) {
                 if (err){
                     console.log(err);
                     return;
                 }
-                res.send({'msg': 'ALL COLLECTIONS REMOVED FOR USER'});
+                res.send({'msg': 'ALL COLLECTIONS REMOVED FOR USER','status':'200'});
 
             });
-        } else {
+        } 
+        //DELETE ONE ELEMENT FROM COLLECTION
+        if (deleteOne) {
+            collections.update({'_id': ObjectId(req.params.id)}, {
+                $pull: {Elements:req.body}
+            }, function (err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                res.send({'msg': 'Element deleted from array','status':'200'});
+            });
+        }
+        //DELETE COLLECTION ITSELF
+        if(!deleteAll && ! deleteOne){
             collections.remove({'_id': ObjectId(req.params.id)}, function (err) {
                 if (err) {
                     console.log(err);

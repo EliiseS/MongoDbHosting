@@ -9,7 +9,7 @@
 	<a ui-sref="cabinet" class="btn btn-danger pull-right" ng-hide="ShowAddNewItemForm">Close collection</a>
 	<a class="btn btn-primary collection-btn pull-right" ng-click="ShowAddNewItemForm=true" ng-hide="ShowAddNewItemForm">Add new item</a>
 
-	<h3 class="selected-collection">{{selectedCollection.name}} collection</h3>
+	<h3 class="selected-collection">{{selectedCollection.name | uppercase}} collection</h3>
 
 	<!-- ADD NEW ITEM FORM -->
 	<div ng-show="ShowAddNewItemForm">
@@ -22,8 +22,9 @@
 		<form class="form-horizontal" name="newItemForm" novalidate>
 			<div class="form-group">
 				<div class="col-sm-12">
-					
-					<h4 >Enter your object in the below form. <small>Please follow the <span class="badge pointer">JSON format</span> used in example</small></h4>
+					<!-- OUR PAGE WITH JSON FORMAT DESCRIPTION -->
+					<!-- app/pages/json-format.html  -->
+					<h4 >Enter your object in the below form. <small>Please follow the <a href="http://www.w3schools.com/json/default.asp" target="_blank"><span class="badge pointer">JSON format</span></a> used in example</small></h4>
 					<label class="radio-inline">
 					What you want to add? :
 					</label>
@@ -68,20 +69,23 @@
 			<label class="radio-inline">
 				<input type="radio" name="optradio" value="jsonView" ng-model="displayMode" ng-change='makeJsonView()'>JSON view
 			</label>
+			<label class="radio-inline">
+				<input type="radio" name="optradio" value="apiView" ng-model="displayMode" ng-change=''><strong>API</strong>
+			</label>
 		</form>
 		<br>
 
 		<!-- IF COLLECTION IS EMPTY -->
 		<div ng-if="selectedCollection.Elements.length==0">
 			<div class="alert alert-danger">
-				<p class="text-center"><strong>Achtung!</strong> {{selectedCollection.name}} collection has no elements yet<p>
+				<p class="text-center"><strong>Warning!</strong> {{selectedCollection.name}} collection has no elements yet<p>
 			</div>
 		</div>	
 
 		<!--SHOW DOCUMENTS IN COLLECTION AS A TABLE -->
 		<ul class="list-group" ng-show="displayMode==='tableView'">
 		  <li class="list-group-item" ng-repeat="element in selectedCollection.Elements" data-toggle="tooltip" data-placement="right" title="{{element}}">
-		  	{{selectedCollection.name}}[{{$index+1}}] 
+		  	{{selectedCollection.name | uppercase}}[{{$index+1}}] 
 
 		  	<button class="btn btn-xs btn-danger pull-right" ng-click="deleteItem(element)">DELETE</button>
 		  	<button class="btn btn-xs btn-primary collection-btn pull-right" ng-click="previewObject(element,$index)" data-toggle="modal" data-target="#myModal">PREVIEW</button>
@@ -89,17 +93,131 @@
 		</ul>
 
 		<!--SHOW DOCUMENTS IN COLLECTION AS A JSON -->
+		<button class="btn btn-primary margin-bottom-20" ng-click="showUpdateCollectionArea=true;getArraytAsText()" ng-hide="showUpdateCollectionArea || displayMode==='apiView'">Edit Collection</button>
 		<div class="form-group" ng-show="displayMode==='jsonView'">
-			<pre>{{collectionAsJson | json}}</pre>
+			  <!-- INFORM ABOUT SUCCESSFULL UPDATE -->
+			  <div ng-show="CollectionUpdateSuccess">
+			     <p class="alert alert-success"><strong>{{CollectionUpdateSuccess}}</strong></p> 
+			  </div>
+			  <!-- INFORM ABOUT ERROR DURING UPDATE -->
+			  <div ng-show="CollectionUpdateError">
+			     <p class="alert alert-danger"><strong>{{CollectionUpdateError}}</strong></p> 
+			  </div>
+			<pre ng-hide="showUpdateCollectionArea">{{collectionAsJson | json}}</pre>
+			<!-- DEV AREA /////////////////////////////////////////////////////// -->
+			<!-- UPDATE WHOLE DOCUMENT -->
+					 <div ng-show="showUpdateCollectionArea">
+						<textarea id="CollectionTextArea" rows="30" cols="50"></textarea>
+						<button class="btn btn-primary" ng-click="updateCollection(collectionAsJson._id)">Update collection</button>
+						<button class="btn btn-danger" ng-click="showUpdateCollectionArea=false">Cancel</button>
+					</div>
 
-			<!--
-				<textarea class="form-control" rows="15" ng-model="collectionAsJson"></textarea>
-
-			-->
+			<!-- END DEV AREA /////////////////////////////////////////////////////// -->
 		</div>
-	</div>
+		<!--SHOW API DOCUMENTATION -->
+		<div class="form-group" ng-show="displayMode==='apiView'">
+			<table class="table" id="apiTable">
+			    <thead>
+			      <tr>
+			        <th>Task</th>
+			        <th>Method</th>
+			        <th>Route</th>
+			        <th>Accepts</th>
+			        <th>Returns</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			      <tr>
+			        <td><a href="#/cabinet/collection#getAll">Get colletion</a></td>
+			        <td>GET</td>
+			        <td>collections/{{collectionAsJson._id}}</td>
+			        <td>Nothing</td>
+			        <td>Status code</td>
+			      </tr>
+			      <tr>
+			        <td><a href="#/cabinet/collection#pushNew">Add new element</a></td>
+			        <td>POST</td>
+			        <td>collections/{{collectionAsJson._id}}</td>
+			        <td>Array with 1 object</td>
+			        <td>Status code</td>
+			      </tr>
+			      <tr>
+			        <td><a href="#/cabinet/collection#pushArray">Add multiple elements</a></td>
+			        <td>POST</td>
+			        <td>collections/{{collectionAsJson._id}}</td>
+			        <td>Array with objects</td>
+			        <td>Status code</td>
+			      </tr>
+			      <tr>
+			        <td><a href="#/cabinet/collection#deleteOne">Delete one element</a></td>
+			        <td>DELETE</td>
+			        <td>collections/{{collectionAsJson._id}}?deleteOne=true</td>
+			        <td>Object for deletion</td>
+			        <td>Status code</td>
+			      </tr>
+			      <tr>
+			        <td><a href="#/cabinet/collection#deleteAll">Delete all elements</a></td>
+			        <td>DELETE</td>
+			        <td>collections/{{collectionAsJson._id}}?deleteAll=true</td>
+			        <td>Nothing</td>
+			        <td>Status code</td>
+			      </tr>
+			      <tr>
+			        <td><a href="#/cabinet/collection#updateOne">Update one element</a></td>
+			        <td>PATCH</td>
+			        <td>collections/{{collectionAsJson._id}}</td>
+			        <td>Original Object and Updated Object</td>
+			        <td>Status code</td>
+			      </tr>
+			      <tr>
+			        <td><a href="#/cabinet/collection#updateAll">Update all elements</a></td>
+			        <td>PATCH</td>
+			        <td>collections/{{collectionAsJson._id}}?updateCollection=true</td>
+			        <td>Array with elements</td>
+			        <td>Status code</td>
+			      </tr>
+			    </tbody>
+			</table>
+			<br>
+			<br>
+			<!-- GET COLLECTION METHOD DESCRIPTION -->
+			<h2 id="getAll">Get colletion</h2>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			<a href="#/cabinet/collection#apiTable">Go Top</a>
 
-	</div>	
+			<!-- ADD NEW ITEM METHOD DESCRIPTION -->
+			<h2 id="pushNew">Add new element</h2>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			<a href="#/cabinet/collection#apiTable">Go Top</a>
+
+			<!-- ADD MULTIPLE ITEMS METHOD DESCRIPTION -->
+			<h2 id="pushArray">Add multiple elements</h2>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			<a href="#/cabinet/collection#apiTable">Go Top</a>
+
+			<!-- DELETE ITEM METHOD DESCRIPTION -->
+			<h2 id="deleteOne">Delete one element</h2>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			<a href="#/cabinet/collection#apiTable">Go Top</a>
+
+			<!-- DELETE COllECTION METHOD DESCRIPTION -->
+			<h2 id="deleteAll">Delete all elements from your collection</h2>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			<a href="#/cabinet/collection#apiTable">Go Top</a>
+
+			<!-- UPDATE ONE ITEM  METHOD DESCRIPTION -->
+			<h2 id="updateOne">Update one element</h2>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			<a href="#/cabinet/collection#apiTable">Go Top</a>
+
+			<!-- UPDATE ALL ITEMS  METHOD DESCRIPTION -->
+			<h2 id="updateAll">Update all elements</h2>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			<a href="#/cabinet/collection#apiTable">Go Top</a>
+
+		</div>
+
+	
 
 	<!--SHOW CONCRETE DOCUMENT IN MODAL WINDOW -->
 	<div class="modal fade" id="myModal" role="dialog">
@@ -122,7 +240,7 @@
 						  <div ng-show="itemUpdateError">
 						     <p class="alert alert-danger"><strong>{{itemUpdateError}}</strong></p> 
 						  </div>
-						<textarea ng-model="itemForUpdate" rows="10" cols="50"></textarea>
+						<textarea id="itemTextArea" ng-model="itemForUpdate" rows="10" cols="50"></textarea>
 						<button class="btn btn-primary" ng-click="updateItem()">Update item</button>
 						<button class="btn btn-danger" ng-click="showUpdateArea=false">Cancel</button>
 					</div>
