@@ -10,9 +10,9 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
                 method: "GET"
             }).success(function (response,status) {
                 console.log("WE ARE IN GETCOLLECTION = STATUS = " + status);
-               deffered.resolve(response,status);
+               deffered.resolve(response);
             }).error(function(data, status) {
-               deffered.reject(data,status);
+               deffered.reject(data);
             });
 
             return deffered.promise;
@@ -26,15 +26,9 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
                 url: 'http://localhost:7000/collections',
                 data: collection
             }).success(function (response,status) {
-                console.log("SUCCESS");
-                console.log(response);
-                console.log(status);
-                deffered.resolve(response,status);
-            }).error(function(data, status) {
-                console.log("ERROR");
-                console.log(data);
-                console.log(status);
-               deffered.reject(data, status);
+                deffered.resolve(status);
+            }).error(function(status) {
+               deffered.reject(response);
             });
 
             return deffered.promise;
@@ -48,25 +42,31 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
                 url: 'http://localhost:7000/collections/' + collection_id,
                 data: item
             }).success(function (response,status) {
-                deffered.resolve(response);
+                deffered.resolve(status);
             }).error(function(data, status) {
-               deffered.reject(data, status);
+               deffered.reject(status);
             });
 
             return deffered.promise;
         },
-        removeItem: function(item,collection_id) {
-
+        removeItem: function(itemForDeletion,collection_id) {
+            var items = {};
+            items.one = itemForDeletion;
+            itemForDeletion = JSON.stringify(itemForDeletion);
+            items.two = itemForDeletion;
+            itemForDeletion = JSON.parse(itemForDeletion);
+            items.three = itemForDeletion;
+            //console.log(item);
             var deffered = $q.defer();
 
             $http({
                 method: 'DELETE',
                 url: 'http://localhost:7000/collections/' + collection_id + '?deleteOne=true',
-                data: item
+                data: items
             }).success(function (response,status) {
-                deffered.resolve(response,status);
+                deffered.resolve(status);
             }).error(function(data, status) {
-               deffered.reject(data, status);
+               deffered.reject(status);
             });
 
             return deffered.promise;
@@ -81,9 +81,9 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
                 url: 'http://localhost:7000/collections/' + collection_id + '?updateOne=true',
                 data: items
             }).success(function (response,status) {
-                deffered.resolve(response,status);
+                deffered.resolve(status);
             }).error(function(error, status) {
-               deffered.reject(error, status);
+               deffered.reject(status);
             });
 
             return deffered.promise;
@@ -101,9 +101,9 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
             }).success(function (response,status) {
                 console.log(response);
                 console.log(status);
-                deffered.resolve(response,status);
-            }).error(function(data, status) {
-               deffered.reject(data, status);
+                deffered.resolve(status);
+            }).error(function(error, status) {
+               deffered.reject(status);
             });
 
             return deffered.promise;

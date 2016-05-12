@@ -11,9 +11,9 @@ myApp.factory('ProfileSevice',['$rootScope','$http','$q', function($rootScope,$h
                 url: 'http://localhost:7000/change-password',
                 data: credentials
             }).success(function (response,status) {
-                deffered.resolve(response,status);
+                deffered.resolve(status);
             }).error(function(data, status) {
-                deffered.reject(data, status);
+                deffered.reject(status);
             }); 
 
             return deffered.promise;
@@ -28,9 +28,9 @@ myApp.factory('ProfileSevice',['$rootScope','$http','$q', function($rootScope,$h
                 url: 'http://localhost:7000/change-email',
                 data: credentials
             }).success(function (response,status) {
-                deffered.resolve(response,status);
+                deffered.resolve(status);
             }).error(function(data, status) {
-                deffered.reject(data, status);
+                deffered.reject(status);
             }); 
 
             return deffered.promise;

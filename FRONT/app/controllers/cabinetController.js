@@ -1,4 +1,4 @@
-myApp.controller('CabinetController',function($rootScope,$scope,$state, CollectionsService) {
+myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard, CollectionsService) {
   
   $scope.test = "Cabinet controiller is connected - Enviroment established!";
 
@@ -8,16 +8,15 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
   $scope.displayMode = 'tableView';
   $scope.showAddCollectionForm = false;
   $scope.newItem = '{\n "name" : "Bob",\n "age" : 23,\n "education" : "Computer Science AP",\n "school" : "KEA"\n}';
-  $scope.xxx     = '{\n "name" : "Bob",\n "age" : 23,\n "education" : "Computer Science AP",\n "school" : "KEA"\n}';
+  $scope.newItemsForInsertion     = '{\n "name" : "Bob",\n "age" : 23,\n "education" : "Computer Science AP",\n "school" : "KEA"\n}';
   $scope.newItems = '[\n    {\n    "name" : "Bob",\n    "age" : 23,\n    "education" : "Computer Science AP",\n    "school" : "KEA"\n    },\n    {\n    "name" : "Alice",\n    "age" : 23,\n    "education" : "Computer Science AP",\n    "school" : "KEA"\n    },\n    {\n    "name" : "John",\n    "age" : 23,\n    "education" : "Computer Science AP",\n    "school" : "KEA"\n    }\n]';
   $scope.jsonFormat = '{\n "name" : "Bob",\n "age" : 23,\n "education" : "Computer Science AP",\n "school" : "KEA"\n}';
-  $scope.urlOfWebsite = 'http://localhost:7000';
+  $scope.urlOfWebsite = 'http://localhost:7000/collections/';
 
   $scope.getCollections = function() {
 
     CollectionsService.getCollections()
-    .then(function(data,status){
-    	console.log(data);
+    .then(function(data){
       $scope.collections = data;
     },function(error,status){
       console.log("ERROR while GETTING COLLECTIONS...." + error + ", status = " + status);
@@ -37,6 +36,12 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
    		//$scope.collectionAsJson = makeJsonView(data);
    };
 
+   $scope.reloadItems = function(){
+   		var copiedObject = jQuery.extend({}, $scope.selectedCollection);
+   		delete copiedObject.user_id;
+   		$scope.collectionAsJson = copiedObject;
+   };
+
    $scope.addNewCollection = function(name){
    		$scope.newCollectionName = '';
 
@@ -46,13 +51,11 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
    		collection.Elements = [];
 
    		CollectionsService.createCollection(collection)
-   		.then(function(data,status){
-   			console.log("COLLECTION CREATED, STATUS = ");
-   			console.log(status);
+   		.then(function(status){
 		     $scope.getCollections();
 		     $scope.showAddCollectionForm = false;
 		     $scope.newCollectionSuccess  = "New Collection successfully created!";
-		    },function(error,status){
+		    },function(status){
 		     console.log("COLLECTION NOT CREATED, STATUS = ");
 		     
 		     console.log(error);
@@ -71,9 +74,9 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
    $scope.addNewItem = function(){
 
    		//TEST IF STRING IS IN JSON FORMAT
-   		var item = JSON.parse($scope.xxx);
-   		var formatIsCorect = IsJsonString($scope.xxx);
-   		var isArray = Object.prototype.toString.call(item) === '[object Array]';
+   		var items = JSON.parse($scope.newItemsForInsertion);
+   		var formatIsCorect = IsJsonString($scope.newItemsForInsertion);
+   		var isArray = Object.prototype.toString.call(items) === '[object Array]'; //TEST IF OBJECT IS ARRAY
 
 		if($scope.selectedCollection === undefined){
 			$scope.errorMessage = "Error! Collection is not selected!";
@@ -84,21 +87,28 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 			//DETECT WHAT USER TRYING TO PUSH : ARRAY OR SINGLE OBJECT
 	   		if(!isArray) {
 				//IF NEW ITEM IS OBJECT --> convert to array
-				var tempItem = $scope.xxx;
-				$scope.xxx = [];
-				$scope.xxx.push(JSON.parse(tempItem));
+				var tempItem = $scope.newItemsForInsertion;
+				$scope.newItemsForInsertion = [];
+				$scope.newItemsForInsertion.push(JSON.parse(tempItem));
 			}
 			
-			CollectionsService.pushNewItem($scope.xxx,$scope.selectedCollection._id)
-			.then(function(data,status){
+			CollectionsService.pushNewItem($scope.newItemsForInsertion,$scope.selectedCollection._id)
+			.then(function(status){
+
+				    $scope.getCollections();
 					$scope.ShowAddNewItemForm = false;
 					if(isArray){
-						$scope.successMessage = "Successfull operation!" + $scope.xxx.length  + " new items added into your collection";	
+						for(var i = 0; i<items.length; i++){
+							$scope.selectedCollection.Elements.push(items[i]);
+						}
+						$scope.successMessage =   + " new items added into your collection";	
 					}else{
-						$scope.successMessage = "Successfull operation! New item added into your collection";	
+						$scope.selectedCollection.Elements.push(items);
+						$scope.successMessage = "New item added into your collection";	
 					}
-					$scope.xxx = $scope.jsonFormat;
-					$scope.getCollections();
+					$scope.newItemsForInsertion = $scope.jsonFormat;
+					
+					
 					//findAndUpdateCollection($scope.newItem);
 		    },function(error){
 		      console.log("ERROR while ADDING NEW ITEM INTO COLLECTION..." + error);
@@ -113,40 +123,28 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 		
    };//end of addNewItem()
 
-   $scope.deleteItem = function(element){
-
-   		console.log(element);
-   		delete element.$$hashKey;
-   		element = JSON.stringify(element);
-   		//TEST IF STRING IS IN JSON FORMAT
-   		var formatIsCorect = IsJsonString(element);
-
-		if(formatIsCorect)
-		{
-				//we can add item into dbpushNewItem
-			CollectionsService.removeItem(element,$scope.selectedCollection._id)
-			.then(function(data,status){
-					if(status===200){
-						//inform user that Item is uccessfully removed from collection
-						$scope.successMessage = "Successfull operation! Item removed from your collection";
-						reloadCollection();
-						$state.go('cabinet.collection');
-					}
-					$scope.getCollections();
-					//findAndUpdateCollection($scope.newItem);
-		    },function(error){
-		      console.log("ERROR while ADDING NEW ITEM INTO COLLECTION..." + error);
-		    });
-		}else{
-			console.log("WRONG FORMAT");
-		}
-	
-
+   $scope.deleteItem = function(element,indexOfElement){
+   		var itemForDeletion = element;
+		delete itemForDeletion.$$hashKey;
+		itemForDeletion = JSON.stringify(itemForDeletion);
+			//we can add item into dbpushNewItem
+		CollectionsService.removeItem(itemForDeletion,$scope.selectedCollection._id)
+		.then(function(status){
+				if(status===200){
+					$scope.selectedCollection.Elements.splice(indexOfElement, 1);
+					$scope.successMessage = "Successfull operation! Item removed from your collection";
+					reloadCollection();
+					$state.go('cabinet.collection');
+				}
+				$scope.getCollections();
+				//findAndUpdateCollection($scope.newItem);
+	    },function(error){
+	      console.log("ERROR while ADDING NEW ITEM INTO COLLECTION..." + error);
+	    });
    };
 
    //UPDATE ITEM
-   $scope.updateItem = function(){
-   		console.log("Tryiing to update items.... ");
+   $scope.updateItem = function(indexOfItem){
    		var firstItemFormatTest = IsJsonString(JSON.stringify($scope.selectedElement));
 		var secondItemFormatTest = IsJsonString($scope.itemForUpdate);
 
@@ -162,11 +160,13 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 			console.log(items);
 
 			CollectionsService.updateItem(items,$scope.selectedCollection._id)
-			.then(function(data,status){
-				console.log(data);
-				console.log(data.status);
+			.then(function(status){
+				console.log("INSIDE UPDATE COLLECTION, STATUS = " + status);
+
 					if(status===200){
 						//inform user that Item is uccessfully removed from collection
+						$scope.selectedCollection.Elements.splice(indexOfItem,1);
+						$scope.selectedCollection.Elements.splice(indexOfItem,0,items.updatedItem);
 						$scope.itemUpdateSuccess = "Successfull operation! Item UPDATED";
 						$scope.itemUpdateError = undefined;
 					}
@@ -189,16 +189,16 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
         if(formatTest){
 			//we can update item in db
 			var updatedCollection = JSON.parse(collection);
-			var item = {};
-			item.UpdatedElements = updatedCollection.Elements;
 
-			CollectionsService.updateCollection(item.UpdatedElements,$scope.collectionAsJson._id)
-			.then(function(data,status){
+			CollectionsService.updateCollection(updatedCollection.Elements,$scope.collectionAsJson._id)
+			.then(function(status){
 					if(status===200){
 						//inform user that Item is uccessfully removed from collection
 						$scope.CollectionUpdateError = null;
 						$scope.CollectionUpdateSuccess= "Collection successfully Updated!";
-						$scope.showUpdateCollectionArea = false;
+						$scope.selectedCollection.Elements = updatedCollection.Elements;
+						$scope.showUpdateArea = false;
+
 					}
 		    },function(error){
 		      $scope.CollectionUpdateError = "ERROR while UPDATING COLLECTION...";
@@ -214,9 +214,10 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 		
    };
 
-   $scope.getObjectAsText = function () {
-   		delete $scope.selectedElement.$$hashKey;
-   		var str = JSON.stringify($scope.selectedElement, undefined, 4);
+   $scope.getObjectAsText = function (itemToBeShownInTextarea) {
+   	    delete itemToBeShownInTextarea.$$hashKey;
+   		//delete $scope.selectedElement.$$hashKey;
+   		var str = JSON.stringify(itemToBeShownInTextarea, undefined, 4);
 		document.getElementById('itemTextArea').innerHTML = str;
 	};
 
@@ -247,19 +248,14 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 	    return true;
 	};
 
-	function findAndUpdateCollection(item){
-		for(var i=0; i<$scope.collections.length; i++){
-			var currentCollection = $scope.collections[i];
-			if(currentCollection.name===$scope.selectedCollection.name){
-				 console.log(JSON.parse(item));
-				 $scope.collections[i].Elements.push(JSON.parse(item));
-			}
-		}
-	};
-
-	function reloadCollection(){
-		$scope.getCollections();
-	};
+	//ALLOW USERS TO COPY TEXT TO CLIPBOARD -- used in API DOCS section for copying urls
+	if (!clipboard.supported) {
+            console.log('Sorry, copy to clipboard is not supported');
+        }
+ 
+        $scope.clickHandler = function (id,urlParams) {
+            clipboard.copyText($scope.urlOfWebsite + "" + id + urlParams);
+        };
 
 
 // TESTING VARIABLE /////////////////////////////////////////////////////////

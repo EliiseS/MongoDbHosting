@@ -69,7 +69,7 @@ app.get('/collections/:id', function(req, res) {
 // ADD A NEW COLLECTION
 app.post('/collections', function(req, res) {
 
-    function dbQuery() {
+    function dbQuery(db) {
         collections.insert(req.body, function (err) {
             if (err) {
                 res.status(400);
@@ -164,10 +164,12 @@ app.delete('/collections/:id', function(req, res) {
     //noinspection JSUnresolvedVariable
     var deleteAll = req.query.deleteAll;
     var deleteOne = req.query.deleteOne;
+
     function dbQuery(db) {
         if (req.params.id.length === 12 || req.params.id.length === 24) {
             //DELETE ALL ELEMENTS FROM COLLECTION
             if (deleteAll) {
+                console.log("Trying to remove ALL");
                 collections.remove({'user_id': req.params.id}, function (err) {
                     if (err) {
                         console.log(err);
@@ -182,6 +184,8 @@ app.delete('/collections/:id', function(req, res) {
             }
             //DELETE ONE ELEMENT FROM COLLECTION
             if (deleteOne) {
+                console.log("Trying to remove one");
+                console.log(req.body);
                 collections.update({'_id': ObjectId(req.params.id)}, {
                     $pull: {Elements: req.body}
                 }, function (err) {
@@ -197,6 +201,7 @@ app.delete('/collections/:id', function(req, res) {
             }
             //DELETE COLLECTION ITSELF
             if (!deleteAll && !deleteOne) {
+                console.log("REMOVE WHOLE COLLECTION!");
                 collections.remove({'_id': ObjectId(req.params.id)}, function (err) {
                     if (err) {
                         res.status(400);
@@ -214,6 +219,8 @@ app.delete('/collections/:id', function(req, res) {
         }
     }
     dbConnect(res, dbQuery);
+    
+
 
 }); // END OF DELETE ALL COLLECTIONS FOR USER OR ONE COLLECTION
 

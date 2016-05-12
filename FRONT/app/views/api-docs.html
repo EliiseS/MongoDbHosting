@@ -69,12 +69,20 @@
 			  <footer>Data from your <em>{{collectionAsJson.name | uppercase}}</em> collection can be read by issuing an <strong>HTTP GET</strong> request to an endpoint:</footer>
 			</blockquote>
 
-			<pre><strong>GET</strong> {{urlOfWebsite}}/collections/{{collectionAsJson._id}}</pre>
+			<pre><strong>GET</strong> {{urlOfWebsite}}{{collectionAsJson._id}} <button type="button" class="btn btn-xs btn-default pull-right">
+			  <span class="glyphicon glyphicon-link" aria-hidden="true" ng-click="clickHandler(collectionAsJson._id,'')"></span>
+			</button></pre>			
 
 			<blockquote>
 			  <h4>Response</h4>
 			  <footer>A successful request will be indicated by a <strong>200</strong> HTTP status code.The response will contain the data being retrieved:</footer>
 			</blockquote>
+
+			<blockquote>
+			  <h4>Possible errors</h4>
+			  <footer>BLA BLA BLA</footer>
+			</blockquote>
+
 			<blockquote>
 			  <h4>Example in AngularJs</h4>
 			  <footer>Using <strong>$http</strong> service.
@@ -83,7 +91,7 @@
 			<pre>
 getCollection: function() {
     $http({
-        url: "{{urlOfWebsite}}/collection/{{collectionAsJson._id}}",
+        url: "{{urlOfWebsite}}{{collectionAsJson._id}}",
         method: "GET"
     }).success(function (data,status) {
          // Successfull operation
@@ -105,12 +113,20 @@ getCollection: function() {
 			  <footer>You can push/add new item into your <em>{{collectionAsJson.name | uppercase}}</em> collection by sending <strong>HTTP POST</strong> request to an endpoint. You need to include <strong>array</strong> with your new item into HTTP request</footer>
 			</blockquote>
 
-			<pre><strong>POST</strong> {{urlOfWebsite}}/collection/{{collectionAsJson._id}}</pre>
+			<pre><strong>POST</strong> {{urlOfWebsite}}{{collectionAsJson._id}} <button type="button" class="btn btn-xs btn-default pull-right">
+			  <span class="glyphicon glyphicon-link" aria-hidden="true" ng-click="clickHandler(collectionAsJson._id,'')"></span>
+			</button></pre>
 
 			<blockquote>
 			  <h4>Response</h4>
 			  <footer>A successful request will be indicated by a <strong>200</strong> HTTP status code.</footer>
 			</blockquote>
+
+			<blockquote>
+			  <h4>Possible errors</h4>
+			  <footer>BLA BLA BLA</footer>
+			</blockquote>
+
 			<blockquote>
 			  <h4>Example in AngularJs</h4>
 			  <footer>Using <strong>$http</strong> service.
@@ -131,7 +147,7 @@ var <strong>newItem</strong> = [
 pushNewItem: function(<strong>newItem</strong>) {
     $http({
         method: 'POST',
-        url: "{{urlOfWebsite}}/collection/{{collectionAsJson._id}}",
+        url: "{{urlOfWebsite}}{{collectionAsJson._id}}",
         data: <strong>newItem</strong>
     }).success(function (status) {
          // Successfull operation
@@ -144,7 +160,6 @@ pushNewItem: function(<strong>newItem</strong>) {
 		
 			<a class="btn btn-primary" href="#/cabinet/collection#apiTable"><strong>Go Up</strong></a>
 			<hr>
-
 			<!-- ADD MULTIPLE ITEMS METHOD DESCRIPTION -->
 			<h2 id="pushArray">Add multiple elements</h2>
 			<blockquote>
@@ -152,12 +167,20 @@ pushNewItem: function(<strong>newItem</strong>) {
 			  <footer>You can push/add multiple new items into your <em>{{collectionAsJson.name | uppercase}}</em> collection by sending <strong>HTTP POST</strong> request to an endpoint. You need to include <strong>array</strong> with your new items into HTTP request</footer>
 			</blockquote>
 
-			<pre><strong>POST</strong> {{urlOfWebsite}}/collection/{{collectionAsJson._id}}</pre>
+			<pre><strong>POST</strong> {{urlOfWebsite}}{{collectionAsJson._id}} <button type="button" class="btn btn-xs btn-default pull-right">
+			  <span class="glyphicon glyphicon-link" aria-hidden="true" ng-click="clickHandler(collectionAsJson._id,'')"></span>
+			</button></pre>
 
 			<blockquote>
 			  <h4>Response</h4>
 			  <footer>A successful request will be indicated by a <strong>200</strong> HTTP status code.</footer>
 			</blockquote>
+
+			<blockquote>
+			  <h4>Possible errors</h4>
+			  <footer>BLA BLA BLA</footer>
+			</blockquote>
+
 			<blockquote>
 			  <h4>Example in AngularJs</h4>
 			  <footer>Using <strong>$http</strong> service.
@@ -192,7 +215,7 @@ var <strong>newItems</strong> = [
 pushNewItem: function(<strong>newItems</strong>) {
     $http({
         method: 'POST',
-        url: "{{urlOfWebsite}}/collection/{{collectionAsJson._id}}",
+        url: "{{urlOfWebsite}}{{collectionAsJson._id}}",
         data: <strong>newItems</strong>
     }).success(function (status) {
          // Successfull operation
@@ -213,12 +236,20 @@ pushNewItem: function(<strong>newItems</strong>) {
 			  <footer>You can <strong>delete</strong> specific item from your <em>{{collectionAsJson.name | uppercase}}</em> collection by sending <strong>HTTP DELETE</strong> request to an endpoint. You need to include <strong>item you want to delete</strong> into HTTP request</footer>
 			</blockquote>
 
-			<pre><strong>DELETE</strong> {{urlOfWebsite}}/collection/{{collectionAsJson._id}}?deleteOne=true</pre>
+			<pre><strong>DELETE</strong> {{urlOfWebsite}}{{collectionAsJson._id}}?deleteOne=true <button type="button" class="btn btn-xs btn-default pull-right">
+			  <span class="glyphicon glyphicon-link" aria-hidden="true" ng-click="clickHandler(collectionAsJson._id,'?deleteOne=true')"></span>
+			</button></pre>
 
 			<blockquote>
 			  <h4>Response</h4>
 			  <footer>A successful request will be indicated by a <strong>200</strong> HTTP status code.</footer>
 			</blockquote>
+
+			<blockquote>
+			  <h4>Possible errors</h4>
+			  <footer>BLA BLA BLA</footer>
+			</blockquote>
+
 			<blockquote>
 			  <h4>Example in AngularJs</h4>
 			  <footer>Using <strong>$http</strong> service.
@@ -237,7 +268,7 @@ var <strong>itemForDeletion</strong> = {
 removeItem: function(<strong>itemForDeletion</strong>) {
     $http({
         method: 'DELETE',
-        url: '{{urlOfWebsite}}/collection/{{collectionAsJson._id}}?deleteOne=true',
+        url: '{{urlOfWebsite}}{{collectionAsJson._id}}?deleteOne=true',
         data: <strong>itemForDeletion</strong>
     }).success(function (response,status) {
          // Successfull operation
@@ -258,12 +289,20 @@ removeItem: function(<strong>itemForDeletion</strong>) {
 			  <footer>You can <strong>delete</strong> all items from your <em>{{collectionAsJson.name | uppercase}}</em> collection by sending <strong>HTTP DELETE</strong> request to an endpoint. You need to include <strong>item you want to delete</strong> into HTTP request</footer>
 			</blockquote>
 
-			<pre><strong>DELETE</strong> {{urlOfWebsite}}/collection/{{collectionAsJson._id}}</pre>
+			<pre><strong>DELETE</strong> {{urlOfWebsite}}{{collectionAsJson._id}} <button type="button" class="btn btn-xs btn-default pull-right">
+			  <span class="glyphicon glyphicon-link" aria-hidden="true" ng-click="clickHandler(collectionAsJson._id,'')"></span>
+			</button></pre>
 
 			<blockquote>
 			  <h4>Response</h4>
 			  <footer>A successful request will be indicated by a <strong>200</strong> HTTP status code.</footer>
 			</blockquote>
+
+			<blockquote>
+			  <h4>Possible errors</h4>
+			  <footer>BLA BLA BLA</footer>
+			</blockquote>
+
 			<blockquote>
 			  <h4>Example in AngularJs</h4>
 			  <footer>Using <strong>$http</strong> service.
@@ -273,7 +312,7 @@ removeItem: function(<strong>itemForDeletion</strong>) {
 removeCollection: function() {
     $http({
         method: 'DELETE',
-        url: '{{urlOfWebsite}}/collection/{{collectionAsJson._id}}'
+        url: '{{urlOfWebsite}}{{collectionAsJson._id}}'
     }).success(function (response,status) {
          // Successfull operation
          // Status code in status
@@ -293,12 +332,20 @@ removeCollection: function() {
 			  <footer>You can <strong>update</strong> specific items in your <em>{{collectionAsJson.name | uppercase}}</em> collection by sending <strong>PATCH</strong> request to an endpoint. You need to include <strong>object</strong> with 2 variables: <strong>original object</strong> you want to update and <strong>new object with updated state</strong> into HTTP request. </footer>
 			</blockquote>
 
-			<pre><strong>PATCH</strong> {{urlOfWebsite}}/collection/{{collectionAsJson._id}}?updateOne=true</pre>
+			<pre><strong>PATCH</strong> {{urlOfWebsite}}{{collectionAsJson._id}}?updateOne=true <button type="button" class="btn btn-xs btn-default pull-right">
+			  <span class="glyphicon glyphicon-link" aria-hidden="true" ng-click="clickHandler(collectionAsJson._id,'?updateOne=true')"></span>
+			</button></pre>
 
 			<blockquote>
 			  <h4>Response</h4>
 			  <footer>A successful request will be indicated by a <strong>200</strong> HTTP status code.</footer>
 			</blockquote>
+
+			<blockquote>
+			  <h4>Possible errors</h4>
+			  <footer>BLA BLA BLA</footer>
+			</blockquote>
+
 			<blockquote>
 			  <h4>Example in AngularJs</h4>
 			  <footer>Using <strong>$http</strong> service.
@@ -322,7 +369,7 @@ var <strong>items</strong> = {
 updateItem: function(<strong>items</strong>) {
     $http({
         method: 'PUT',
-        url: '{{urlOfWebsite}}/collection/{{collectionAsJson._id}}?updateOne=true',
+        url: '{{urlOfWebsite}}{{collectionAsJson._id}}?updateOne=true',
         data: <strong>items</strong>
     }).success(function (response,status) {
          // Successfull operation
@@ -342,7 +389,9 @@ updateItem: function(<strong>items</strong>) {
 			  <footer>You can <strong>update</strong> all items in your <em>{{collectionAsJson.name | uppercase}}</em> collection by sending <strong>PATCH</strong> request to an endpoint. You need to include <strong>object</strong> with <strong>array with items</strong> you want to have in your collection.<strong>Attention!</strong> With this operation you will all items you currently have in your collection.</footer>
 			</blockquote>
 
-			<pre><strong>PATCH</strong> {{urlOfWebsite}}/collection/{{collectionAsJson._id}}?updateAll=true</pre>
+			<pre><strong>PATCH</strong> {{urlOfWebsite}}{{collectionAsJson._id}}?updateAll=true <button type="button" class="btn btn-xs btn-default pull-right">
+			  <span class="glyphicon glyphicon-link" aria-hidden="true" ng-click="clickHandler(collectionAsJson._id,'?updateAll=true')"></span>
+			</button></pre>
 
 			<blockquote>
 			  <h4>Response</h4>
@@ -388,7 +437,7 @@ var <strong>items</strong> = [
 updateItem: function(<strong>items</strong>) {
     $http({
         method: 'PUT',
-        url: '{{urlOfWebsite}}/collection/{{collectionAsJson._id}}?updateAll=true',
+        url: '{{urlOfWebsite}}{{collectionAsJson._id}}?updateAll=true',
         data: <strong>items</strong>
     }).success(function (response,status) {
          // Successfull operation
