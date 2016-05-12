@@ -9,6 +9,7 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
                 url: "http://localhost:7000/collections/" + $rootScope.currentUser._id + "?getAll=true",
                 method: "GET"
             }).success(function (response,status) {
+                console.log("WE ARE IN GETCOLLECTION = STATUS = " + status);
                deffered.resolve(response,status);
             }).error(function(data, status) {
                deffered.reject(data,status);
@@ -76,14 +77,13 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
             var deffered = $q.defer();
 
             $http({
-                method: 'PUT',
+                method: 'PATCH',
                 url: 'http://localhost:7000/collections/' + collection_id + '?updateOne=true',
                 data: items
             }).success(function (response,status) {
-                console.log(response.status);
                 deffered.resolve(response,status);
-            }).error(function(data, status) {
-               deffered.reject(data, status);
+            }).error(function(error, status) {
+               deffered.reject(error, status);
             });
 
             return deffered.promise;
@@ -99,7 +99,8 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
                 url: 'http://localhost:7000/collections/' + collection_id + '?updateAll=true',
                 data: collection
             }).success(function (response,status) {
-                console.log(response.status);
+                console.log(response);
+                console.log(status);
                 deffered.resolve(response,status);
             }).error(function(data, status) {
                deffered.reject(data, status);

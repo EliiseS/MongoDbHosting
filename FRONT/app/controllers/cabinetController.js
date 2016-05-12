@@ -158,14 +158,19 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 			items.originalItem = $scope.selectedElement;
 			items.updatedItem  = JSON.parse($scope.itemForUpdate);
 
+			console.log("ITEMS = ");
+			console.log(items);
+
 			CollectionsService.updateItem(items,$scope.selectedCollection._id)
 			.then(function(data,status){
+				console.log(data);
+				console.log(data.status);
 					if(status===200){
 						//inform user that Item is uccessfully removed from collection
 						$scope.itemUpdateSuccess = "Successfull operation! Item UPDATED";
 						$scope.itemUpdateError = undefined;
 					}
-		    },function(error){
+		    },function(error,status){
 		      console.log("ERROR while UPDATING NEW ITEM INTO COLLECTION..." + error);
 		    });
 

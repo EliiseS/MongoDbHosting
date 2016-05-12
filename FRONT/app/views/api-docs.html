@@ -288,8 +288,39 @@ removeCollection: function() {
 
 			<!-- UPDATE ONE ITEM  METHOD DESCRIPTION -->
 			<h2 id="updateOne">Update one element</h2>
-			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-			<a href="#/cabinet/collection#apiTable">Go Top</a>
+			<blockquote>
+			  <h4>Request</h4>
+			  <footer>You can <strong>update</strong> specific items in your <em>{{collectionAsJson.name | uppercase}}</em> collection by sending <strong>PATCH</strong> request to an endpoint. You need to include <strong>item you want to delete</strong> into HTTP request</footer>
+			</blockquote>
+
+			<pre><strong>DELETE</strong> {{urlOfWebsite}}/collection/{{collectionAsJson._id}}?updateOne=true</pre>
+
+			<blockquote>
+			  <h4>Response</h4>
+			  <footer>A successful request will be indicated by a <strong>200</strong> HTTP status code.</footer>
+			</blockquote>
+			<blockquote>
+			  <h4>Example in AngularJs</h4>
+			  <footer>Using <strong>$http</strong> service.
+			</blockquote>
+
+			<pre>
+updateItem: function(items,collection_id) {
+    $http({
+        method: 'PUT',
+        url: '{{urlOfWebsite}}/collection/{{collectionAsJson._id}}?updateOne=true',
+        data: items
+    }).success(function (response,status) {
+         // Successfull operation
+         // Status code in status
+    }).error(function(data, status) {
+         // Error during request
+    });
+};
+			</pre>
+		
+			<a class="btn btn-primary" href="#/cabinet/collection#apiTable"><strong>Go Up</strong></a>
+			<hr>
 
 			<!-- UPDATE ALL ITEMS  METHOD DESCRIPTION -->
 			<h2 id="updateAll">Update all elements</h2>

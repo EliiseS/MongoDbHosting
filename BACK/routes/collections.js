@@ -64,17 +64,7 @@ app.get('/collections/:id', function(req, res) {
 
 // ADD A NEW COLLECTION
 app.post('/collections', function(req, res) {
-<<<<<<< HEAD
-    collections.insert(req.body,function(err) {
-        if (err) {
-            res.status(400);
-            res.send({'msg' : '400 Bad Request'});
-        } else {
-            res.status(200);
-            res.send({'msg' : '200 Successfull Operation'});
-        }
-    });
-=======
+
     function dbQuery() {
         collections.insert(req.body, function (err) {
             if (err) {
@@ -87,7 +77,6 @@ app.post('/collections', function(req, res) {
         });
     };
     dbConnect(res, dbQuery);
->>>>>>> 34c9c15214036d56d3845e3cabfa20981ec1c3f4
 }); // END OF POST A NEW COLLECTION
 
 // ADD A NEW ITEM INTO COLLECTION
