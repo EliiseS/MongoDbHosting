@@ -44,6 +44,7 @@ app.post('/register', function(req, res) {
 
             collection.insert(req.body,function(err, data) {
                 res.status(200);
+                res.send({'msg': '200 Successful Operation'});
                 db.close();
             });
         });
@@ -137,6 +138,7 @@ app.post('/reset-pass', function(req, res) {
                         },function(err, results) {
                             sendEmail(userFromDB,passForUser);
                             res.status(200);
+                            res.send({'msg': '200 Successful Operation'});
                             db.close();
                         });
                     });
@@ -186,8 +188,9 @@ app.post('/change-password', function(req, res) {
               collection.update({'email':profile.email},{
                   $set:{"password":encyptedPass}
               },function(err, results) {
-                    res.status(200);
-                    db.close();
+                  res.status(200);
+                  res.send({'msg': '200 Successful Operation'});
+                  db.close();
                  });
             });
         };//listener #1
