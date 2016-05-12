@@ -43,8 +43,7 @@ app.post('/register', function(req, res) {
             var collection = db.collection('users');
 
             collection.insert(req.body,function(err, data) {
-                var body = "200";
-                res.end(body);
+                res.status(200);
                 db.close();
             });
         });
@@ -64,8 +63,8 @@ app.post('/register', function(req, res) {
             
             if(length>0){
               eventEmitter.removeListener('allowedToCreateUser', listner0001);
-              var body = "409";
-              res.end(body);
+                res.status(400);
+                res.send({'msg' : '409 Conflict'});
 
             }
             if(length==0){
@@ -88,8 +87,8 @@ app.post('/login', function(req, res) {
             var length = data.length;
             
             if(length==0){
-              var body = "404";
-              res.end(body);
+                res.status(400);
+                res.send({'msg' : '400 Bad request'});
             }
             if(length>0){
               var userFromDb = data[0];
@@ -99,7 +98,8 @@ app.post('/login', function(req, res) {
                         delete userFromDb.password;
                         res.send(userFromDb);
                     }else{//IF PASSWORDS DON'T MATCH
-                        res.end("401");
+                        res.status(401);
+                        res.send({'msg' : 'Password incorrect'});
                     }
                 });
             }
@@ -134,8 +134,7 @@ app.post('/reset-pass', function(req, res) {
                             $set:{"password":passForDB}
                         },function(err, results) {
                             sendEmail(userFromDB,passForUser);
-                            var body = "200";
-                            res.end(body);
+                            res.status(200);
                             db.close();
                         });
                     });
@@ -157,8 +156,8 @@ app.post('/reset-pass', function(req, res) {
               }
               if(length==0){
                 // THERE IS USER WITH PROVIDED EMAIL
-                var body = "404";
-                res.end(body);
+                  res.status(404);
+                  res.send({'msg' : '404 User not found'});
               }
               db.close();
           });
@@ -185,8 +184,7 @@ app.post('/change-password', function(req, res) {
               collection.update({'email':profile.email},{
                   $set:{"password":encyptedPass}
               },function(err, results) {
-                    var body = "200";
-                    res.end(body);
+                    res.status(200);
                     db.close();
                  });
             });
@@ -220,8 +218,7 @@ app.post('/change-email', function(req, res) {
                 if(err){
                   console.log("ERROR");
                 }else{
-                    var body = "200";
-                    res.end(body);
+                    res.status(200);
                     db.close();
                 }
                  });
@@ -237,8 +234,8 @@ app.post('/change-email', function(req, res) {
             var length = xxx.length;
             
             if(length>0){
-              var body = "409";
-              res.end(body);
+                res.status(409);
+                res.send({'msg' : '409 Conflict'});
               eventEmitter.removeListener('allowedToChangeEmail', listner0002);
             }
             if(length==0){

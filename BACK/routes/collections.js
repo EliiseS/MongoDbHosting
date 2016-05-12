@@ -7,83 +7,83 @@ var collections;
 
 
 //HOW IS IT POSSIBLE? send response(res) if you don't have this object
-MongoClient.connect(url, function(err, db) {
+//var dbConnect = function(res){
+    MongoClient.connect(url, function(err, db) {
     if (err) {
         console.log("Server crashed");
+        console.log(err);
         return;
     }
     collections = db.collection('collections');
 });
 
 
-//VIEW ALL COLLECTIONS FOR USER  ---------------------------------------------------------------------------------
+//VIEW COLLECTION(S)  ---------------------------------------------------------------------------------
 app.get('/collections/:id', function(req, res) {
+    var getAll = req.query.getAll;
+
+    /*if (collections == null){
+        dbConnect(res);
+    }*/
+
     if(req.params.id.length === 12 || req.params.id.length === 24){
-        collections.find({'user_id': req.params.id}).toArray(function(err, data) {
-            if (data==null){
-                res.status(404);
-                res.send({'msg': 'No collections found'});
-            }
-            else{
-                res.status(200);
-                res.send(data);
-            }
+        if (getAll){ //GET ONE COLLECTION USING COLLECTIONS ID
+            collections.find({'user_id': req.params.id}).toArray(function (err, data) {
+                if (err) {
+                    res.status(400);
+                    res.send({'msg' : '400 Bad request'});
+                    console.log(err);
+                }
+                if (data == null) {
+                    res.status(404);
+                    res.send({'msg': 'No collections found'});
+                }
+                else {
+                    res.status(200);
+                    res.send(data);
+                }
             });
+        } else { //VIEW ALL COLLECTIONS FOR USER USING USER ID
+            collections.find({'_id': ObjectId(req.params.id)}).toArray(function(err, data) {
+                if (data==null){
+                    res.status(404);
+                    res.send({'msg': 'No collections found'});
+                }
+                else{
+                    res.status(200);
+                    res.send(data);
+                }
+            });
+        }
     }  else{
         res.status(400);
         res.send({'msg' : '400 Bad Request'});
     }
+}); // END OF VIEW COLLECTION(S)
 
-}); // END OF VIEW ALL COLLECTIONS FOR USER
-
-//GET ONE COLLECTION  ---------------------------------------------------------------------------------
-app.get('/collection/:id', function(req, res) {
-    if(req.params.id.length === 12 || req.params.id.length === 24){
-        collections.find({'_id': ObjectId(req.params.id)}).toArray(function(err, data) {
-            if (data==null){
-                res.status(404);
-                res.send({'msg': 'No collections found'});
-            }
-            else{
-                res.status(200);
-                res.send(data);
-            }
-            });
-    }  else{
-        res.status(400);
-        res.send({'msg' : '400 Bad Request'});
-    }
-
-}); // END OF VIEW ALL COLLECTIONS FOR USER
-
-// POST A NEW COLLECTION
+// ADD A NEW COLLECTION
 app.post('/collections', function(req, res) {
     collections.insert(req.body,function(err) {
         if (err) {
-            var body = "400";
-            res.end(body);
+            res.status(200);
+            res.send({'msg' : '400 Bad Request'});
         } else {
-            var body = "200";
-            res.end(body);
+            res.status(200);
         }
     });
 }); // END OF POST A NEW COLLECTION
 
-// PUSH A NEW ITEM INTO COLLECTION
+// ADD A NEW ITEM INTO COLLECTION
 app.post('/collections/:id', function(req, res) {
-        var newItem = req.body;
 
-        //if(addMany){
             collections.update({'_id': ObjectId(req.params.id)},{
-             $push:{ Elements : {$each : newItem}}}, function (err) {
+             $push:{ Elements : {$each : req.body}}}, function (err) {
                 if (err) {
-                    var body = "666";
-                    res.end(body);
+                    res.status(400);
+                    res.send({'msg' : '400 Bad Request'});
+                    return;
                 }
-                else{
-                    var body = "200";
-                    res.end(body);
-                }
+                res.status(200);
             });
     
 }); // END OF UPDATE AN EXISTING COLLECTION
@@ -97,8 +97,6 @@ app.put('/collections/:id', function(req, res) {
 
 //UPDATE COLLECTION
 app.patch('/collections/:id', function(req, res) {
-    
-    
     var updateAll = req.query.updateAll;
     var updateOne = req.query.updateOne;
     
@@ -113,8 +111,7 @@ app.patch('/collections/:id', function(req, res) {
                 console.log(err);
                 return;
             }
-            var body = '200';
-            res.end(body);
+            res.status(200);
         });
     }
     //UPDATE ONE ITem
@@ -125,11 +122,10 @@ app.patch('/collections/:id', function(req, res) {
         },function(err) {
             if (err){
                 console.log(err);
-                var body = '666';
-                res.end(body);
+                res.status(400);
+                res.send({'msg' : '400 Bad Request'});
             }
-            var body = '200';
-            res.end(body);
+            res.status(200);
         });
     }
 
@@ -163,16 +159,20 @@ app.delete('/collections/:id', function(req, res) {
                     console.log(err);
                     return;
                 }
-                res.send({'msg': 'Element deleted from array','status':'200'});
+                res.status(200);
+                res.send({'msg' : 'Element deleted from array'});
             });
         }
         //DELETE COLLECTION ITSELF
         if(!deleteAll && ! deleteOne){
             collections.remove({'_id': ObjectId(req.params.id)}, function (err) {
                 if (err) {
+                    res.status(400);
+                    res.send({'msg' : '400 Bad request'});
                     console.log(err);
                     return;
                 }
+                res.status(200);
                 res.send({'msg': 'Collections removed'});
             });
         }
@@ -182,7 +182,6 @@ app.delete('/collections/:id', function(req, res) {
     }
 
 }); // END OF DELETE ALL COLLECTIONS FOR USER OR ONE COLLECTION
-
 
 
 module.exports = app;
