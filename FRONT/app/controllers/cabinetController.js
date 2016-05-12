@@ -4,8 +4,7 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 
 // TESTING VARIABLE //////////////////////////////////////////////////////////
 
-  $scope.collections = [];
-
+  
   $scope.displayMode = 'tableView';
   $scope.showAddCollectionForm = false;
   $scope.newItem = '{\n "name" : "Bob",\n "age" : 23,\n "education" : "Computer Science AP",\n "school" : "KEA"\n}';
@@ -18,6 +17,7 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 
     CollectionsService.getCollections()
     .then(function(data,status){
+    	console.log(data);
       $scope.collections = data;
     },function(error,status){
       console.log("ERROR while GETTING COLLECTIONS...." + error + ", status = " + status);
@@ -47,10 +47,16 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 
    		CollectionsService.createCollection(collection)
    		.then(function(data,status){
+   			console.log("COLLECTION CREATED, STATUS = ");
+   			console.log(status);
 		     $scope.getCollections();
 		     $scope.showAddCollectionForm = false;
 		     $scope.newCollectionSuccess  = "New Collection successfully created!";
-		    },function(error){
+		    },function(error,status){
+		     console.log("COLLECTION NOT CREATED, STATUS = ");
+		     
+		     console.log(error);
+		      console.log(status);
 		      console.log("ERROR while GETTING COLLECTIONS....");
 		    });
    		
@@ -92,7 +98,7 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 						$scope.successMessage = "Successfull operation! New item added into your collection";	
 					}
 					$scope.xxx = $scope.jsonFormat;
-					//$scope.getCollections();
+					$scope.getCollections();
 					//findAndUpdateCollection($scope.newItem);
 		    },function(error){
 		      console.log("ERROR while ADDING NEW ITEM INTO COLLECTION..." + error);

@@ -35,12 +35,13 @@ myApp.controller('ProfileController',function($rootScope,$scope, ProfileSevice) 
 				    $scope.successMessage = "Your email is successfully updated to " + $scope.profile.email;
 				    $rootScope.currentUser.email = credentials.email;
 				    }
-				    if(data===409){
+				},function(error){
+					if(data===409){
 				    $scope.errorMessage = "Email " + $scope.profile.email + " is already in use, please choose new one";
 				    $scope.successMessage = null;
+				    }else{
+				  	$scope.errorMessage = "Operation aborted, server not responding.";	
 				    }
-				},function(error){
-				  $scope.errorMessage = "Operation aborted, server not responding.";
 				});
 	     }else{
 	      $scope.errorMessage = "Emails are not equal. Try again";

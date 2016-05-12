@@ -65,10 +65,11 @@ app.get('/collections/:id', function(req, res) {
 app.post('/collections', function(req, res) {
     collections.insert(req.body,function(err) {
         if (err) {
-            res.status(200);
+            res.status(400);
             res.send({'msg' : '400 Bad Request'});
         } else {
             res.status(200);
+            res.send({'msg' : '200 Successfull Operation'});
         }
     });
 }); // END OF POST A NEW COLLECTION

@@ -6,7 +6,7 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
             var deffered = $q.defer();
 
             $http({
-                url: "http://localhost:7000/collections/" + $rootScope.currentUser._id,
+                url: "http://localhost:7000/collections/" + $rootScope.currentUser._id + "?getAll=true",
                 method: "GET"
             }).success(function (response,status) {
                deffered.resolve(response,status);
@@ -25,8 +25,14 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
                 url: 'http://localhost:7000/collections',
                 data: collection
             }).success(function (response,status) {
+                console.log("SUCCESS");
+                console.log(response);
+                console.log(status);
                 deffered.resolve(response,status);
             }).error(function(data, status) {
+                console.log("ERROR");
+                console.log(data);
+                console.log(status);
                deffered.reject(data, status);
             });
 

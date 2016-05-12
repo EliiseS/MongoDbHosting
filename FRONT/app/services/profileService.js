@@ -30,7 +30,7 @@ myApp.factory('ProfileSevice',['$rootScope','$http','$q', function($rootScope,$h
             }).success(function (response,status) {
                 deffered.resolve(response,status);
             }).error(function(data, status) {
-                deffered.reject();
+                deffered.reject(data, status);
             }); 
 
             return deffered.promise;
