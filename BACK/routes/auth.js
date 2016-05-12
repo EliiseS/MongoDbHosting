@@ -6,6 +6,20 @@ var url = 'mongodb://localhost:27017/hosting';
 var bcrypt = require('bcryptjs');
 var BodyParser = require('body-parser'); // middle
 
+var dbConnect = function(res, dbQuery) {
+    MongoClient.connect(url, function (err, db) {
+        if (err) {
+            res.status(501);
+            res.send({'msg': '501 Server Crashed'});
+            console.log(err);
+            return;
+        }
+        console.log("Connecting to server")
+        collections = db.collection('collections');
+        dbQuery();
+    });
+};
+
 //FOR GENERATING HASH
 var md5 = require('js-md5');
 
