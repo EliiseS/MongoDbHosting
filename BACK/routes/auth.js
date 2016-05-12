@@ -14,9 +14,8 @@ var dbConnect = function(res, dbQuery) {
             console.log(err);
             return;
         }
-        console.log("Connecting to server")
         collections = db.collection('collections');
-        dbQuery();
+        dbQuery(db);
     });
 };
 
@@ -40,7 +39,6 @@ var eventEmitter = new events.EventEmitter();
 
 //REGISTER NEW USER  ---------------------------------------------------------------------------------
 app.post('/register', function(req, res) {
-    
 
     var listner0001 = function listner0001() {
         //PASSWORD ENCRYPTION
