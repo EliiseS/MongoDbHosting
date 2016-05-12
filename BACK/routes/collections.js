@@ -61,14 +61,14 @@ app.get('/collections/:id', function(req, res) {
             res.status(400);
             res.send({'msg': '400 Bad Request'});
         }
-    };
+    }
 
     dbConnect(res, dbQuery);
 }); // END OF VIEW COLLECTION(S)
 
 // ADD A NEW COLLECTION
 app.post('/collections', function(req, res) {
-    function dbQuery(db) {
+    function dbQuery() {
         collections.insert(req.body, function (err) {
             if (err) {
                 res.status(400);
@@ -79,7 +79,7 @@ app.post('/collections', function(req, res) {
             }
             db.close();
         });
-    };
+    }
     dbConnect(res, dbQuery);
 }); // END OF POST A NEW COLLECTION
 
@@ -97,7 +97,7 @@ app.post('/collections/:id', function(req, res) {
         res.send({'msg': '200 Successful Operation'});
         db.close();
     });
-    };
+    }
     dbConnect(res, dbQuery);
     
 }); // END OF UPDATE AN EXISTING COLLECTION
@@ -111,6 +111,7 @@ app.put('/collections/:id', function(req, res) {
 
 //UPDATE COLLECTION USING COLLECTION ID
 app.patch('/collections/:id', function(req, res) {
+    //noinspection JSUnresolvedVariable
     var updateAll = req.query.updateAll;
     var updateOne = req.query.updateOne;
     
@@ -151,7 +152,7 @@ app.patch('/collections/:id', function(req, res) {
                 db.close();
             });
         }
-    };
+    }
     dbConnect(res, dbQuery);
 }); // END OF UPDATE AN EXISTING COLLECTION
 
@@ -210,7 +211,7 @@ app.delete('/collections/:id', function(req, res) {
             res.status(400);
             res.send({'msg': '400 Bad Request'});
         }
-    };
+    }
     dbConnect(res, dbQuery);
 
 }); // END OF DELETE ALL COLLECTIONS FOR USER OR ONE COLLECTION

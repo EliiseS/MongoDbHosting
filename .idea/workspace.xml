@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/BACK/routes/collections.js" description="}" line="207" />
-  </component>
   <component name="ChangeListManager">
     <list default="true" id="6c9e05b7-964a-4f83-b377-4a47cdb67d90" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BACK/routes/auth.js" afterPath="$PROJECT_DIR$/BACK/routes/auth.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BACK/routes/collections.js" afterPath="$PROJECT_DIR$/BACK/routes/collections.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FRONT/app/controllers/cabinetController.js" afterPath="$PROJECT_DIR$/FRONT/app/controllers/cabinetController.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FRONT/app/controllers/profileController.js" afterPath="$PROJECT_DIR$/FRONT/app/controllers/profileController.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FRONT/app/services/collestionsService.js" afterPath="$PROJECT_DIR$/FRONT/app/services/collestionsService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FRONT/app/services/profileService.js" afterPath="$PROJECT_DIR$/FRONT/app/services/profileService.js" />
     </list>
     <ignored path="MongoDB.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -61,8 +61,8 @@
       <file leaf-file-name="collections.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/BACK/routes/collections.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.35135135">
-              <caret line="11" column="52" selection-start-line="11" selection-start-column="52" selection-end-line="11" selection-end-column="52" />
+            <state vertical-scroll-proportion="0.3009828">
+              <caret line="113" column="39" selection-start-line="113" selection-start-column="39" selection-end-line="113" selection-end-column="39" />
               <folding />
             </state>
           </provider>
@@ -767,12 +767,12 @@
       <workItem from="1462464072348" duration="3388000" />
       <workItem from="1462518263314" duration="21416000" />
       <workItem from="1462895863729" duration="6838000" />
-      <workItem from="1463039225654" duration="18352000" />
+      <workItem from="1463039225654" duration="18961000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="49994000" />
+    <option name="totallyTimeSpent" value="50603000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-11" y="-11" width="1942" height="1042" extended-state="6" />
@@ -831,7 +831,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="1" />
+      <option name="time" value="3" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1045,8 +1045,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/BACK/routes/collections.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.35135135">
-          <caret line="11" column="52" selection-start-line="11" selection-start-column="52" selection-end-line="11" selection-end-column="52" />
+        <state vertical-scroll-proportion="0.3009828">
+          <caret line="113" column="39" selection-start-line="113" selection-start-column="39" selection-end-line="113" selection-end-column="39" />
           <folding />
         </state>
       </provider>
