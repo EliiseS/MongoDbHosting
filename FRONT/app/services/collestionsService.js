@@ -8,10 +8,10 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
             $http({
                 url: "http://localhost:7000/collections/" + $rootScope.currentUser._id,
                 method: "GET"
-            }).success(function (response) {
-                deffered.resolve(response);
+            }).success(function (response,status) {
+               deffered.resolve(response,status);
             }).error(function(data, status) {
-               deffered.reject("505");
+               deffered.reject(data,status);
             });
 
             return deffered.promise;
@@ -24,10 +24,10 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
                 method: 'POST',
                 url: 'http://localhost:7000/collections',
                 data: collection
-            }).success(function (response) {
-                deffered.resolve(response);
+            }).success(function (response,status) {
+                deffered.resolve(response,status);
             }).error(function(data, status) {
-               deffered.reject("505");
+               deffered.reject(data, status);
             });
 
             return deffered.promise;
@@ -40,10 +40,10 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
                 method: 'POST',
                 url: 'http://localhost:7000/collections/' + collection_id,
                 data: item
-            }).success(function (response) {
+            }).success(function (response,status) {
                 deffered.resolve(response);
             }).error(function(data, status) {
-               deffered.reject("505");
+               deffered.reject(data, status);
             });
 
             return deffered.promise;
@@ -56,14 +56,14 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
                 method: 'DELETE',
                 url: 'http://localhost:7000/collections/' + collection_id + '?deleteOne=true',
                 data: item
-            }).success(function (response) {
-                console.log(response.status);
-                deffered.resolve(response);
+            }).success(function (response,status) {
+                deffered.resolve(response,status);
             }).error(function(data, status) {
-               deffered.reject("505");
+               deffered.reject(data, status);
             });
 
             return deffered.promise;
+
         },
         updateItem: function(items,collection_id) {
 
@@ -73,11 +73,11 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
                 method: 'PUT',
                 url: 'http://localhost:7000/collections/' + collection_id + '?updateOne=true',
                 data: items
-            }).success(function (response) {
+            }).success(function (response,status) {
                 console.log(response.status);
-                deffered.resolve(response);
+                deffered.resolve(response,status);
             }).error(function(data, status) {
-               deffered.reject("505");
+               deffered.reject(data, status);
             });
 
             return deffered.promise;
@@ -92,11 +92,11 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
                 method: 'PATCH',
                 url: 'http://localhost:7000/collections/' + collection_id + '?updateAll=true',
                 data: collection
-            }).success(function (response) {
+            }).success(function (response,status) {
                 console.log(response.status);
-                deffered.resolve(response);
+                deffered.resolve(response,status);
             }).error(function(data, status) {
-               deffered.reject("505");
+               deffered.reject(data, status);
             });
 
             return deffered.promise;

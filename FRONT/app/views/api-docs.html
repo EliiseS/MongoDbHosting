@@ -1,0 +1,297 @@
+<table class="table" id="apiTable">
+			    <thead>
+			      <tr>
+			        <th>Task</th>
+			        <th>Method</th>
+			        <th>Route</th>
+			        <th>Accepts</th>
+			        <th>Returns</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			      <tr>
+			        <td><a href="#/cabinet/collection#getAll">Get colletion</a></td>
+			        <td>GET</td>
+			        <td>collections/{{collectionAsJson._id}}</td>
+			        <td>Nothing</td>
+			        <td>Status code</td>
+			      </tr>
+			      <tr>
+			        <td><a href="#/cabinet/collection#pushNew">Add new element</a></td>
+			        <td>POST</td>
+			        <td>collections/{{collectionAsJson._id}}</td>
+			        <td>Array with 1 object</td>
+			        <td>Status code</td>
+			      </tr>
+			      <tr>
+			        <td><a href="#/cabinet/collection#pushArray">Add multiple elements</a></td>
+			        <td>POST</td>
+			        <td>collections/{{collectionAsJson._id}}</td>
+			        <td>Array with objects</td>
+			        <td>Status code</td>
+			      </tr>
+			      <tr>
+			        <td><a href="#/cabinet/collection#deleteOne">Delete one element</a></td>
+			        <td>DELETE</td>
+			        <td>collections/{{collectionAsJson._id}}?deleteOne=true</td>
+			        <td>Object for deletion</td>
+			        <td>Status code</td>
+			      </tr>
+			      <tr>
+			        <td><a href="#/cabinet/collection#deleteAll">Delete all elements</a></td>
+			        <td>DELETE</td>
+			        <td>collections/{{collectionAsJson._id}}</td>
+			        <td>Nothing</td>
+			        <td>Status code</td>
+			      </tr>
+			      <tr>
+			        <td><a href="#/cabinet/collection#updateOne">Update one element</a></td>
+			        <td>PATCH</td>
+			        <td>collections/{{collectionAsJson._id}}</td>
+			        <td>Original Object and Updated Object</td>
+			        <td>Status code</td>
+			      </tr>
+			      <tr>
+			        <td><a href="#/cabinet/collection#updateAll">Update all elements</a></td>
+			        <td>PATCH</td>
+			        <td>collections/{{collectionAsJson._id}}?updateCollection=true</td>
+			        <td>Array with elements</td>
+			        <td>Status code</td>
+			      </tr>
+			    </tbody>
+			</table>
+			<br>
+			<br>
+			<!-- GET COLLECTION METHOD DESCRIPTION -->
+			<h2 id="getAll">Get colletion</h2>
+			<blockquote>
+			  <h4>Request</h4>
+			  <footer>Data from your <em>{{collectionAsJson.name | uppercase}}</em> collection can be read by issuing an <strong>HTTP GET</strong> request to an endpoint:</footer>
+			</blockquote>
+
+			<pre><strong>GET</strong> {{urlOfWebsite}}/collections/{{collectionAsJson._id}}</pre>
+
+			<blockquote>
+			  <h4>Response</h4>
+			  <footer>A successful request will be indicated by a <strong>200</strong> HTTP status code.The response will contain the data being retrieved:</footer>
+			</blockquote>
+			<blockquote>
+			  <h4>Example in AngularJs</h4>
+			  <footer>Using <strong>$http</strong> service.
+			</blockquote>
+
+			<pre>
+getCollection: function() {
+    $http({
+        url: "{{urlOfWebsite}}/collection/{{collectionAsJson._id}}",
+        method: "GET"
+    }).success(function (data,status) {
+         // Successfull operation
+         // Your collection is in data
+         // Status code in status
+    }).error(function(data, status) {
+       	 // Error during request
+    });
+};
+			</pre>
+		
+			<a class="btn btn-primary" href="#/cabinet/collection#apiTable">Go Up</a>
+			<hr>
+
+			<!-- ADD NEW ITEM METHOD DESCRIPTION -->
+			<h2 id="pushNew">Add new element</h2>
+			<blockquote>
+			  <h4>Request</h4>
+			  <footer>You can push/add new item into your <em>{{collectionAsJson.name | uppercase}}</em> collection by sending <strong>HTTP POST</strong> request to an endpoint. You need to include <strong>array</strong> with your new item into HTTP request</footer>
+			</blockquote>
+
+			<pre><strong>POST</strong> {{urlOfWebsite}}/collection/{{collectionAsJson._id}}</pre>
+
+			<blockquote>
+			  <h4>Response</h4>
+			  <footer>A successful request will be indicated by a <strong>200</strong> HTTP status code.</footer>
+			</blockquote>
+			<blockquote>
+			  <h4>Example in AngularJs</h4>
+			  <footer>Using <strong>$http</strong> service.
+			</blockquote>
+
+			<pre>
+<strong>Preconditions:</strong> you need store your item inside an array
+var <strong>newItem</strong> = [ 
+ {
+  "name"     : "Bob",
+  "lastName" : "Jensen",
+  "age"      : 21,
+  "email"    : "bob.jensen@mail.dk",
+  "phone"    : "+45 91449835"
+ }
+];
+
+pushNewItem: function(<strong>newItem</strong>) {
+    $http({
+        method: 'POST',
+        url: "{{urlOfWebsite}}/collection/{{collectionAsJson._id}}",
+        data: <strong>newItem</strong>
+    }).success(function (status) {
+         // Successfull operation
+         // Status code in status
+    }).error(function(data, status) {
+       	 // Error during request
+    });
+};
+			</pre>
+		
+			<a class="btn btn-primary" href="#/cabinet/collection#apiTable"><strong>Go Up</strong></a>
+			<hr>
+
+			<!-- ADD MULTIPLE ITEMS METHOD DESCRIPTION -->
+			<h2 id="pushArray">Add multiple elements</h2>
+			<blockquote>
+			  <h4>Request</h4>
+			  <footer>You can push/add multiple new items into your <em>{{collectionAsJson.name | uppercase}}</em> collection by sending <strong>HTTP POST</strong> request to an endpoint. You need to include <strong>array</strong> with your new items into HTTP request</footer>
+			</blockquote>
+
+			<pre><strong>POST</strong> {{urlOfWebsite}}/collection/{{collectionAsJson._id}}</pre>
+
+			<blockquote>
+			  <h4>Response</h4>
+			  <footer>A successful request will be indicated by a <strong>200</strong> HTTP status code.</footer>
+			</blockquote>
+			<blockquote>
+			  <h4>Example in AngularJs</h4>
+			  <footer>Using <strong>$http</strong> service.
+			</blockquote>
+
+			<pre>
+<strong>Preconditions:</strong> you need store your items inside an array
+var <strong>newItems</strong> = [ 
+ {
+  "name"     : "Bob",
+  "lastName" : "Jensen",
+  "age"      : 23,
+  "email"    : "bob.jensen@mail.dk",
+  "phone"    : "+45 91449835"
+ },
+ {
+  "name"     : "Jens",
+  "lastName" : "Bobsen",
+  "age"      : 32,
+  "email"    : "jens.bobsen@mail.dk",
+  "phone"    : "+45 91984435"
+ },
+ {
+  "name"     : "John",
+  "lastName" : "Galt",
+  "age"      : 45,
+  "email"    : "j.galt@mail.dk",
+  "phone"    : "+45 91354498"
+ }
+];
+
+pushNewItem: function(<strong>newItems</strong>) {
+    $http({
+        method: 'POST',
+        url: "{{urlOfWebsite}}/collection/{{collectionAsJson._id}}",
+        data: <strong>newItems</strong>
+    }).success(function (status) {
+         // Successfull operation
+         // Status code in status
+    }).error(function(data, status) {
+       	 // Error during request
+    });
+};
+			</pre>
+		
+			<a class="btn btn-primary" href="#/cabinet/collection#apiTable"><strong>Go Up</strong></a>
+			<hr>
+
+			<!-- DELETE ITEM METHOD DESCRIPTION -->
+			<h2 id="deleteOne">Delete one element</h2>
+			<blockquote>
+			  <h4>Request</h4>
+			  <footer>You can <strong>delete</strong> specific item from your <em>{{collectionAsJson.name | uppercase}}</em> collection by sending <strong>HTTP DELETE</strong> request to an endpoint. You need to include <strong>item you want to delete</strong> into HTTP request</footer>
+			</blockquote>
+
+			<pre><strong>DELETE</strong> {{urlOfWebsite}}/collection/{{collectionAsJson._id}}?deleteOne=true</pre>
+
+			<blockquote>
+			  <h4>Response</h4>
+			  <footer>A successful request will be indicated by a <strong>200</strong> HTTP status code.</footer>
+			</blockquote>
+			<blockquote>
+			  <h4>Example in AngularJs</h4>
+			  <footer>Using <strong>$http</strong> service.
+			</blockquote>
+
+			<pre>
+<strong>Preconditions:</strong> you have item you want to delete.
+var <strong>itemForDeletion</strong> = {
+  "name"     : "Bob",
+  "lastName" : "Jensen",
+  "age"      : 23,
+  "email"    : "bob.jensen@mail.dk",
+  "phone"    : "+45 91449835"
+ };
+
+removeItem: function(<strong>itemForDeletion</strong>) {
+    $http({
+        method: 'DELETE',
+        url: '{{urlOfWebsite}}/collection/{{collectionAsJson._id}}?deleteOne=true',
+        data: <strong>itemForDeletion</strong>
+    }).success(function (response,status) {
+         // Successfull operation
+         // Status code in status
+    }).error(function(data, status) {
+       	 // Error during request
+    });
+};
+			</pre>
+		
+			<a class="btn btn-primary" href="#/cabinet/collection#apiTable"><strong>Go Up</strong></a>
+			<hr>
+
+			<!-- DELETE COllECTION METHOD DESCRIPTION -->
+			<h2 id="deleteAll">Delete all elements from your collection</h2>
+			<blockquote>
+			  <h4>Request</h4>
+			  <footer>You can <strong>delete</strong> all items from your <em>{{collectionAsJson.name | uppercase}}</em> collection by sending <strong>HTTP DELETE</strong> request to an endpoint. You need to include <strong>item you want to delete</strong> into HTTP request</footer>
+			</blockquote>
+
+			<pre><strong>DELETE</strong> {{urlOfWebsite}}/collection/{{collectionAsJson._id}}</pre>
+
+			<blockquote>
+			  <h4>Response</h4>
+			  <footer>A successful request will be indicated by a <strong>200</strong> HTTP status code.</footer>
+			</blockquote>
+			<blockquote>
+			  <h4>Example in AngularJs</h4>
+			  <footer>Using <strong>$http</strong> service.
+			</blockquote>
+
+			<pre>
+removeCollection: function() {
+    $http({
+        method: 'DELETE',
+        url: '{{urlOfWebsite}}/collection/{{collectionAsJson._id}}'
+    }).success(function (response,status) {
+         // Successfull operation
+         // Status code in status
+    }).error(function(data, status) {
+       	 // Error during request
+    });
+};
+			</pre>
+		
+			<a class="btn btn-primary" href="#/cabinet/collection#apiTable"><strong>Go Up</strong></a>
+			<hr>
+
+			<!-- UPDATE ONE ITEM  METHOD DESCRIPTION -->
+			<h2 id="updateOne">Update one element</h2>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			<a href="#/cabinet/collection#apiTable">Go Top</a>
+
+			<!-- UPDATE ALL ITEMS  METHOD DESCRIPTION -->
+			<h2 id="updateAll">Update all elements</h2>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			<a href="#/cabinet/collection#apiTable">Go Top</a>

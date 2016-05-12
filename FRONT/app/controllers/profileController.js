@@ -9,8 +9,8 @@ myApp.controller('ProfileController',function($rootScope,$scope, ProfileSevice) 
   	    	var credentials = {};
   	    	credentials.password = $scope.profile.newPassword;
   	    	credentials.email = $rootScope.currentUser.email;
-	        ProfileSevice.changePassword(credentials).then(function(data){
-				    if(data==='200'){
+	        ProfileSevice.changePassword(credentials).then(function(data,status){
+				    if(status===200){
 				    $scope.errorMessage = null;
 				    $scope.successMessage = "Your password is successfully updated!";
 				    }
@@ -29,13 +29,13 @@ myApp.controller('ProfileController',function($rootScope,$scope, ProfileSevice) 
   	    	var credentials = {};
   	    	credentials.email = $scope.profile.email;
   	    	credentials._id    = $rootScope.currentUser._id;
-	        ProfileSevice.changeEmail(credentials).then(function(data){
-				    if(data==='200'){
+	        ProfileSevice.changeEmail(credentials).then(function(data,status){
+				    if(status===200){
 				    $scope.errorMessage = null;
 				    $scope.successMessage = "Your email is successfully updated to " + $scope.profile.email;
 				    $rootScope.currentUser.email = credentials.email;
 				    }
-				    if(data==='409'){
+				    if(data===409){
 				    $scope.errorMessage = "Email " + $scope.profile.email + " is already in use, please choose new one";
 				    $scope.successMessage = null;
 				    }

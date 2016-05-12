@@ -24,17 +24,16 @@ myApp.controller('RegistrationController',
     console.log("RESET PASSWORD");
 
     Authentication.resetPass($scope.credentials)
-    .then(function(data){
-      switch(data){
-        case '200':
-        $scope.successMessage = "Your password is reseted. New password is sent to " + $scope.credentials.email + " email";
-        break;
-        case '404':
-        $scope.errorMessage = "There is no user with " + $scope.credentials.email + " email";
-        break;
-      }//switch
-    },function(error){
-      $scope.errorMessage = "Server is not responding, please try again later";
+    .then(function(data,status){
+        if(status === 200){
+          $scope.successMessage = "Your password is reseted. New password is sent to " + $scope.credentials.email + " email";
+        }//switch
+    },function(error,status){
+        if(status===404){
+          $scope.errorMessage = "There is no user with " + $scope.credentials.email + " email";
+        }else{
+          $scope.errorMessage = "Server is not responding, please try again later";
+        }
     });
 
   }; // resetPassword

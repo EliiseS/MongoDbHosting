@@ -3,25 +3,36 @@ myApp.factory('Authentication',['$rootScope','$http','$location','$q','userPersi
   var isAuthenticated = false;
 
   var authObject = {
+
+            /*
+            var deffered = $q.defer();
+            deffered.resolve(response,status);
+            deffered.reject("505");
+            return deffered.promise;
+            */
     login: function(credentials) {
+
             $http({
                 method: 'POST',
                 url: 'http://localhost:7000/login',
                 data: credentials
-            }).success(function (response) {
-                if(response==='404'){
-                  $rootScope.erroLogin = "There is no user with provided email";
-                }
-                else if(response==='401'){
-                  $rootScope.erroLogin = "Wrong password, please try again..";
-                }
-                else{
+            }).success(function (response,status) {
+                console.log("status in SUCCESS = " + status);
+                if (status===200){
                   $rootScope.erroLogin = null;
                   $rootScope.currentUser = response;
                   userPersistenceService.setCookieData($rootScope.currentUser);
                   isAuthenticated = true;
-                  console.log("$rootScope.currentUser.name: " + $rootScope.currentUser.name);
                   $location.path('/cabinet');
+                }
+            }).error(function(data, status) {
+               if(status===404){
+                  //console.log("status = " + status);
+                  $rootScope.erroLogin = "There is no user with " + credentials.email + " email";
+                }
+                if(status===401){
+                  //console.log("status = " + status);
+                  $rootScope.erroLogin = "Wrong password for " + credentials.email + " , please try again..";
                 }
             });           
         
@@ -38,12 +49,13 @@ myApp.factory('Authentication',['$rootScope','$http','$location','$q','userPersi
             url: "http://localhost:7000/register",
             method: "POST",
             data: user
-        }).success(function (response) {
-            if(response==='200'){
+        }).success(function (response,status) {
+            if(status===200){
               $rootScope.succesRegistration = "New user Successfully created. Please login using you username and password";
               $rootScope.errorRegistration  = null;
             }
-            if(response==='409'){
+        }).error(function(data, status) {
+          if(status===409){
               $rootScope.errorRegistration = "Error! Email: " + user.email + " is already in use";
             }
         });
@@ -56,10 +68,10 @@ myApp.factory('Authentication',['$rootScope','$http','$location','$q','userPersi
                 method: 'POST',
                 url: 'http://localhost:7000/reset-pass',
                 data: credentials
-            }).success(function (response) {
-                deffered.resolve(response);
+            }).success(function (response,status) {
+                deffered.resolve(response,status);
             }).error(function(data, status) {
-               deffered.reject("505");
+               deffered.reject(status);
             });
 
             return deffered.promise;

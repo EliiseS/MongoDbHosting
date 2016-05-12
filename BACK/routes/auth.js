@@ -88,8 +88,8 @@ app.post('/login', function(req, res) {
             var length = data.length;
             
             if(length==0){
-              var body = "404";
-              res.end(body);
+              res.status(404);
+              res.send({'msg': 'User' + user.email + ' not found!'});
             }
             if(length>0){
               var userFromDb = data[0];
@@ -97,9 +97,11 @@ app.post('/login', function(req, res) {
                 bcrypt.compare(user.password, userFromDb.password, function(err, answer) {
                     if(answer==true){
                         delete userFromDb.password;
-                        res.send(userFromDb);
+                         res.status(200);
+                         res.send(userFromDb);
                     }else{//IF PASSWORDS DON'T MATCH
-                        res.end("401");
+                        res.status(401);
+                        res.send({'msg': 'Wrong password for user:' + user.email + '!'});
                     }
                 });
             }

@@ -12,15 +12,15 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
   $scope.xxx     = '{\n "name" : "Bob",\n "age" : 23,\n "education" : "Computer Science AP",\n "school" : "KEA"\n}';
   $scope.newItems = '[\n    {\n    "name" : "Bob",\n    "age" : 23,\n    "education" : "Computer Science AP",\n    "school" : "KEA"\n    },\n    {\n    "name" : "Alice",\n    "age" : 23,\n    "education" : "Computer Science AP",\n    "school" : "KEA"\n    },\n    {\n    "name" : "John",\n    "age" : 23,\n    "education" : "Computer Science AP",\n    "school" : "KEA"\n    }\n]';
   $scope.jsonFormat = '{\n "name" : "Bob",\n "age" : 23,\n "education" : "Computer Science AP",\n "school" : "KEA"\n}';
-
+  $scope.urlOfWebsite = 'http://localhost:7000';
 
   $scope.getCollections = function() {
 
     CollectionsService.getCollections()
-    .then(function(data){
+    .then(function(data,status){
       $scope.collections = data;
-    },function(error){
-      console.log("ERROR while GETTING COLLECTIONS....");
+    },function(error,status){
+      console.log("ERROR while GETTING COLLECTIONS...." + error + ", status = " + status);
     });
 
   }; // getCollections
@@ -45,7 +45,8 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
    		collection.user_id  = $rootScope.currentUser._id;
    		collection.Elements = [];
 
-   		CollectionsService.createCollection(collection).then(function(data){
+   		CollectionsService.createCollection(collection)
+   		.then(function(data,status){
 		     $scope.getCollections();
 		     $scope.showAddCollectionForm = false;
 		     $scope.newCollectionSuccess  = "New Collection successfully created!";
@@ -83,10 +84,10 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 			}
 			
 			CollectionsService.pushNewItem($scope.xxx,$scope.selectedCollection._id)
-			.then(function(data){
+			.then(function(data,status){
 					$scope.ShowAddNewItemForm = false;
 					if(isArray){
-						$scope.successMessage = "Successfull operation! New items added into your collection";	
+						$scope.successMessage = "Successfull operation!" + $scope.xxx.length  + " new items added into your collection";	
 					}else{
 						$scope.successMessage = "Successfull operation! New item added into your collection";	
 					}
@@ -118,8 +119,8 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 		{
 				//we can add item into dbpushNewItem
 			CollectionsService.removeItem(element,$scope.selectedCollection._id)
-			.then(function(data){
-					if(data.status==='200'){
+			.then(function(data,status){
+					if(status===200){
 						//inform user that Item is uccessfully removed from collection
 						$scope.successMessage = "Successfull operation! Item removed from your collection";
 						reloadCollection();
@@ -152,13 +153,12 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 			items.updatedItem  = JSON.parse($scope.itemForUpdate);
 
 			CollectionsService.updateItem(items,$scope.selectedCollection._id)
-			.then(function(data){
-					if(data==='200'){
+			.then(function(data,status){
+					if(status===200){
 						//inform user that Item is uccessfully removed from collection
 						$scope.itemUpdateSuccess = "Successfull operation! Item UPDATED";
 						$scope.itemUpdateError = undefined;
 					}
-					console.log(data);
 		    },function(error){
 		      console.log("ERROR while UPDATING NEW ITEM INTO COLLECTION..." + error);
 		    });
@@ -182,14 +182,13 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 			item.UpdatedElements = updatedCollection.Elements;
 
 			CollectionsService.updateCollection(item.UpdatedElements,$scope.collectionAsJson._id)
-			.then(function(data){
-					if(data==='200'){
+			.then(function(data,status){
+					if(status===200){
 						//inform user that Item is uccessfully removed from collection
 						$scope.CollectionUpdateError = null;
 						$scope.CollectionUpdateSuccess= "Collection successfully Updated!";
 						$scope.showUpdateCollectionArea = false;
 					}
-					console.log(data);
 		    },function(error){
 		      $scope.CollectionUpdateError = "ERROR while UPDATING COLLECTION...";
 			
@@ -197,8 +196,7 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 
 		}else{
 			$scope.itemUpdateError = "Error, Wring JSON format, please review your code.";
-			
-			console.log("WRONG SUKA FORMAT!");
+			console.log("WRONG SUKA! NOT FOLLOWING THE FORMAT BLEADJ!");
 		}
 
    		
@@ -253,7 +251,7 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state, Collecti
 	};
 
 
-// TESTING VARIABLE //////////////////////////////////////////////////////////
-
+// TESTING VARIABLE /////////////////////////////////////////////////////////
 
 }); // Controller
+

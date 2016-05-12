@@ -73,6 +73,14 @@ app.post('/collections', function(req, res) {
 app.post('/collections/:id', function(req, res) {
         var newItem = req.body;
 
+        
+        for(var i =0; i<newItems.length; i++){
+
+            var currentItem = newItems[i];
+            newItem._id = generateId();
+
+        }
+
         //if(addMany){
             collections.update({'_id': ObjectId(req.params.id)},{
              $push:{ Elements : {$each : newItem}}}, function (err) {
@@ -173,7 +181,7 @@ app.delete('/collections/:id', function(req, res) {
                     console.log(err);
                     return;
                 }
-                res.send({'msg': 'Collections removed'});
+                res.send({'msg': 'Collection removed'});
             });
         }
     } else {
