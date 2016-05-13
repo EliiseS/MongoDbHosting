@@ -4,29 +4,37 @@ var MongoClient = require('mongodb').MongoClient;
 var BodyParser = require('body-parser'); // middle
 var cors = require('cors');
 var bcrypt = require('bcryptjs');
+var db = require('./db.js');
 
-var authentication = require('./routes/auth.js');
-var collections = require('./routes/collections.js');
+/*
+app.engine('jade', require('jade').__express);
+app.set('view engine', 'jade');
+*/
+db.connect('mongodb://localhost:27017/hosting', function(err) {
+    if (err) {
+        console.log('Unable to connect to Mongo.');
+        console.log(err);
+        process.exit(1)
+    } else {
+        app.use(cors());
 
-app.use(cors());
+        app.use(BodyParser.urlencoded({
+            extended:true
+        }));
 
-app.use(BodyParser.urlencoded({
-	extended:true
-}));
+        app.use(BodyParser.json());
 
-app.use(BodyParser.json());
 
-app.use(authentication);
-app.use(collections);
+        app.use(require('./routes/authentication.js'));
+        app.use(require('./routes/collections.js'));
 
-app.use(function(req,res){
-    res.status(404);
-    res.send({"msg":"Page Not Found"});
+        app.use(function(req,res){
+            res.status(404);
+            res.send({"msg":"Page Not Found"});
+        });
+        app.listen(7000, function() {
+            console.log('Listening on port 7000...');
+
+        })
+    }
 });
-
-// TESTERIUM   TESTERIUM   TESTERIUM   TESTERIUM   TESTERIUM   TESTERIUM   TESTERIUM
-//============================================================================
-
-
-app.listen(7000);
-console.log("API ready to accept requests on PORT:7000...");

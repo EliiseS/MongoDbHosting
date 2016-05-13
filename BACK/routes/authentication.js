@@ -6,18 +6,6 @@ var url = 'mongodb://localhost:27017/hosting';
 var bcrypt = require('bcryptjs');
 var BodyParser = require('body-parser'); // middle
 
-var dbConnect = function(res, dbQuery) {
-    MongoClient.connect(url, function (err, db) {
-        if (err) {
-            res.status(501);
-            res.send({'msg': '501 Server Crashed'});
-            console.log(err);
-            return;
-        }
-        collections = db.collection('collections');
-        dbQuery(db);
-    });
-};
 
 //FOR GENERATING HASH
 var md5 = require('js-md5');
@@ -40,7 +28,8 @@ var eventEmitter = new events.EventEmitter();
 //REGISTER NEW USER  ---------------------------------------------------------------------------------
 app.post('/register', function(req, res) {
 
-    var listner0001 = function listner0001() {
+   // var listner0001 =
+        function listner0001() {
         //PASSWORD ENCRYPTION
         bcrypt.genSalt(10, function(err, salt) {
             bcrypt.hash(req.body.password, salt, function(err, hash) {
@@ -62,7 +51,7 @@ app.post('/register', function(req, res) {
         });
     };// END of listner0001
 
-    eventEmitter.addListener('allowedToCreateUser', listner0001);
+    //eventEmitter.addListener('allowedToCreateUser', listner0001);
 
     //================================================================
 
@@ -75,13 +64,14 @@ app.post('/register', function(req, res) {
             var length = xxx.length;
             
             if(length>0){
-              eventEmitter.removeListener('allowedToCreateUser', listner0001);
+              //eventEmitter.removeListener('allowedToCreateUser', listner0001);
                 res.status(400);
                 res.send({'msg' : '409 Conflict'});
 
             }
             if(length==0){
-              eventEmitter.emit('allowedToCreateUser');
+              //eventEmitter.emit('allowedToCreateUser');
+                listner0001();
             }
             db.close();
         });
