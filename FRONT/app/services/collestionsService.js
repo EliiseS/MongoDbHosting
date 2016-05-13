@@ -42,27 +42,24 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
                 url: 'http://localhost:7000/collections/' + collection_id,
                 data: item
             }).success(function (response,status) {
+                console.log("STATUS IN SUCCESS = " + status);
                 deffered.resolve(status);
             }).error(function(data, status) {
+                console.log("STATUS IN ERROR = " + status);
                deffered.reject(status);
             });
 
             return deffered.promise;
         },
         removeItem: function(itemForDeletion,collection_id) {
-            var items = {};
-            items.one = itemForDeletion;
-            itemForDeletion = JSON.stringify(itemForDeletion);
-            items.two = itemForDeletion;
-            itemForDeletion = JSON.parse(itemForDeletion);
-            items.three = itemForDeletion;
-            //console.log(item);
-            var deffered = $q.defer();
 
+            var deffered = $q.defer();
+   
             $http({
-                method: 'DELETE',
+                method: 'PATCH',
                 url: 'http://localhost:7000/collections/' + collection_id + '?deleteOne=true',
-                data: items
+                //url: urlX,
+                data: itemForDeletion
             }).success(function (response,status) {
                 deffered.resolve(status);
             }).error(function(data, status) {
@@ -71,13 +68,28 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
 
             return deffered.promise;
 
+            //AJAX METOD CALL
+            /*
+            $.ajax({ 
+                "url":"http://localhost:7000/collections/" + collection_id + "?deleteOne=true",
+                "method":"delete",
+                "data":itemForDeletion,
+                "success":function(data,status){
+                    console.log(data);
+                    console.log(status);
+                },
+                "error":function(status){
+                    console.log(status);
+                },
+             });
+            */
         },
         updateItem: function(items,collection_id) {
 
             var deffered = $q.defer();
 
             $http({
-                method: 'PATCH',
+                method: 'PUT',
                 url: 'http://localhost:7000/collections/' + collection_id + '?updateOne=true',
                 data: items
             }).success(function (response,status) {
@@ -95,7 +107,7 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
             var deffered = $q.defer();
 
             $http({
-                method: 'PATCH',
+                method: 'PUT',
                 url: 'http://localhost:7000/collections/' + collection_id + '?updateAll=true',
                 data: collection
             }).success(function (response,status) {

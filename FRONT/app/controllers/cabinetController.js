@@ -126,14 +126,15 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard
    $scope.deleteItem = function(element,indexOfElement){
    		var itemForDeletion = element;
 		delete itemForDeletion.$$hashKey;
-		itemForDeletion = JSON.stringify(itemForDeletion);
-			//we can add item into dbpushNewItem
+
+		console.log("WE ARE IN DELETEITEM METHOD OF CONTROLLE");
+	    console.log(itemForDeletion);
+
 		CollectionsService.removeItem(itemForDeletion,$scope.selectedCollection._id)
 		.then(function(status){
 				if(status===200){
 					$scope.selectedCollection.Elements.splice(indexOfElement, 1);
-					$scope.successMessage = "Successfull operation! Item removed from your collection";
-					reloadCollection();
+					$scope.successMessage = "Item removed from your collection";
 					$state.go('cabinet.collection');
 				}
 				$scope.getCollections();
