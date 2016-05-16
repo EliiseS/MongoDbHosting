@@ -1,9 +1,7 @@
 var express = require('express');
 var app = express();
-var MongoClient = require('mongodb').MongoClient;
 var BodyParser = require('body-parser'); // middle
 var cors = require('cors');
-var bcrypt = require('bcryptjs');
 var db = require('./db.js');
 
 /*
@@ -25,9 +23,9 @@ db.connect('mongodb://localhost:27017/hosting', function(err) {
         app.use(BodyParser.json());
 
 
+      
         app.use(require('./routes/authentication.js'));
         app.use(require('./routes/collections.js'));
-
         app.use(function(req,res){
             res.status(404);
             res.send({"msg":"Page Not Found"});

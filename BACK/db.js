@@ -7,7 +7,6 @@ var state = {
 
 
 exports.connect = function(url, done) {
-    console.log(done);
     if (state.db) return done();
 
 
