@@ -126,7 +126,7 @@ app.put('/collections/:id', function(req, res) {
                 }
                 else {
                     res.status(200);
-                    res.send({'msg': '200 Item Updated'});
+                    res.send({'msg': '200 One Item Updated in "Elements" array'});
                 }
             });
 

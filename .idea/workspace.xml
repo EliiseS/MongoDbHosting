@@ -2,14 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6c9e05b7-964a-4f83-b377-4a47cdb67d90" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BACK/models/collections.js" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/BACK/Controllers/collections.js" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/BACK/Controllers/authentication.js" afterPath="$PROJECT_DIR$/BACK/models/authentication.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BACK/db.js" afterPath="$PROJECT_DIR$/BACK/db.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BACK/models/collections.js" afterPath="$PROJECT_DIR$/BACK/models/collections.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BACK/routes/collections.js" afterPath="$PROJECT_DIR$/BACK/routes/collections.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BACK/server.js" afterPath="$PROJECT_DIR$/BACK/server.js" />
     </list>
     <ignored path="MongoDB.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -61,21 +55,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="collections.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="collections.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/BACK/routes/collections.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="669">
-              <caret line="167" column="51" selection-start-line="167" selection-start-column="51" selection-end-line="167" selection-end-column="51" />
+            <state relative-caret-position="635">
+              <caret line="127" column="36" selection-start-line="127" selection-start-column="36" selection-end-line="127" selection-end-column="36" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="collections.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="collections.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/BACK/models/collections.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="567">
-              <caret line="85" column="32" selection-start-line="85" selection-start-column="32" selection-end-line="85" selection-end-column="32" />
+            <state relative-caret-position="431">
+              <caret line="71" column="51" selection-start-line="71" selection-start-column="51" selection-end-line="71" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -106,8 +100,8 @@
         <option value="$PROJECT_DIR$/BACK/models/modCollections.js" />
         <option value="$PROJECT_DIR$/BACK/server.js" />
         <option value="$PROJECT_DIR$/BACK/db.js" />
-        <option value="$PROJECT_DIR$/BACK/models/collections.js" />
         <option value="$PROJECT_DIR$/BACK/routes/collections.js" />
+        <option value="$PROJECT_DIR$/BACK/models/collections.js" />
       </list>
     </option>
   </component>
@@ -117,8 +111,8 @@
     <detection-done>true</detection-done>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="423" />
-    <option name="y" value="26" />
+    <option name="x" value="698" />
+    <option name="y" value="4" />
     <option name="width" value="1552" />
     <option name="height" value="977" />
   </component>
@@ -335,15 +329,15 @@
       <workItem from="1463160926203" duration="505000" />
       <workItem from="1463164453554" duration="1231000" />
       <workItem from="1463384937738" duration="750000" />
-      <workItem from="1463403752543" duration="8440000" />
+      <workItem from="1463403752543" duration="11231000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="84500000" />
+    <option name="totallyTimeSpent" value="87291000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="423" y="26" width="1552" height="977" extended-state="0" />
+    <frame x="698" y="4" width="1552" height="977" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1907552" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -383,7 +377,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="5" />
+      <option name="time" value="6" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -753,18 +747,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/BACK/models/collections.js">
+    <entry file="file://$PROJECT_DIR$/BACK/routes/collections.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="567">
-          <caret line="85" column="32" selection-start-line="85" selection-start-column="32" selection-end-line="85" selection-end-column="32" />
+        <state relative-caret-position="635">
+          <caret line="127" column="36" selection-start-line="127" selection-start-column="36" selection-end-line="127" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/BACK/routes/collections.js">
+    <entry file="file://$PROJECT_DIR$/BACK/models/collections.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="669">
-          <caret line="167" column="51" selection-start-line="167" selection-start-column="51" selection-end-line="167" selection-end-column="51" />
+        <state relative-caret-position="431">
+          <caret line="71" column="51" selection-start-line="71" selection-start-column="51" selection-end-line="71" selection-end-column="51" />
           <folding />
         </state>
       </provider>

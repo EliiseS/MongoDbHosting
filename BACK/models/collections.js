@@ -3,7 +3,7 @@ var db = require('../db');
 var ObjectId = require('mongodb').ObjectId;
 
 var dbCollections = db.get().collection('collections');
-var array = "Elements"
+
 
 //GET ALL COLLECTIONS FOR USER USING USER ID
 exports.getAll = function(id, cb) {
@@ -42,7 +42,7 @@ exports.addNewItem = function(id, body, cb) {
     // JSON Syntax for body -- $each -> has to be an array
     //  [ {"Dog3":"MOP"}]
     dbCollections.update({'_id': ObjectId(id)}, {
-        $push: {array: {$each: body}}
+        $push: {Elements: {$each: body}}
     }, function (err) {
         if (err) return cb(err);
         cb();
@@ -53,7 +53,7 @@ exports.addNewItem = function(id, body, cb) {
 exports.updateArrayAll = function(id, body, cb) {
 
     dbCollections.update({'_id': ObjectId(id)}, {
-        $set: {array: body}
+        $set: {Elements: body}
     }, function (err) {
         if (err) return cb(err);
         cb();
@@ -75,7 +75,7 @@ exports.updateArrayOne = function(id, body, cb) {
 exports.deleteOne = function(id, body, cb) {
 
     dbCollections.update({'_id': ObjectId(id)}, {
-        $pull: {array: body}
+        $pull: {Elements: body}
     }, function (err) {
         if (err) return cb(err);
         cb();
