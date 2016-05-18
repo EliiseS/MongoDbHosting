@@ -7,11 +7,36 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard
   
   $scope.displayMode = 'tableView';
   $scope.showAddCollectionForm = false;
-  $scope.newItem = '{\n "name" : "Bob",\n "age" : 23,\n "education" : "Computer Science AP",\n "school" : "KEA"\n}';
-  $scope.newItemsForInsertion     = '{\n "name" : "Bob",\n "age" : 23,\n "education" : "Computer Science AP",\n "school" : "KEA"\n}';
-  $scope.newItems = '[\n    {\n    "name" : "Bob",\n    "age" : 23,\n    "education" : "Computer Science AP",\n    "school" : "KEA"\n    },\n    {\n    "name" : "Alice",\n    "age" : 23,\n    "education" : "Computer Science AP",\n    "school" : "KEA"\n    },\n    {\n    "name" : "John",\n    "age" : 23,\n    "education" : "Computer Science AP",\n    "school" : "KEA"\n    }\n]';
-  $scope.jsonFormat = '{\n "name" : "Bob",\n "age" : 23,\n "education" : "Computer Science AP",\n "school" : "KEA"\n}';
+
   $scope.urlOfWebsite = 'http://localhost:7000/collections/';
+
+  $scope.newItem =  {
+  	"name":"Bob",
+  	"lastName":"Jensen",
+  	"age":23,
+  	"email":"bjens@mail.dk"
+  };
+
+  $scope.newItems = [
+	   {
+	  	"name":"Bob",
+	  	"lastName":"Jensen",
+	  	"age":23,
+	  	"email":"bjens@mail.dk"
+	  },
+	  {
+	  	"name":"Alice",
+	  	"lastName":"Hansen",
+	  	"age":22,
+	  	"email":"alice.hansen@gmail.com"
+	  },
+	  {
+	  	"name":"John",
+	  	"lastName":"Galt",
+	  	"age":45,
+	  	"email":"jg@hotmail.com"
+	  }
+  ];
 
   $scope.getCollections = function() {
 
@@ -46,7 +71,7 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard
    		$scope.newCollectionName = '';
 
    		var collection      = {};
-   		collection.name     = name;
+   		collection.name     = name.trim();
    		collection.user_id  = $rootScope.currentUser._id;
    		collection.Elements = [];
 
@@ -74,15 +99,18 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard
    $scope.addNewItem = function(){
 
    		//TEST IF STRING IS IN JSON FORMAT
-   		var items = JSON.parse($scope.newItemsForInsertion);
+   		
    		var formatIsCorect = IsJsonString($scope.newItemsForInsertion);
-   		var isArray = Object.prototype.toString.call(items) === '[object Array]'; //TEST IF OBJECT IS ARRAY
-
+   		
 		if($scope.selectedCollection === undefined){
 			$scope.errorMessage = "Error! Collection is not selected!";
 		}
 		else{
 			if(formatIsCorect){
+				var items = JSON.parse($scope.newItemsForInsertion);
+				var isArray = Object.prototype.toString.call(items) === '[object Array]'; //TEST IF OBJECT IS ARRAY
+
+				console.log("CORRECT FORMAT INSIDE ADD NEW ITEM");
 
 			//DETECT WHAT USER TRYING TO PUSH : ARRAY OR SINGLE OBJECT
 	   		if(!isArray) {
@@ -106,7 +134,7 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard
 						$scope.selectedCollection.Elements.push(items);
 						$scope.successMessage = "New item added into your collection";	
 					}
-					$scope.newItemsForInsertion = $scope.jsonFormat;
+					$scope.newItemsForInsertion = $scope.newItem2;
 					
 					
 					//findAndUpdateCollection($scope.newItem);
@@ -116,6 +144,7 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard
 			
 			$scope.errorMessage = false;
 		}else{
+			console.log("WRONG FORMAT INSIDE ADD NEW ITEM");
 			$scope.errorMessage = "Wrong JSON format...Please check syntaxis of you object";
 		}
 		}
@@ -186,8 +215,10 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard
         var collection = document.getElementById('CollectionTextArea').value;
         var formatTest = IsJsonString(collection);
         console.log("formatTest = " + formatTest);
+        console.log("BEFORE IF");
 
         if(formatTest){
+        	console.log("Correct format INSODE IF");
 			//we can update item in db
 			var updatedCollection = JSON.parse(collection);
 
@@ -207,7 +238,8 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard
 		    });
 
 		}else{
-			$scope.itemUpdateError = "Error, Wring JSON format, please review your code.";
+
+			$scope.CollectionUpdateError = "Wrong JSON format, please review your code.";
 			console.log("WRONG SUKA! NOT FOLLOWING THE FORMAT BLEADJ!");
 		}
 
@@ -250,14 +282,19 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard
 	};
 
 	//ALLOW USERS TO COPY TEXT TO CLIPBOARD -- used in API DOCS section for copying urls
-	if (!clipboard.supported) {
-            console.log('Sorry, copy to clipboard is not supported');
-        }
+	
  
         $scope.clickHandler = function (id,urlParams) {
+        	if (!clipboard.supported) {
+	            console.log('Sorry, copy to clipboard is not supported');
+	        }
             clipboard.copyText($scope.urlOfWebsite + "" + id + urlParams);
         };
 
+        $scope.test = function(){
+        	var xxx = JSON.stringify($scope.newItem, undefined, 4);
+		    document.getElementById('abcdefg').innerHTML = xxx;
+		};
 
 // TESTING VARIABLE /////////////////////////////////////////////////////////
 

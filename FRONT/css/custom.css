@@ -18,3 +18,29 @@ textarea
 	margin-bottom: 20px;
 }
 
+.errorMsg{
+	margin-left: 123px;
+	color:red;
+}
+.errorMsg2{
+	color:red;
+}
+
+form .ng-pristine {
+    border: 1px dotted gray;
+}
+
+form .ng-touched.ng-invalid {
+    border: 1px solid #cc5656;
+    color:#cb4343;
+}
+
+form .ng-dirty.ng-valid {
+    border: 1px solid #68bc68;
+    color:#4cba4c;
+}
+
+.achtung {
+	font-weight: bold;
+	color:red;
+}

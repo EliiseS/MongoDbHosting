@@ -9,8 +9,7 @@
 
 <!-- INFORM USER ABOUT SUCCESSFULL OPERATION - NEW COLLECTION IS CREATED -->
 <div class="alert alert-success" ng-show="newCollectionSuccess">
-  <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-  <strong>{{newCollectionSuccess}}</strong>
+  <strong>{{newCollectionSuccess}}</strong> <span class="glyphicon glyphicon-remove pointer pull-right" ng-click="newCollectionSuccess=false"></span>
 </div>
 
 <!-- ADD NEW COLLECTION -->
@@ -18,14 +17,14 @@
 	<div class="col-md-12">
 		<div class="panel panel-default">
 		  <div class="panel-body">
-			<form class="form-inline" name="newColForm" novalidate>
+			<form class="form" name="newColForm" novalidate>
 				<div class="form-group">
 					<h4>Create new Collection</h4>
 					<p>Please enter name for your new collection<p>
-					<input type="text" class="form-control" placeholder="collection name" ng-model="newCollectionName">
+					<input type="text" class="form-control" placeholder="collection name" ng-model="newCollectionName" required>
 				</div>
-					<button type="submit" class="btn btn-success pull-right" ng-disabled="newColForm.$invalid" ng-click="addNewCollection(newCollectionName)">Submit</button>
-					<button type="submit" class="btn btn-danger pull-right collection-btn" ng-click="showAddCollectionForm=false">Cancel</button>
+					<button type="submit" class="btn btn-success" ng-disabled="newColForm.$invalid" ng-click="addNewCollection(newCollectionName)">Submit</button>
+					<button type="submit" class="btn btn-danger collection-btn" ng-click="showAddCollectionForm=false">Cancel</button>
 			</form>
 		  </div>
 		</div>
