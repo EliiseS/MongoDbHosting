@@ -10,7 +10,6 @@ exports.getAll = function(id, cb) {
 
     dbCollections.find({'user_id': id}).toArray(function (err, data) {
         if (err) return cb(err);
-        console.log(data);
         if (data.length === 0) return cb()
         cb(null, data);
     });
@@ -21,7 +20,6 @@ exports.getOne = function(id, cb) {
     
     dbCollections.find({'_id': ObjectId(id)}).toArray(function (err, data) {
         if (err) return cb(err);
-        console.log(data);
         if (data.length === 0) return cb()
         cb(null, data);
     });
@@ -51,6 +49,7 @@ exports.addNewItem = function(id, body, cb) {
 
 //UPDATE THE NAME OF THE COLLECTION
 exports.updateColName = function(id, body, cb) {
+    //{"name": "Muffinssssssssssssss"}
 
     dbCollections.update({'_id': ObjectId(id)}, {
         $set: {"name": body.name}
