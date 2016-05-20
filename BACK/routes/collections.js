@@ -1,11 +1,7 @@
 var express = require('express');
 var app = express();
 
-var ObjectId = require('mongodb').ObjectId;
-
-var db = require('../db');
-var dbCollections = db.get().collection('collections');
-var modCollections = require('../models/collections')
+var collectionsModel = require('../models/collections')
 
 
 //VIEW COLLECTION(S)  ---------------------------------------------------------------------------------
@@ -14,7 +10,7 @@ app.get('/collections/:id', function(req, res) {
     if (req.params.id.length === 12 || req.params.id.length === 24) {
         //VIEW ALL COLLECTIONS FOR USER USING USER ID
         if (getAll) { 
-            modCollections.getAll(req.params.id, function (err, data) {
+            collectionsModel.getAll(req.params.id, function (err, data) {
                 if (err) {
                     res.status(400);
                     res.send({'msg': '400 Bad request'});
@@ -31,7 +27,7 @@ app.get('/collections/:id', function(req, res) {
             });
         //GET ONE COLLECTION USING COLLECTIONS ID   
         } else {
-            modCollections.getOne(req.params.id, function (err, data) {
+            collectionsModel.getOne(req.params.id, function (err, data) {
                 if (err) {
                     res.status(400);
                     res.send({'msg': '400 Bad request'});
@@ -92,7 +88,7 @@ app.get('/collections/:id', function(req, res) {
 
 // ADD A NEW COLLECTION
 app.post('/collections', function(req, res) {
-    modCollections.addNewCol(req.body, function (err) {
+    collectionsModel.addNewCol(req.body, function (err) {
         if (err) {
             res.status(400);
             res.send({'msg': '400 Bad Request'});
@@ -109,7 +105,7 @@ app.post('/collections', function(req, res) {
 app.post('/collections/:id', function(req, res) {
 
     if (req.params.id.length === 12 || req.params.id.length === 24) {
-        modCollections.addNewItem(req.params.id, req.body, function (err) {
+        collectionsModel.addNewItem(req.params.id, req.body, function (err) {
             if (err) {
                 res.status(400);
                 res.send({'msg': 'ERROR: 400 Bad Request'});
@@ -135,7 +131,7 @@ app.put('/collections/:id', function(req, res) {
     if (req.params.id.length === 12 || req.params.id.length === 24) {
         //UPDATE THE NAME OF THE COLLECTION
         if (updateName) {
-            modCollections.updateColName(req.params.id, req.body, function (err) {
+            collectionsModel.updateColName(req.params.id, req.body, function (err) {
                 if (err) {
                     res.status(400);
                     res.send({'msg': '400 Bad Request'});
@@ -149,7 +145,7 @@ app.put('/collections/:id', function(req, res) {
         }
         //UPDATE WHOLE 'Elements' ARRAY
         else if (updateAll) {
-            modCollections.updateArrayAll(req.params.id, req.body, function (err) {
+            collectionsModel.updateArrayAll(req.params.id, req.body, function (err) {
                 if (err) {
                     res.status(400);
                     res.send({'msg': '400 Bad Request'});
@@ -163,7 +159,7 @@ app.put('/collections/:id', function(req, res) {
         }
         //UPDATE ONE ELEMENT IN 'Elements' ARRAY
         else {
-            modCollections.updateArrayOne(req.params.id, req.body, function (err) {
+            collectionsModel.updateArrayOne(req.params.id, req.body, function (err) {
             }, function (err) {
                 if (err) {
                     console.log(err);
@@ -196,7 +192,7 @@ app.patch('/collections/:id', function(req, res) {
 
         // !!! DELETE ALL COLLECTIONS FOR USER !!!
         if (deleteAllCol) {
-            modCollections.deleteAllCol(req.params.id, function (err) {
+            collectionsModel.deleteAllCol(req.params.id, function (err) {
                 if (err) {
                     console.log(err);
                     return;
@@ -208,7 +204,7 @@ app.patch('/collections/:id', function(req, res) {
         }
         //DELETE COLLECTION ITSELF PARSING COLLECTION ID
         else if (deleteCol) {
-            modCollections.deleteCol(req.params.id, function (err) {
+            collectionsModel.deleteCol(req.params.id, function (err) {
                 if (err) {
                     res.status(400);
                     res.send({'msg': '400 Bad request'});
@@ -222,7 +218,7 @@ app.patch('/collections/:id', function(req, res) {
         }
         //DELETE ALL ELEMENTS IN THE 'Elements' ARRAY PARSING COLLECTION ID
         else if (deleteAll) {
-            modCollections.deleteAll(req.params.id, function (err) {
+            collectionsModel.deleteAll(req.params.id, function (err) {
                 if (err) {
                     res.status(400);
                     res.send({'msg': '400 Bad request'});
@@ -236,7 +232,7 @@ app.patch('/collections/:id', function(req, res) {
         }
         //DELETE ONE ELEMENT FROM COLLECTION
         else {
-            modCollections.deleteOne(req.params.id, req.body, function (err) {
+            collectionsModel.deleteOne(req.params.id, req.body, function (err) {
                 if (err) {
                     res.status(400);
                     res.send({'msg': '400 Bad request'});
@@ -247,7 +243,6 @@ app.patch('/collections/:id', function(req, res) {
                     res.send({'msg': '200 Item deleted'});
                     console.log("item removed");
                 }
-                db.close();
             });
         }
     } else {
