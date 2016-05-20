@@ -56,7 +56,39 @@ app.get('/collections/:id', function(req, res) {
 
 }); // END OF VIEW COLLECTION(S)
 
-
+/**
+ * @api {get} /collections/:id Get all Collections
+ * @apiName GetAllCollections
+ * @apiGroup Users
+ * @apiVersion 0.0.1
+ *
+ * @apiSuccess {String} name Firstname of the User.
+ * @apiSuccess {String} lastname  Lastname of the User.
+ * @apiSuccess {String} address Address of the User.
+ * @apiSuccess {String} phone   Phone of the User.
+ * @apiSuccess {String} email   email of the User.
+ *
+ * @apiSuccess (Success 304) 304 Not Modified
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "_id" : "ObjectId(12345)",
+ *       "name" : "xxx",
+ *       "lastname":"xxx",
+ *       "address":"xxx",
+ *       "phone":"xxxxxxxxx",
+ *       "email":"xxx"
+ *     }
+ *
+ * @apiSuccessExample {json} Success-Response (304):
+ *     HTTP/1.1 304 Not Modified
+ *
+ * @apiSampleRequest http://localhost:3000/api/users/
+ *
+ * @apiError (Error 5xx) 500 Internal Server Error
+ *
+ */
 
 // ADD A NEW COLLECTION
 app.post('/collections', function(req, res) {
@@ -98,11 +130,25 @@ app.post('/collections/:id', function(req, res) {
 //UPDATE COLLECTION USING COLLECTION ID
 app.put('/collections/:id', function(req, res) {
     var updateAll = req.query.updateAll;
-    var updateOne = req.query.updateOne;
+    var updateName = req.query.updateName;
 
     if (req.params.id.length === 12 || req.params.id.length === 24) {
+        //UPDATE THE NAME OF THE COLLECTION
+        if (updateName) {
+            modCollections.updateColName(req.params.id, req.body, function (err) {
+                if (err) {
+                    res.status(400);
+                    res.send({'msg': '400 Bad Request'});
+                    console.log(err);
+                }
+                else {
+                    res.status(200);
+                    res.send({'msg': '200 All Items Updated in "Elements" array'});
+                }
+            });
+        }
         //UPDATE WHOLE 'Elements' ARRAY
-        if (updateAll) {
+        else if (updateAll) {
             modCollections.updateArrayAll(req.params.id, req.body, function (err) {
                 if (err) {
                     res.status(400);
@@ -115,8 +161,8 @@ app.put('/collections/:id', function(req, res) {
                 }
             });
         }
-        //UPDATE ONE ELEMENT
-        if (updateOne) {
+        //UPDATE ONE ELEMENT IN 'Elements' ARRAY
+        else {
             modCollections.updateArrayOne(req.params.id, req.body, function (err) {
             }, function (err) {
                 if (err) {
@@ -141,14 +187,55 @@ app.put('/collections/:id', function(req, res) {
 
 //DELETE ALL COLLECTIONS FOR USER OR ONE COLLECTION  ---------------------------------------------------------------------------------
 app.patch('/collections/:id', function(req, res) {
-    //noinspection JSUnresolvedVariable
-    var deleteOne = req.query.deleteOne;
+    var deleteAllCol = req.query.deleteAllCol;
+    var deleteCol = req.query.deleteCol;
     var deleteAll = req.query.deleteAll;
+
 
     if (req.params.id.length === 12 || req.params.id.length === 24) {
 
+        // !!! DELETE ALL COLLECTIONS FOR USER !!!
+        if (deleteAllCol) {
+            modCollections.deleteAllCol(req.params.id, function (err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                res.status(200);
+                res.send({'msg': '200 Successful Operation'});
+
+            });
+        }
+        //DELETE COLLECTION ITSELF PARSING COLLECTION ID
+        else if (deleteCol) {
+            modCollections.deleteCol(req.params.id, function (err) {
+                if (err) {
+                    res.status(400);
+                    res.send({'msg': '400 Bad request'});
+                    console.log(err);
+                }
+                else {
+                    res.status(200);
+                    res.send({'msg': 'Collections removed'});
+                }
+            });
+        }
+        //DELETE ALL ELEMENTS IN THE 'Elements' ARRAY PARSING COLLECTION ID
+        else if (deleteAll) {
+            modCollections.deleteAll(req.params.id, function (err) {
+                if (err) {
+                    res.status(400);
+                    res.send({'msg': '400 Bad request'});
+                    console.log(err);
+                }
+                else {
+                    res.status(200);
+                    res.send({'msg': 'Collections removed'});
+                }
+            });
+        }
         //DELETE ONE ELEMENT FROM COLLECTION
-        if (deleteOne) {
+        else {
             modCollections.deleteOne(req.params.id, req.body, function (err) {
                 if (err) {
                     res.status(400);
@@ -161,18 +248,6 @@ app.patch('/collections/:id', function(req, res) {
                     console.log("item removed");
                 }
                 db.close();
-            });
-        }
-        //DELETE ALL ELEMENTS FROM COLLECTION
-        if (deleteAll) {
-            modCollections.deleteAll(req.params.id, function (err) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                res.status(200);
-                res.send({'msg': '200 Successful Operation'});
-
             });
         }
     } else {

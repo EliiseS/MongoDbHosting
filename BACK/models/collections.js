@@ -49,6 +49,17 @@ exports.addNewItem = function(id, body, cb) {
     });
 }; // END OF ADD NEW ITEM(S) INTO AN EXISTING COLLECTION
 
+//UPDATE THE NAME OF THE COLLECTION
+exports.updateColName = function(id, body, cb) {
+
+    dbCollections.update({'_id': ObjectId(id)}, {
+        $set: {"name": body.name}
+    }, function (err) {
+        if (err) return cb(err);
+        cb();
+    });
+}; // END OF UPDATE THE NAME OF THE COLLECTION
+
 //UPDATE WHOLE 'Elements array'
 exports.updateArrayAll = function(id, body, cb) {
 
@@ -59,6 +70,7 @@ exports.updateArrayAll = function(id, body, cb) {
         cb();
     });
 }; // END OF UPDATE WHOLE 'Elements' ARRAY
+
 
 //UPDATE ONE ELEMENT IN 'Elements' ARRAY
 exports.updateArrayOne = function(id, body, cb) {
@@ -71,6 +83,36 @@ exports.updateArrayOne = function(id, body, cb) {
     });
 }; // END OF UPDATE ONE ELEMENT IN 'Elements' ARRAY
 
+//!!! DELETE ALL COLLECTIONS FOR USER !!!---------
+exports.deleteAllCol = function(id, cb) {
+
+    collections.remove({'user_id': id}, function (err) {
+        if (err) return cb(err);
+        cb();
+    });
+}; // END OF DELETE ALL COLLECTIONS FOR USER
+
+//DELETE COLLECTION USING COLLECTION ID
+exports.deleteCol = function(id, cb) {
+
+    collections.remove({'_id': ObjectId(id)}, function (err) {
+        if (err) return cb(err);
+        cb();
+    });
+}; // END OF DELETE COLLECTION USING COLLECTION ID
+
+//DELETE ALL ELEMENTS IN THE 'Elements' ARRAY FROM SPECIFIED COLLECTION
+exports.deleteAll = function(id, cb) {
+
+    dbCollections.update({'_id': ObjectId(id)}, {
+        $set: {Elements: []}
+    }, function (err) {
+        if (err) return cb(err);
+        cb();
+    });
+}; // END OF DELETE ALL ELEMENTS IN THE 'Elements' ARRAY FROM SPECIFIED COLLECTION
+
+
 //DELETE ONE ELEMENT FROM COLLECTION
 exports.deleteOne = function(id, body, cb) {
 
@@ -80,16 +122,7 @@ exports.deleteOne = function(id, body, cb) {
         if (err) return cb(err);
         cb();
     });
-}; // END OF //DELETE ONE ELEMENT FROM COLLECTION
-
-//DELETE ALL ELEMENTS FROM COLLECTION
-exports.deleteAll = function(id, cb) {
-
-    collections.remove({'user_id': id}, function (err) {
-        if (err) return cb(err);
-        cb();
-    });
-}; // END OF //DELETE ALL ELEMENTS FROM COLLECTION
+}; // END OF DELETE ONE ELEMENT FROM COLLECTION
 
 
 
