@@ -9,23 +9,23 @@ app.get('/collections/:id', function(req, res) {
     var getAll = req.query.getAll;
     if (req.params.id.length === 12 || req.params.id.length === 24) {
         //VIEW ALL COLLECTIONS FOR USER USING USER ID
-        if (getAll) { 
+        if (getAll) {
             collectionsModel.getAll(req.params.id, function (err, data) {
                 if (err) {
                     res.status(400);
                     res.send({'msg': '400 Bad request'});
                     console.log(err);
+                    return;
                 }
                 if (data == null) {
                     res.status(404);
                     res.send({'msg': 'No collections found'});
+                    return;
                 }
-                else {
                     res.status(200);
                     res.send(data);
-                }
             });
-        //GET ONE COLLECTION USING COLLECTIONS ID   
+            //GET ONE COLLECTION USING COLLECTIONS ID
         } else {
             collectionsModel.getOne(req.params.id, function (err, data) {
                 if (err) {
@@ -52,46 +52,18 @@ app.get('/collections/:id', function(req, res) {
 
 }); // END OF VIEW COLLECTION(S)
 
-/**
- * @api {get} /collections/:id Get all Collections
- * @apiName GetAllCollections
- * @apiGroup Users
- * @apiVersion 0.0.1
- *
- * @apiSuccess {String} name Firstname of the User.
- * @apiSuccess {String} lastname  Lastname of the User.
- * @apiSuccess {String} address Address of the User.
- * @apiSuccess {String} phone   Phone of the User.
- * @apiSuccess {String} email   email of the User.
- *
- * @apiSuccess (Success 304) 304 Not Modified
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "_id" : "ObjectId(12345)",
- *       "name" : "xxx",
- *       "lastname":"xxx",
- *       "address":"xxx",
- *       "phone":"xxxxxxxxx",
- *       "email":"xxx"
- *     }
- *
- * @apiSuccessExample {json} Success-Response (304):
- *     HTTP/1.1 304 Not Modified
- *
- * @apiSampleRequest http://localhost:3000/api/users/
- *
- * @apiError (Error 5xx) 500 Internal Server Error
- *
- */
 
 // ADD A NEW COLLECTION
 app.post('/collections', function(req, res) {
+    if (req.body == null){
+        res.status(400);
+        res.send({'msg': '400 Bad Request - Object Empty'});
+        return;
+    }
     collectionsModel.addNewCol(req.body, function (err) {
         if (err) {
             res.status(400);
-            res.send({'msg': '400 Bad Request'});
+            res.send({'msg': '400 Bad Request - Error'});
         }
         else {
             res.status(200);
@@ -99,7 +71,7 @@ app.post('/collections', function(req, res) {
         }
     });
 
-}); // END OF POST A NEW COLLECTION
+}); // END OF ADD A NEW COLLECTION
 
 // ADD A NEW ITEM INTO COLLECTION USING COLLECTIONS ID
 app.post('/collections/:id', function(req, res) {
@@ -131,16 +103,20 @@ app.put('/collections/:id', function(req, res) {
     if (req.params.id.length === 12 || req.params.id.length === 24) {
         //UPDATE THE NAME OF THE COLLECTION
         if (updateName) {
+            if (req.body.name == null){
+                res.status(400);
+                res.send({'msg': '400 Bad Request - Name not defined'});
+                return;
+            }
             collectionsModel.updateColName(req.params.id, req.body, function (err) {
                 if (err) {
                     res.status(400);
                     res.send({'msg': '400 Bad Request'});
                     console.log(err);
+                    return;
                 }
-                else {
-                    res.status(200);
-                    res.send({'msg': '200 All Items Updated in "Elements" array'});
-                }
+                res.status(200);
+                res.send({'msg': '200 Collection renamed'});
             });
         }
         //UPDATE WHOLE 'Elements' ARRAY
@@ -150,11 +126,11 @@ app.put('/collections/:id', function(req, res) {
                     res.status(400);
                     res.send({'msg': '400 Bad Request'});
                     console.log(err);
+                    return;
                 }
-                else {
-                    res.status(200);
-                    res.send({'msg': '200 All Items Updated in "Elements" array'});
-                }
+                res.status(200);
+                res.send({'msg': '200 All Items Updated in "Elements" array'});
+
             });
         }
         //UPDATE ONE ELEMENT IN 'Elements' ARRAY

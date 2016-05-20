@@ -1,0 +1,13 @@
+{
+  "name": "MongoMango",
+  "version": "1.0.1",
+  "description": "Hosting Service for Mongo with API",
+  "sampleUrl": false,
+  "apidoc": "0.2.0",
+  "generator": {
+    "name": "apidoc",
+    "time": "2015-10-29T09:36:31.714Z",
+    "url": "http://apidocjs.com",
+    "version": "0.13.1"
+  }
+}

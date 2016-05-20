@@ -14,6 +14,7 @@ db.connect('mongodb://localhost:27017/hosting', function(err) {
         console.log(err);
         process.exit(1)
     } else {
+        app.use(express.static('apidocs'));
         app.use(cors());
 
         app.use(BodyParser.urlencoded({
@@ -30,6 +31,7 @@ db.connect('mongodb://localhost:27017/hosting', function(err) {
             res.status(404);
             res.send({"msg":"Page Not Found"});
         });
+
         app.listen(7000, function() {
             console.log('Listening on port 7000...');
 
