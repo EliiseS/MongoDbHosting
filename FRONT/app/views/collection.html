@@ -70,7 +70,7 @@
 			</label>
 			<label class="radio-inline">
 				<input type="radio" name="optradio" value="apiView" ng-model="displayMode" ng-change=''><strong>API</strong>
-			</label>	
+			</label>
 		</form>
 		<br>
 
@@ -81,10 +81,21 @@
 			</div>
 		</div>	
 
+		<form class="form-inline otstup-niz-15" ng-show="displayMode==='tableView'">
+			  <div class="form-group">
+				<label>Property: </label>
+				<select class="input-small form-control" ng-model="propertyForShow" on-change>
+					<option value=""></option>
+					<option ng-repeat="field in itemProperties" value="{{field}}">{{field}}
+					</option>
+				</select>
+			  </div>
+		</form>
+
 		<!--SHOW DOCUMENTS IN COLLECTION AS A TABLE -->
 		<ul class="list-group" ng-show="displayMode==='tableView'">
-		  <li class="list-group-item" ng-repeat="element in selectedCollection.Elements" data-toggle="tooltip" data-placement="right" title="{{element}}">
-		  	{{selectedCollection.name | uppercase}}[{{$index+1}}] 
+		  <li class="list-group-item" ng-repeat="element in selectedCollection.Elements" data-toggle="tooltip" data-placement="right" title="{{elemenelementt}}">
+		  	{{selectedCollection.name | uppercase}}[{{$index+1}}]  {{element[propertyForShow]}}
 
 		  	<button class="btn btn-xs btn-danger pull-right" ng-click="deleteItem(element,$index)">DELETE</button>
 		  	<button class="btn btn-xs btn-primary collection-btn pull-right" ng-click="previewObject(element,$index)" data-toggle="modal" data-target="#myModal">PREVIEW</button>

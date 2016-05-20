@@ -56,6 +56,18 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard
    		var tempVar = data;
    		delete tempVar.user_id;
    		$scope.collectionAsJson = tempVar;
+
+   		$scope.itemProperties = [];
+
+   		var object = $scope.selectedCollection.Elements[0];
+
+   		Object.keys(object).forEach(function(key) {
+		    $scope.itemProperties.push(key);
+		});
+
+		for(var i = 0; i<$scope.itemProperties.length; i++){
+			console.log($scope.itemProperties[i]);
+		}
    		//delete $scope.collectionAsJson._id;
    		//delete $scope.collectionAsJson.user_id;
    		//$scope.collectionAsJson = makeJsonView(data);
@@ -271,6 +283,52 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard
    		
 	};
 
+	$scope.deleteCollection = function(collection){
+		
+		CollectionsService.removeCollection(collection._id)
+		.then(function(status){
+				if(status===200){
+					$scope.newCollectionSuccess = "Collection successfully deleted";
+					$scope.collections.splice(collection.indexInArray, 1);
+					$scope.collectionForDeletion = undefined;
+				}
+	    },function(error){
+	      console.log("ERROR while attempt to DELETE COLLECTION .." + error);
+	    });
+	
+	};
+
+	$scope.renameCollection = function(collectionForRenaming,newColName){
+
+		var objectWithName = {"name":newColName};
+		
+		CollectionsService.renameCollection(collectionForRenaming._id,objectWithName)
+		.then(function(status){
+				if(status===200){
+					$scope.newCollectionSuccess = "Collection successfully renamed";
+					$scope.collections[collectionForRenaming.indexInArray].name = newColName; 
+					$scope.collectionForRenaming = undefined;
+					$scope.newColName = "";
+				}
+	    },function(error){
+	      console.log("ERROR while attempt to RENAME COLLECTION .." + error);
+	    });
+	
+	};
+
+
+	//renameCollection(collectionForDeletion,newColName)
+
+	$scope.setColForDeletion = function(ColFoDel,indexOfElement){
+		$scope.collectionForDeletion = ColFoDel;
+		$scope.collectionForDeletion.indexInArray = indexOfElement;
+	};
+
+	$scope.setColForRenaming = function(ColForRename,indexOfElement){
+		$scope.collectionForRenaming = ColForRename;
+		$scope.collectionForRenaming.indexInArray = indexOfElement;
+	};
+
 
    function IsJsonString(str) {
 	    try {
@@ -291,10 +349,6 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard
             clipboard.copyText($scope.urlOfWebsite + "" + id + urlParams);
         };
 
-        $scope.test = function(){
-        	var xxx = JSON.stringify($scope.newItem, undefined, 4);
-		    document.getElementById('abcdefg').innerHTML = xxx;
-		};
 
 // TESTING VARIABLE /////////////////////////////////////////////////////////
 

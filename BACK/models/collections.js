@@ -86,7 +86,7 @@ exports.updateArrayOne = function(id, body, cb) {
 //!!! DELETE ALL COLLECTIONS FOR USER !!!---------
 exports.deleteAllCol = function(id, cb) {
 
-    collections.remove({'user_id': id}, function (err) {
+    dbCollections.remove({'user_id': id}, function (err) {
         if (err) return cb(err);
         cb();
     });
@@ -95,7 +95,7 @@ exports.deleteAllCol = function(id, cb) {
 //DELETE COLLECTION USING COLLECTION ID
 exports.deleteCol = function(id, cb) {
 
-    collections.remove({'_id': ObjectId(id)}, function (err) {
+    dbCollections.remove({'_id': ObjectId(id)}, function (err) {
         if (err) return cb(err);
         cb();
     });

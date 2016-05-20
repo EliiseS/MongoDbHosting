@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectId;
-var url = 'mongodb://localhost:27017/hosting';
+var url = 'mongodb://admin:suitsup22suke2016@ds055855.mlab.com:55855/infobaza';
 var bcrypt = require('bcryptjs');
 var BodyParser = require('body-parser'); // middle
 
@@ -263,7 +263,7 @@ app.post('/send-email', function(req, res) {
     var message = {
        text:    contact.message, 
        from:    contact.email, 
-       to:      "kalistratov@live.com",//selingeliise@gmail.com
+       to:      "kalistratov@live.com,selingeliise@gmail.com",//
        subject: "Message from MongoMango Contact form",
        attachment: 
        [

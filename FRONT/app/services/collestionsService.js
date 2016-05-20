@@ -51,13 +51,51 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
 
             return deffered.promise;
         },
+        removeCollection: function(collection_id) {
+
+            var deffered = $q.defer();
+   
+            $http({
+                method: 'PATCH',
+                url: 'http://localhost:7000/collections/' + collection_id + '?deleteCol=true'
+            }).success(function (response,status) {
+                deffered.resolve(status);
+                console.log(status);
+            }).error(function(data, status) {
+                deffered.reject(status);
+                console.log(status);
+            });
+
+            return deffered.promise;
+        },
+        renameCollection: function(collection_id,newName) {
+
+            var deffered = $q.defer();
+
+            console.log("INSIDE RENAME SERVICE = ");
+            console.log(newName);
+   
+            $http({
+                method: 'PUT',
+                url: 'http://localhost:7000/collections/' + collection_id + '?updateName=true',
+                data:newName
+            }).success(function (response,status) {
+                deffered.resolve(status);
+                console.log(status);
+            }).error(function(data, status) {
+               deffered.reject(status);
+               console.log(status);
+            });
+
+            return deffered.promise;
+        },
         removeItem: function(itemForDeletion,collection_id) {
 
             var deffered = $q.defer();
    
             $http({
                 method: 'PATCH',
-                url: 'http://localhost:7000/collections/' + collection_id + '?deleteOne=true',
+                url: 'http://localhost:7000/collections/' + collection_id,
                 //url: urlX,
                 data: itemForDeletion
             }).success(function (response,status) {

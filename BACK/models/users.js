@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/hosting');
+mongoose.connect('mongodb://admin:suitsup22suke2016@ds055855.mlab.com:55855/infobaza');
 
 
 var db = mongoose.connection;
