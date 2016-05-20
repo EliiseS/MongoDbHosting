@@ -3,14 +3,13 @@
 	<div class="col-md-12">
 		<p class="lead pull-left">Your collections</p>
 
-		<button class="btn btn-primary pull-right" ng-click="showAddCollectionForm=true" ng-hide="showAddCollectionForm">Add new collection</button>
+		<button class="btn btn-primary pull-right" ng-click="showAddCollectionForm=true" ng-hide="showAddCollectionForm"><span class="glyphicon glyphicon-plus-sign"></span> New collection</button>
 	</div>
 </div>
 
 <!-- INFORM USER ABOUT SUCCESSFULL OPERATION - NEW COLLECTION IS CREATED -->
 <div class="alert alert-success" ng-show="newCollectionSuccess">
-  <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-  <strong>{{newCollectionSuccess}}</strong>
+  <strong>{{newCollectionSuccess}}</strong> <span class="glyphicon glyphicon-remove pointer pull-right" ng-click="newCollectionSuccess=false"></span>
 </div>
 
 <!-- ADD NEW COLLECTION -->
@@ -18,14 +17,14 @@
 	<div class="col-md-12">
 		<div class="panel panel-default">
 		  <div class="panel-body">
-			<form class="form-inline" name="newColForm" novalidate>
+			<form class="form" name="newColForm" novalidate>
 				<div class="form-group">
 					<h4>Create new Collection</h4>
 					<p>Please enter name for your new collection<p>
-					<input type="text" class="form-control" placeholder="collection name" ng-model="newCollectionName">
+					<input type="text" class="form-control" placeholder="collection name" ng-model="newCollectionName" required>
 				</div>
-					<button type="submit" class="btn btn-success pull-right" ng-disabled="newColForm.$invalid" ng-click="addNewCollection(newCollectionName)">Submit</button>
-					<button type="submit" class="btn btn-danger pull-right collection-btn" ng-click="showAddCollectionForm=false">Cancel</button>
+					<button type="submit" class="btn btn-success" ng-disabled="newColForm.$invalid" ng-click="addNewCollection(newCollectionName)">Submit</button>
+					<button type="submit" class="btn btn-danger collection-btn" ng-click="showAddCollectionForm=false">Cancel</button>
 			</form>
 		  </div>
 		</div>
@@ -34,11 +33,62 @@
 
 
 <!-- SHOW ALL COLLECTIONS -->
-<ul class="list-group">
-  <li class="list-group-item pointer" ng-repeat="currentCollection in collections" ng-click="selectCollection(currentCollection)" ui-sref="cabinet.collection">
-  	<span class="badge">{{currentCollection.Elements.length}}</span> {{currentCollection.name | uppercase}}
-  </li>
-</ul>
+<table class="table">
+    <tbody>
+      <tr ng-repeat="currentCollection in collections">
+        <td class="pointer" ng-click="selectCollection(currentCollection)" ui-sref="cabinet.collection">{{currentCollection.name | uppercase}}  <span class="badge">{{currentCollection.Elements.length}}</span></td>
+        <td>
+        	<button class="btn btn-danger btn-sm pull-right" type="button" data-toggle="modal" data-target="#deleteColModal" ng-click="setColForDeletion(currentCollection,$index)"><span class="glyphicon glyphicon-remove"></span></button>
+        	<button class="btn btn-primary btn-sm collection-btn pull-right" type="button" data-toggle="modal" data-target="#renameColModal" ng-click="setColForRenaming(currentCollection,$index)"><span class="glyphicon glyphicon-wrench"></span></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- deleteCollection(currentCollection,$index) -->
+
+  <!-- MODAL FOR COLLECTION DELETION-->
+  <div class="modal fade" id="deleteColModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Delete {{collectionForDeletion.name | uppercase}} collection?</h4>
+        </div>
+        <div class="modal-body">
+          <p>You need to confirm delete operation by typing collection name into input field.</p>
+          <input type="text" class="form-control" ng-model="userInput">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal" ng-disabled="collectionForDeletion.name.toLowerCase()!==userInput.toLowerCase()" ng-click="deleteCollection(collectionForDeletion)">Delete</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FOR COLLECTION RENAMING-->
+  <div class="modal fade" id="renameColModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Rename {{collectionForRenaming.name | uppercase}} collection?</h4>
+        </div>
+        <div class="modal-body">
+          <p>Please enter new name for collection...</p>
+          <form name="xxxForm" novalidate>
+          	<input type="text" name="newCollectionName" class="form-control" ng-model="newColName" required>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="xxxForm.$invalid" ng-click="renameCollection(collectionForRenaming,newColName)">Rename</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- CHILDREN VIEWS  LOADING HERE START -->
     <div ui-view></div>

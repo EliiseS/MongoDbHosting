@@ -14,6 +14,7 @@ myApp.controller('RegistrationController',
     if(angular.equals($scope.user.password, $scope.user.password2)){
         Authentication.register($scope.user);
         $scope.errorMessage = null;
+        $scope.showHint     = null;
      }else{
       $scope.errorMessage = "Passwords you entered are not equal";
      }
@@ -24,11 +25,12 @@ myApp.controller('RegistrationController',
     console.log("RESET PASSWORD");
 
     Authentication.resetPass($scope.credentials)
-    .then(function(data,status){
-        if(status === 200){
+    .then(function(status){
+        if(status===200){
+          $scope.errorMessage = null;
           $scope.successMessage = "Your password is reseted. New password is sent to " + $scope.credentials.email + " email";
         }//switch
-    },function(error,status){
+    },function(status){
         if(status===404){
           $scope.errorMessage = "There is no user with " + $scope.credentials.email + " email";
         }else{

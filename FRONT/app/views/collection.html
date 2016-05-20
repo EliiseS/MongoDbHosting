@@ -15,8 +15,8 @@
 	<div ng-show="ShowAddNewItemForm">
 		
 		<!-- INFORM USER ABOUT WRONG JSON OR ERROR FORMAT -->
-		<div ng-show="errorMessage">
-			  <div class="alert alert-danger"><strong>Error! </strong>{{errorMessage}}</div>
+		<div class="alert alert-danger" ng-show="errorMessage">
+		  <strong>Error! </strong>{{errorMessage}} <span class="glyphicon glyphicon-remove pointer pull-right" ng-click="errorMessage=false"></span>
 		</div>
 
 		<form class="form-horizontal" name="newItemForm" novalidate>
@@ -29,10 +29,10 @@
 					What you want to add? :
 					</label>
 					<label class="radio-inline">
-				      <input type="radio" value="{{newItem}}" ng-model="newItemsForInsertion" ng-checked='true'>Single Item
+				      <input type="radio" value="{{newItem | json}}" ng-model="newItemsForInsertion">Single Item
 				    </label>
 				    <label class="radio-inline">
-				      <input type="radio" value="{{newItems}}" ng-model="newItemsForInsertion">Many Items
+				      <input type="radio" value="{{newItems | json}}" ng-model="newItemsForInsertion">Many Items
 				    </label>
 				</div>
 			</div>
@@ -40,7 +40,7 @@
 
 			<div class="form-group">
 				<div class="col-sm-12">
-					<textarea class="form-control" rows="10" ng-model="newItemsForInsertion"></textarea>
+					<textarea class="form-control" rows="20" ng-model="newItemsForInsertion"></textarea>
 				</div>
 			</div>
 
@@ -53,10 +53,9 @@
 		</form>
 	</div>
 
-	<!-- INFORM USER ABOUT SUCCESSFULL OPERATION - NEW ITEM ADDED INTO COLLECTION -->
+	<!-- INFORM USER ABOUT SUCCESSFULL OPERATION - NEW ITEM ADDED INTO COLLECTION --><br>
 	<div class="alert alert-success" ng-show="successMessage">
-	  <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-	  <strong>Successfull Operation! </strong>{{successMessage}}
+	  <strong>Successfull Operation! </strong>{{successMessage}} <span class="glyphicon glyphicon-remove pointer pull-right" ng-click="successMessage=false"></span>
 	</div>
 
 	<div ng-hide="ShowAddNewItemForm">
@@ -82,10 +81,21 @@
 			</div>
 		</div>	
 
+		<form class="form-inline otstup-niz-15" ng-show="displayMode==='tableView'">
+			  <div class="form-group">
+				<label>Property: </label>
+				<select class="input-small form-control" ng-model="propertyForShow" on-change>
+					<option value=""></option>
+					<option ng-repeat="field in itemProperties" value="{{field}}">{{field}}
+					</option>
+				</select>
+			  </div>
+		</form>
+
 		<!--SHOW DOCUMENTS IN COLLECTION AS A TABLE -->
 		<ul class="list-group" ng-show="displayMode==='tableView'">
-		  <li class="list-group-item" ng-repeat="element in selectedCollection.Elements" data-toggle="tooltip" data-placement="right" title="{{element}}">
-		  	{{selectedCollection.name | uppercase}}[{{$index+1}}] 
+		  <li class="list-group-item" ng-repeat="element in selectedCollection.Elements" data-toggle="tooltip" data-placement="right" title="{{elemenelementt}}">
+		  	{{selectedCollection.name | uppercase}}[{{$index+1}}]  {{element[propertyForShow]}}
 
 		  	<button class="btn btn-xs btn-danger pull-right" ng-click="deleteItem(element,$index)">DELETE</button>
 		  	<button class="btn btn-xs btn-primary collection-btn pull-right" ng-click="previewObject(element,$index)" data-toggle="modal" data-target="#myModal">PREVIEW</button>
@@ -96,12 +106,13 @@
 		<button class="btn btn-primary margin-bottom-20" ng-click="showUpdateCollectionArea=true;getArraytAsText()" ng-hide="showUpdateCollectionArea || displayMode==='apiView'">Edit Collection</button>
 		<div class="form-group" ng-show="displayMode==='jsonView'">
 			  <!-- INFORM ABOUT SUCCESSFULL UPDATE -->
-			  <div ng-show="CollectionUpdateSuccess">
-			     <p class="alert alert-success"><strong>{{CollectionUpdateSuccess}}</strong></p> 
-			  </div>
+			<div class="alert alert-success" ng-show="CollectionUpdateSuccess">
+			  <strong>{{CollectionUpdateSuccess}}</strong> <span class="glyphicon glyphicon-remove pointer pull-right" ng-click="CollectionUpdateSuccess=false"></span>
+			</div>
+			  <!-- -->
 			  <!-- INFORM ABOUT ERROR DURING UPDATE -->
 			  <div ng-show="CollectionUpdateError">
-			     <p class="alert alert-danger"><strong>{{CollectionUpdateError}}</strong></p> 
+			     <p class="alert alert-danger"><strong>Error!: </strong>{{CollectionUpdateError}}</p> 
 			  </div>
 			<pre ng-hide="showUpdateCollectionArea">{{collectionAsJson | json}}</pre>
 			<!-- DEV AREA /////////////////////////////////////////////////////// -->
@@ -135,9 +146,9 @@
 					 <div ng-show="showUpdateArea">
 						<hr/>
 						  <!-- INFORM ABOUT SUCCESSFULL UPDATE -->
-						  <div ng-show="itemUpdateSuccess">
-						     <p class="alert alert-success"><strong>{{itemUpdateSuccess}}</strong></p> 
-						  </div>
+						   <div class="alert alert-success" ng-show="itemUpdateSuccess">
+						  	   <strong>{{itemUpdateSuccess}}</strong> <span class="glyphicon glyphicon-remove pointer pull-right" ng-click="itemUpdateSuccess=false"></span>
+						  </div>  
 						  <!-- INFORM ABOUT ERROR DURING UPDATE -->
 						  <div ng-show="itemUpdateError">
 						     <p class="alert alert-danger"><strong>{{itemUpdateError}}</strong></p> 
@@ -160,6 +171,10 @@
 <script>
 $(document).ready(function(){
     $('[data-toggle="popover"]').popover(); 
+});
+
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();   
 });
 </script>
 

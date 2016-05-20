@@ -1,11 +1,7 @@
 var express = require('express');
 var app = express();
 
-var ObjectId = require('mongodb').ObjectId;
-
-var db = require('../db');
-var dbCollections = db.get().collection('collections');
-var modCollections = require('../models/collections')
+var collectionsModel = require('../models/collections')
 
 
 //VIEW COLLECTION(S)  ---------------------------------------------------------------------------------
@@ -13,25 +9,25 @@ app.get('/collections/:id', function(req, res) {
     var getAll = req.query.getAll;
     if (req.params.id.length === 12 || req.params.id.length === 24) {
         //VIEW ALL COLLECTIONS FOR USER USING USER ID
-        if (getAll) { 
-            modCollections.getAll(req.params.id, function (err, data) {
+        if (getAll) {
+            collectionsModel.getAll(req.params.id, function (err, data) {
                 if (err) {
                     res.status(400);
                     res.send({'msg': '400 Bad request'});
                     console.log(err);
+                    return;
                 }
                 if (data == null) {
                     res.status(404);
                     res.send({'msg': 'No collections found'});
+                    return;
                 }
-                else {
                     res.status(200);
                     res.send(data);
-                }
             });
-        //GET ONE COLLECTION USING COLLECTIONS ID   
+            //GET ONE COLLECTION USING COLLECTIONS ID
         } else {
-            modCollections.getOne(req.params.id, function (err, data) {
+            collectionsModel.getOne(req.params.id, function (err, data) {
                 if (err) {
                     res.status(400);
                     res.send({'msg': '400 Bad request'});
@@ -57,13 +53,17 @@ app.get('/collections/:id', function(req, res) {
 }); // END OF VIEW COLLECTION(S)
 
 
-
 // ADD A NEW COLLECTION
 app.post('/collections', function(req, res) {
-    modCollections.addNewCol(req.body, function (err) {
+    if (req.body == null){
+        res.status(400);
+        res.send({'msg': '400 Bad Request - Object Empty'});
+        return;
+    }
+    collectionsModel.addNewCol(req.body, function (err) {
         if (err) {
             res.status(400);
-            res.send({'msg': '400 Bad Request'});
+            res.send({'msg': '400 Bad Request - Error'});
         }
         else {
             res.status(200);
@@ -71,13 +71,13 @@ app.post('/collections', function(req, res) {
         }
     });
 
-}); // END OF POST A NEW COLLECTION
+}); // END OF ADD A NEW COLLECTION
 
 // ADD A NEW ITEM INTO COLLECTION USING COLLECTIONS ID
 app.post('/collections/:id', function(req, res) {
 
     if (req.params.id.length === 12 || req.params.id.length === 24) {
-        modCollections.addNewItem(req.params.id, req.body, function (err) {
+        collectionsModel.addNewItem(req.params.id, req.body, function (err) {
             if (err) {
                 res.status(400);
                 res.send({'msg': 'ERROR: 400 Bad Request'});
@@ -98,26 +98,44 @@ app.post('/collections/:id', function(req, res) {
 //UPDATE COLLECTION USING COLLECTION ID
 app.put('/collections/:id', function(req, res) {
     var updateAll = req.query.updateAll;
-    var updateOne = req.query.updateOne;
+    var updateName = req.query.updateName;
 
     if (req.params.id.length === 12 || req.params.id.length === 24) {
-        //UPDATE WHOLE 'Elements' ARRAY
-        if (updateAll) {
-            modCollections.updateArrayAll(req.params.id, req.body, function (err) {
+        //UPDATE THE NAME OF THE COLLECTION
+        if (updateName) {
+            if (req.body.name == null){
+                res.status(400);
+                res.send({'msg': '400 Bad Request - Name not defined'});
+                return;
+            }
+            collectionsModel.updateColName(req.params.id, req.body, function (err) {
                 if (err) {
                     res.status(400);
                     res.send({'msg': '400 Bad Request'});
                     console.log(err);
+                    return;
                 }
-                else {
-                    res.status(200);
-                    res.send({'msg': '200 All Items Updated in "Elements" array'});
-                }
+                res.status(200);
+                res.send({'msg': '200 Collection renamed'});
             });
         }
-        //UPDATE ONE ELEMENT
-        if (updateOne) {
-            modCollections.updateArrayOne(req.params.id, req.body, function (err) {
+        //UPDATE WHOLE 'Elements' ARRAY
+        else if (updateAll) {
+            collectionsModel.updateArrayAll(req.params.id, req.body, function (err) {
+                if (err) {
+                    res.status(400);
+                    res.send({'msg': '400 Bad Request'});
+                    console.log(err);
+                    return;
+                }
+                res.status(200);
+                res.send({'msg': '200 All Items Updated in "Elements" array'});
+
+            });
+        }
+        //UPDATE ONE ELEMENT IN 'Elements' ARRAY
+        else {
+            collectionsModel.updateArrayOne(req.params.id, req.body, function (err) {
             }, function (err) {
                 if (err) {
                     console.log(err);
@@ -141,15 +159,56 @@ app.put('/collections/:id', function(req, res) {
 
 //DELETE ALL COLLECTIONS FOR USER OR ONE COLLECTION  ---------------------------------------------------------------------------------
 app.patch('/collections/:id', function(req, res) {
-    //noinspection JSUnresolvedVariable
-    var deleteOne = req.query.deleteOne;
+    var deleteAllCol = req.query.deleteAllCol;
+    var deleteCol = req.query.deleteCol;
     var deleteAll = req.query.deleteAll;
+
 
     if (req.params.id.length === 12 || req.params.id.length === 24) {
 
+        // !!! DELETE ALL COLLECTIONS FOR USER !!!
+        if (deleteAllCol) {
+            collectionsModel.deleteAllCol(req.params.id, function (err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                res.status(200);
+                res.send({'msg': '200 Successful Operation'});
+
+            });
+        }
+        //DELETE COLLECTION ITSELF PARSING COLLECTION ID
+        else if (deleteCol) {
+            collectionsModel.deleteCol(req.params.id, function (err) {
+                if (err) {
+                    res.status(400);
+                    res.send({'msg': '400 Bad request'});
+                    console.log(err);
+                }
+                else {
+                    res.status(200);
+                    res.send({'msg': 'Collections removed'});
+                }
+            });
+        }
+        //DELETE ALL ELEMENTS IN THE 'Elements' ARRAY PARSING COLLECTION ID
+        else if (deleteAll) {
+            collectionsModel.deleteAll(req.params.id, function (err) {
+                if (err) {
+                    res.status(400);
+                    res.send({'msg': '400 Bad request'});
+                    console.log(err);
+                }
+                else {
+                    res.status(200);
+                    res.send({'msg': 'Collections removed'});
+                }
+            });
+        }
         //DELETE ONE ELEMENT FROM COLLECTION
-        if (deleteOne) {
-            modCollections.deleteOne(req.params.id, req.body, function (err) {
+        else {
+            collectionsModel.deleteOne(req.params.id, req.body, function (err) {
                 if (err) {
                     res.status(400);
                     res.send({'msg': '400 Bad request'});
@@ -160,19 +219,6 @@ app.patch('/collections/:id', function(req, res) {
                     res.send({'msg': '200 Item deleted'});
                     console.log("item removed");
                 }
-                db.close();
-            });
-        }
-        //DELETE ALL ELEMENTS FROM COLLECTION
-        if (deleteAll) {
-            modCollections.deleteAll(req.params.id, function (err) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                res.status(200);
-                res.send({'msg': '200 Successful Operation'});
-
             });
         }
     } else {

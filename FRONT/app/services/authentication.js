@@ -55,7 +55,7 @@ myApp.factory('Authentication',['$rootScope','$http','$location','$q','userPersi
               $rootScope.errorRegistration  = null;
             }
         }).error(function(data, status) {
-          if(status===409){
+          if(status===400){
               $rootScope.errorRegistration = "Error! Email: " + user.email + " is already in use";
             }
         });
@@ -69,7 +69,7 @@ myApp.factory('Authentication',['$rootScope','$http','$location','$q','userPersi
                 url: 'http://localhost:7000/reset-pass',
                 data: credentials
             }).success(function (response,status) {
-                deffered.resolve(response,status);
+                deffered.resolve(status);
             }).error(function(data, status) {
                deffered.reject(status);
             });

@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectId;
-var url = 'mongodb://localhost:27017/hosting';
+var url = 'mongodb://admin:suitsup22suke2016@ds055855.mlab.com:55855/infobaza';
 var bcrypt = require('bcryptjs');
 var BodyParser = require('body-parser'); // middle
 
@@ -251,6 +251,39 @@ app.post('/change-email', function(req, res) {
             db.close();
         });
     });
+});//END OF CHANGE EMAIL
+
+//SEND EMAIL  ---------------------------------------------------------------------------------
+app.post('/send-email', function(req, res) {
+    var contact = req.body;
+
+    var sqnum = "<html><body><h2>Message from: " + contact.name + " " + contact.lastname + "</h2><br><p><strong>Message:</strong></p><p>" + contact.message + "<br><br><p>User's details</p><p><strong>Email: </strong>" + contact.email + "</p><p><strong>Phone: </strong>" + contact.phone + "</p></body></html>" ;
+
+
+    var message = {
+       text:    contact.message, 
+       from:    contact.email, 
+       to:      "kalistratov@live.com,selingeliise@gmail.com",//
+       subject: "Message from MongoMango Contact form",
+       attachment: 
+       [
+          {data:sqnum, alternative:true}
+       ]
+    };
+
+    // send the message and get a callback with an error or details of the message that was sent
+    server.send(message, function(err, message) {
+     if(!err){
+      res.status(200);
+      res.send({'msg' : '200 message sent'});
+     } 
+     else{
+      res.status(500);
+      res.send({'msg' : '500 server error, message not sent'});
+     }
+   });
+  
+
 });//END OF CHANGE EMAIL
 
 //Generate some random string in order to have material for creating HASH for tem password
