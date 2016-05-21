@@ -36,13 +36,6 @@
         controller: 'RegistrationController'
     });
 
-    //ABOUT
-    $stateProvider.state('about', {
-        url: '/about', // if user changes url
-        templateUrl: 'app/views/about.html',
-        controller: 'MainController'
-    });
-
     //CONTACT
     $stateProvider.state('contact', {
         url: '/contact', // if user changes url

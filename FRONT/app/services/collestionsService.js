@@ -96,7 +96,6 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
             $http({
                 method: 'PATCH',
                 url: 'http://localhost:7000/collections/' + collection_id,
-                //url: urlX,
                 data: itemForDeletion
             }).success(function (response,status) {
                 deffered.resolve(status);
@@ -128,12 +127,18 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
 
             $http({
                 method: 'PUT',
-                url: 'http://localhost:7000/collections/' + collection_id + '?updateOne=true',
+                url: 'http://localhost:7000/collections/' + collection_id,
                 data: items
             }).success(function (response,status) {
                 deffered.resolve(status);
+                console.log("updateItem service SUCCESS");
+                console.log(response);
+                console.log(status);
             }).error(function(error, status) {
                deffered.reject(status);
+                console.log("updateItem service ERROR");
+                console.log(response);
+                console.log(status);
             });
 
             return deffered.promise;

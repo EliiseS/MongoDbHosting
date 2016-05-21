@@ -35,21 +35,21 @@
 			      <tr>
 			        <td><a href="#/cabinet/collection#deleteOne">Delete one element</a></td>
 			        <td>PATCH</td>
-			        <td>collections/{{collectionAsJson._id}}?deleteOne=true</td>
+			        <td>collections/{{collectionAsJson._id}}</td>
 			        <td>Object for deletion</td>
 			        <td>Status code</td>
 			      </tr>
 			      <tr>
 			        <td><a href="#/cabinet/collection#deleteAll">Delete all elements</a></td>
 			        <td>PATCH</td>
-			        <td>collections/{{collectionAsJson._id}}</td>
+			        <td>collections/{{collectionAsJson._id}}?deleteAll=true</td>
 			        <td>Nothing</td>
 			        <td>Status code</td>
 			      </tr>
 			      <tr>
 			        <td><a href="#/cabinet/collection#updateOne">Update one element</a></td>
 			        <td>PUT</td>
-			        <td>collections/{{collectionAsJson._id}}updateOne=true</td>
+			        <td>collections/{{collectionAsJson._id}}</td>
 			        <td>Original Object and Updated Object</td>
 			        <td>Status code</td>
 			      </tr>
@@ -238,8 +238,8 @@ pushNewItem: function(<strong>newItems</strong>) {
 			  <footer>You can <strong>delete</strong> specific item from your <em>{{collectionAsJson.name | uppercase}}</em> collection by sending <strong>HTTP PATCH</strong> request to an endpoint. You need to include <strong>item you want to delete</strong> into HTTP request</footer>
 			</blockquote>
 
-			<pre><strong>PATCH</strong> {{urlOfWebsite}}{{collectionAsJson._id}}?deleteOne=true <button type="button" class="btn btn-xs btn-default pull-right">
-			  <span class="glyphicon glyphicon-link" aria-hidden="true" ng-click="clickHandler(collectionAsJson._id,'?deleteOne=true')"></span>
+			<pre><strong>PATCH</strong> {{urlOfWebsite}}{{collectionAsJson._id}} <button type="button" class="btn btn-xs btn-default pull-right">
+			  <span class="glyphicon glyphicon-link" aria-hidden="true" ng-click="clickHandler(collectionAsJson._id,'')"></span>
 			</button></pre>
 
 			<blockquote>
@@ -270,7 +270,7 @@ var <strong>itemForDeletion</strong> = {
 removeItem: function(<strong>itemForDeletion</strong>) {
     $http({
         method: 'PATCH',
-        url: '{{urlOfWebsite}}{{collectionAsJson._id}}?deleteOne=true',
+        url: '{{urlOfWebsite}}{{collectionAsJson._id}}',
         data: <strong>itemForDeletion</strong>
     }).success(function (response,status) {
          // Successfull operation
@@ -291,8 +291,8 @@ removeItem: function(<strong>itemForDeletion</strong>) {
 			  <footer>You can <strong>delete</strong> all items from your <em>{{collectionAsJson.name | uppercase}}</em> collection by sending <strong>HTTP PATCH</strong> request to an endpoint. You need to include <strong>item you want to delete</strong> into HTTP request</footer>
 			</blockquote>
 
-			<pre><strong>PATCH</strong> {{urlOfWebsite}}{{collectionAsJson._id}} <button type="button" class="btn btn-xs btn-default pull-right">
-			  <span class="glyphicon glyphicon-link" aria-hidden="true" ng-click="clickHandler(collectionAsJson._id,'')"></span>
+			<pre><strong>PATCH</strong> {{urlOfWebsite}}{{collectionAsJson._id}}?deleteAll=true <button type="button" class="btn btn-xs btn-default pull-right">
+			  <span class="glyphicon glyphicon-link" aria-hidden="true" ng-click="clickHandler(collectionAsJson._id,'?deleteAll=true')"></span>
 			</button></pre>
 
 			<blockquote>
@@ -314,7 +314,7 @@ removeItem: function(<strong>itemForDeletion</strong>) {
 removeCollection: function() {
     $http({
         method: 'PATCH',
-        url: '{{urlOfWebsite}}{{collectionAsJson._id}}'
+        url: '{{urlOfWebsite}}{{collectionAsJson._id}}?deleteAll=true'
     }).success(function (response,status) {
          // Successfull operation
          // Status code in status
@@ -334,8 +334,8 @@ removeCollection: function() {
 			  <footer>You can <strong>update</strong> specific items in your <em>{{collectionAsJson.name | uppercase}}</em> collection by sending <strong>PUT</strong> request to an endpoint. You need to include <strong>object</strong> with 2 variables: <strong>original object</strong> you want to update and <strong>new object with updated state</strong> into HTTP request. </footer>
 			</blockquote>
 
-			<pre><strong>PUT</strong> {{urlOfWebsite}}{{collectionAsJson._id}}?updateOne=true <button type="button" class="btn btn-xs btn-default pull-right">
-			  <span class="glyphicon glyphicon-link" aria-hidden="true" ng-click="clickHandler(collectionAsJson._id,'?updateOne=true')"></span>
+			<pre><strong>PUT</strong> {{urlOfWebsite}}{{collectionAsJson._id}} <button type="button" class="btn btn-xs btn-default pull-right">
+			  <span class="glyphicon glyphicon-link" aria-hidden="true" ng-click="clickHandler(collectionAsJson._id,'')"></span>
 			</button></pre>
 
 			<blockquote>
@@ -361,7 +361,7 @@ var <strong>items</strong> = {
       "lastName" : "Jensen",
       "age"      : 23,
    },
-   "updatedlItem" {
+   "updatedItem" {
       "name"     : "Bob",
       "lastName" : "Bensen",
       "age"      : 25,
@@ -371,7 +371,7 @@ var <strong>items</strong> = {
 updateItem: function(<strong>items</strong>) {
     $http({
         method: 'PUT',
-        url: '{{urlOfWebsite}}{{collectionAsJson._id}}?updateOne=true',
+        url: '{{urlOfWebsite}}{{collectionAsJson._id}}',
         data: <strong>items</strong>
     }).success(function (response,status) {
          // Successfull operation

@@ -14,13 +14,29 @@
 
     <div class="form-group">
         <label>New email</label>
-        <input type="email" class="form-control" placeholder="New password" ng-model="profile.email" required>
+        <input type="email" name="email" class="form-control" placeholder="New password" ng-model="profile.email" required>
     </div>
+
+    <!-- EMAIL ERRORS -->
+      <div ng-messages="changeEmailForm.email.$error" ng-show="changeEmailForm.email.$touched">
+        <div class="errorMsg2">
+          <p ng-message="email" style="color:red">Wrong email format</p>
+          <p ng-message="required" style="color:red">Email is required field.</p>
+        </div>
+      </div>
 
     <div class="form-group">
         <label>Repeat new email</label>
-        <input type="email" class="form-control" placeholder="New password" ng-model="profile.email2" required>
+        <input type="email" name="email2" class="form-control" placeholder="New password" ng-model="profile.email2" required>
     </div>
+
+    <!-- EMAIL2 ERRORS -->
+      <div ng-messages="changeEmailForm.email2.$error" ng-show="changeEmailForm.email2.$touched">
+        <div class="errorMsg2">
+          <p ng-message="email" style="color:red">Wrong email format</p>
+          <p ng-message="required" style="color:red">Email is required field.</p>
+        </div>
+      </div>
   
 	<div class="form-group">
 		<button type="submit" class="btn btn-default" ng-disabled="changeEmailForm.$invalid" ng-click="changeEmail()">Change email</button>
