@@ -15,6 +15,17 @@ exports.getAll = function(id, cb) {
     });
 };// END OF VIEW COLLECTION(S)
 
+//GET ALL COLLECTIONS FOR USER USING USER ID
+exports.getAllCollections = function(cb) {
+
+    dbCollections.find().toArray(function (err, data) {
+        if (err) return cb(err);
+        if (data.length === 0) return cb()
+        cb(null, data);
+    });
+};// END OF VIEW COLLECTION(S)
+
+
 //GET ONE COLLECTION USING COLLECTIONS ID 
 exports.getOne = function(id, cb) {
     
@@ -28,7 +39,13 @@ exports.getOne = function(id, cb) {
 // ADD A NEW COLLECTION
 exports.addNewCol = function(body, cb) {
 
-    dbCollections.insert(body, function (err) {
+   definedBody =  {
+       user_id : body.user_id,
+       name : body.name,
+       Elements : body.Elements
+   }
+
+    dbCollections.insert(definedBody, function (err) {
         if (err) return cb(err);
         cb();
     });
@@ -73,7 +90,16 @@ exports.updateArrayAll = function(id, body, cb) {
 
 //UPDATE ONE ELEMENT IN 'Elements' ARRAY
 exports.updateArrayOne = function(id, body, cb) {
-
+    /* JSON Syntax for body --
+    {
+    "originalItem": {
+        "Dog3": "MOPP"
+    },
+    "updatedItem": {
+        "Dog3": "Mupperts"
+    }
+    }
+    */
     dbCollections.update({'_id': ObjectId(id), Elements:  body.originalItem}, {
         $set: {"Elements.$": body.updatedItem}
     }, function (err) {

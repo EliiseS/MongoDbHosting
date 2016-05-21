@@ -28,7 +28,6 @@ var eventEmitter = new events.EventEmitter();
 //REGISTER NEW USER  ---------------------------------------------------------------------------------
 app.post('/register', function(req, res) {
 
-   // var listner0001 =
         function listner0001() {
         //PASSWORD ENCRYPTION
         bcrypt.genSalt(10, function(err, salt) {

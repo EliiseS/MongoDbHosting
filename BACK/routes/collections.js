@@ -7,6 +7,7 @@ var collectionsModel = require('../models/collections')
 //VIEW COLLECTION(S)  ---------------------------------------------------------------------------------
 app.get('/collections/:id', function(req, res) {
     var getAll = req.query.getAll;
+
     if (req.params.id.length === 12 || req.params.id.length === 24) {
         //VIEW ALL COLLECTIONS FOR USER USING USER ID
         if (getAll) {
@@ -22,11 +23,13 @@ app.get('/collections/:id', function(req, res) {
                     res.send({'msg': 'No collections found'});
                     return;
                 }
-                    res.status(200);
-                    res.send(data);
+                res.status(200);
+                res.send(data);
             });
-            //GET ONE COLLECTION USING COLLECTIONS ID
-        } else {
+
+        }
+        //GET ONE COLLECTION USING COLLECTIONS ID
+        else {
             collectionsModel.getOne(req.params.id, function (err, data) {
                 if (err) {
                     res.status(400);
@@ -53,11 +56,37 @@ app.get('/collections/:id', function(req, res) {
 }); // END OF VIEW COLLECTION(S)
 
 
-// ADD A NEW COLLECTION
+// GET ALL COLLECTIONS - TESTING PURPOSES  ------------------------------------------------------------------
+app.get('/collections', function(req, res) {
+
+    var getAllCollections = req.query.getAllCollections;
+
+    if (getAllCollections) {
+        collectionsModel.getAllCollections(function (err, data) {
+            if (err) {
+                res.status(400);
+                res.send({'msg': '400 Bad request'});
+                console.log(err);
+                return;
+            }
+            if (data == null) {
+                res.status(404);
+                res.send({'msg': 'No collections found'});
+                return;
+            }
+            res.status(200);
+            res.send(data);
+        });
+    }
+});
+
+
+// ADD A NEW COLLECTION  ----------------------------------------------------------------------
 app.post('/collections', function(req, res) {
-    if (req.body == null){
+
+    if (req.body.name === undefined || req.body.user_id === undefined || req.body.Elements === undefined ){
         res.status(400);
-        res.send({'msg': '400 Bad Request - Object Empty'});
+        res.send({'msg': '400 Bad Request - Object Not Defined Properly'});
         return;
     }
     collectionsModel.addNewCol(req.body, function (err) {
@@ -73,9 +102,15 @@ app.post('/collections', function(req, res) {
 
 }); // END OF ADD A NEW COLLECTION
 
-// ADD A NEW ITEM INTO COLLECTION USING COLLECTIONS ID
+// ADD A NEW ITEM INTO COLLECTIONS 'Elements' ARRAY USING COLLECTIONS ID ---------------------------------------
 app.post('/collections/:id', function(req, res) {
-
+    console.log(req.body);
+    console.log(req.body[0]);
+    if (req.body[0] === undefined ){
+        res.status(400);
+        res.send({'msg': '400 Bad Request - request empty '});
+        return;
+    }
     if (req.params.id.length === 12 || req.params.id.length === 24) {
         collectionsModel.addNewItem(req.params.id, req.body, function (err) {
             if (err) {
@@ -103,7 +138,7 @@ app.put('/collections/:id', function(req, res) {
     if (req.params.id.length === 12 || req.params.id.length === 24) {
         //UPDATE THE NAME OF THE COLLECTION
         if (updateName) {
-            if (req.body.name == null){
+            if (req.body.name === undefined){
                 res.status(400);
                 res.send({'msg': '400 Bad Request - Name not defined'});
                 return;
@@ -136,16 +171,15 @@ app.put('/collections/:id', function(req, res) {
         //UPDATE ONE ELEMENT IN 'Elements' ARRAY
         else {
             collectionsModel.updateArrayOne(req.params.id, req.body, function (err) {
-            }, function (err) {
                 if (err) {
                     console.log(err);
                     res.status(400);
                     res.send({'msg': '400 Bad Request'});
+                    return;
                 }
-                else {
-                    res.status(200);
-                    res.send({'msg': '200 One Item Updated in "Elements" array'});
-                }
+                res.status(200);
+                res.send({'msg': '200 One Item Updated in "Elements" array'});
+
             });
 
         }
