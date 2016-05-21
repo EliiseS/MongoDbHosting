@@ -83,7 +83,7 @@
 
 		<form class="form-inline otstup-niz-15" ng-show="displayMode==='tableView'">
 			  <div class="form-group">
-				<label>Property: </label>
+				<label>Show object's: </label>
 				<select class="input-small form-control" ng-model="propertyForShow" on-change>
 					<option value=""></option>
 					<option ng-repeat="field in itemProperties" value="{{field}}">{{field}}
@@ -103,8 +103,10 @@
 		</ul>
 
 		<!--SHOW DOCUMENTS IN COLLECTION AS A JSON -->
-		<button class="btn btn-primary margin-bottom-20" ng-click="showUpdateCollectionArea=true;getArraytAsText()" ng-hide="showUpdateCollectionArea || displayMode==='apiView'">Edit Collection</button>
 		<div class="form-group" ng-show="displayMode==='jsonView'">
+
+			<button class="btn btn-primary margin-bottom-20" ng-click="showUpdateCollectionArea=true;getArraytAsText()" ng-hide="showUpdateCollectionArea || displayMode==='apiView'">Edit Collection</button>
+
 			  <!-- INFORM ABOUT SUCCESSFULL UPDATE -->
 			<div class="alert alert-success" ng-show="CollectionUpdateSuccess">
 			  <strong>{{CollectionUpdateSuccess}}</strong> <span class="glyphicon glyphicon-remove pointer pull-right" ng-click="CollectionUpdateSuccess=false"></span>

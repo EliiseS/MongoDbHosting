@@ -291,6 +291,7 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard
 					$scope.newCollectionSuccess = "Collection successfully deleted";
 					$scope.collections.splice(collection.indexInArray, 1);
 					$scope.collectionForDeletion = undefined;
+					$state.go('cabinet');
 				}
 	    },function(error){
 	      console.log("ERROR while attempt to DELETE COLLECTION .." + error);
