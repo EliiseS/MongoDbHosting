@@ -111,9 +111,9 @@ exports.updateOne = function(id, body, cb) {
 //!!! DELETE ALL COLLECTIONS FOR USER !!!---------
 exports.deleteAllCol = function(id, cb) {
 
-    dbCollections.remove({'user_id': id}, function (err) {
+    dbCollections.remove({'user_id': id}, function (err, result) {
         if (err) return cb(err);
-        cb();
+        cb(null, result);
     });
 }; // END OF DELETE ALL COLLECTIONS FOR USER
 
@@ -140,12 +140,17 @@ exports.deleteAll = function(id, cb) {
 
 //DELETE ONE ELEMENT FROM COLLECTION
 exports.deleteOne = function(id, body, cb) {
+    /* JSON Syntax for body --
+     {
+     "Dog3": "MOPP"
+     }
+     */
 
     dbCollections.update({'_id': ObjectId(id)}, {
-        $pull: {Elements: body}
-    }, function (err) {
+        $pull: {Elements: body}}, { multi: false },
+        function (err, result) {
         if (err) return cb(err);
-        cb();
+        cb(null, result);
     });
 }; // END OF DELETE ONE ELEMENT FROM COLLECTION
 

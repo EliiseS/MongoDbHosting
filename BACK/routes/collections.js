@@ -179,13 +179,19 @@ app.put('/collections/:id', function(req, res) {
                 return;
             }
             collectionsModel.updateOne(req.params.id, req.body, function (err, result) {
+                console.log(result);
                 if (err) {
                     errorInternalServer(res, err);
                     return;
                 }
                 else if (result.result.nModified > 0) {
-                    successOK(res, "Item updated in collection");
-                    return;
+                    return successOK(res, "Item updated in collection");
+
+                }
+                //Did we find anything matching our query?
+                else if (result.result.n > 0) {
+                    return errorPreconFailed(res);
+
                 }
                 errorNotFound(res);
 
@@ -210,13 +216,15 @@ app.patch('/collections/:id', function(req, res) {
 
         // !!! DELETE ALL COLLECTIONS FOR USER !!!
         if (deleteAllCol) {
-            collectionsModel.deleteAllCol(req.params.id, function (err) {
+            collectionsModel.deleteAllCol(req.params.id, function (err, result) {
                 if (err) {
                     errorInternalServer(res, err);
                     return;
                 }
-                successOK(res, "All collections removed for user");
-
+                else if (result.result.n > 0) {
+                    return successOK(res, "All collections removed for user. Total number of removed: " + result.result.n);
+                }
+                errorNotFound(res);
             });
         }
         //DELETE COLLECTION ITSELF PARSING COLLECTION ID
@@ -225,50 +233,50 @@ app.patch('/collections/:id', function(req, res) {
                 if (err) {
                     return errorInternalServer(res, err);
                 }
-
                 else if (result.result.n > 0) {
                     return successOK(res, "Collection removed");
 
                 }
                 errorNotFound(res);
 
-
-
             });
         }
         //CLEAR ALL ELEMENTS IN THE 'Elements' ARRAY PARSING COLLECTION ID
         else if (deleteAll) {
             collectionsModel.deleteAll(req.params.id, function (err, result) {
-                console.log(result);
+
 
                 if (err) {
                     errorInternalServer(res, err);
                     return;
                 }
+                // Did we delete anything?
                 else if (result.result.nModified > 0) {
-                    successOK(res, "Collection cleared");
-                    return;
+                    return successOK(res, "Collection cleared");
                 }
+                //Did we find anything matching our query?
                 else if (result.result.n > 0) {
-                    return errorNotModified(res, "Collection is already empty")
+                    return errorPreconFailed(res, "Collection is already empty")
 
                 }
                 errorNotFound(res);
             });
         }
-        //DELETE ONE ELEMENT FROM COLLECTION
+        //DELETE ALL ELEMENTS FROM COLLECTION THAT MATCH THE QUERY
         else {
             if (Object.keys(req.body).length === 0 && req.body.constructor === Object){
                 errorRequestNotAcceptable(res);
                 return;
             }
-            collectionsModel.deleteOne(req.params.id, req.body, function (err) {
+            collectionsModel.deleteOne(req.params.id, req.body, function (err, result) {
+                console.log(result);
                 if (err) {
                     errorInternalServer(res, err);
                     return;
                 }
-                else if (result.result.n > 0) {
-                    return successOK(res, "Item deleted");
+                //Did we modify any elements?
+                else if (result.result.nModified > 0) {
+                    return successOK(res, "Item(s) deleted");
                 }
                 errorNotFound(res);
             });
@@ -313,10 +321,9 @@ function errorInternalServer(res, err) {
     console.log(err);
 }
 
-function errorNotModified(res, msg = "Original item are the same as updated items") {
-    res.status(304);
-    res.send({'msg': '304 Not Modified -'});
-    console.log(err);
+function errorPreconFailed(res, msg = "Original item are the same as updated items") {
+    res.status(412);
+    res.send({'msg': '412 Precondition Failed - ' + msg});
 }
 
 
