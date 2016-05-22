@@ -45,9 +45,9 @@ exports.addNewCol = function(body, cb) {
        Elements : body.Elements
    }
 
-    dbCollections.insert(definedBody, function (err) {
+    dbCollections.insert(definedBody, function (err, result) {
         if (err) return cb(err);
-        cb();
+        cb(null, result);
     });
 }; // END OF POST A NEW COLLECTION
 
@@ -70,26 +70,26 @@ exports.updateColName = function(id, body, cb) {
 
     dbCollections.update({'_id': ObjectId(id)}, {
         $set: {"name": body.name}
-    }, function (err) {
+    }, function (err, result) {
         if (err) return cb(err);
-        cb();
+        cb(null, result);
     });
 }; // END OF UPDATE THE NAME OF THE COLLECTION
 
 //UPDATE WHOLE 'Elements array'
-exports.updateArrayAll = function(id, body, cb) {
+exports.updateAll = function(id, body, cb) {
 
     dbCollections.update({'_id': ObjectId(id)}, {
         $set: {Elements: body}
-    }, function (err) {
+    }, function (err, result) {
         if (err) return cb(err);
-        cb();
+        cb(null, result);
     });
 }; // END OF UPDATE WHOLE 'Elements' ARRAY
 
 
 //UPDATE ONE ELEMENT IN 'Elements' ARRAY
-exports.updateArrayOne = function(id, body, cb) {
+exports.updateOne = function(id, body, cb) {
     /* JSON Syntax for body --
     {
     "originalItem": {
@@ -102,9 +102,9 @@ exports.updateArrayOne = function(id, body, cb) {
     */
     dbCollections.update({'_id': ObjectId(id), Elements:  body.originalItem}, {
         $set: {"Elements.$": body.updatedItem}
-    }, function (err) {
+    }, function (err, result) {
         if (err) return cb(err);
-        cb();
+        cb(null, result);
     });
 }; // END OF UPDATE ONE ELEMENT IN 'Elements' ARRAY
 
@@ -120,9 +120,9 @@ exports.deleteAllCol = function(id, cb) {
 //DELETE COLLECTION USING COLLECTION ID
 exports.deleteCol = function(id, cb) {
 
-    dbCollections.remove({'_id': ObjectId(id)}, function (err) {
+    dbCollections.remove({'_id': ObjectId(id)}, function (err, result) {
         if (err) return cb(err);
-        cb();
+        cb(null, result);
     });
 }; // END OF DELETE COLLECTION USING COLLECTION ID
 
@@ -131,9 +131,9 @@ exports.deleteAll = function(id, cb) {
 
     dbCollections.update({'_id': ObjectId(id)}, {
         $set: {Elements: []}
-    }, function (err) {
+    }, function (err, result) {
         if (err) return cb(err);
-        cb();
+        cb(null, result);
     });
 }; // END OF DELETE ALL ELEMENTS IN THE 'Elements' ARRAY FROM SPECIFIED COLLECTION
 
