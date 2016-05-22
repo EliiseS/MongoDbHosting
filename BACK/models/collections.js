@@ -10,7 +10,7 @@ exports.getAll = function(id, cb) {
 
     dbCollections.find({'user_id': id}).toArray(function (err, data) {
         if (err) return cb(err);
-        if (data.length === 0) return cb()
+        if (data.length === 0) return cb();
         cb(null, data);
     });
 };// END OF VIEW COLLECTION(S)
@@ -20,7 +20,7 @@ exports.getAllCollections = function(cb) {
 
     dbCollections.find().toArray(function (err, data) {
         if (err) return cb(err);
-        if (data.length === 0) return cb()
+        if (data.length === 0) return cb();
         cb(null, data);
     });
 };// END OF VIEW COLLECTION(S)
@@ -31,7 +31,7 @@ exports.getOne = function(id, cb) {
     
     dbCollections.find({'_id': ObjectId(id)}).toArray(function (err, data) {
         if (err) return cb(err);
-        if (data.length === 0) return cb()
+        if (data.length === 0) return cb();
         cb(null, data);
     });
 };// END OF VIEW COLLECTION(S)
@@ -43,7 +43,7 @@ exports.addNewCol = function(body, cb) {
        user_id : body.user_id,
        name : body.name,
        Elements : body.Elements
-   }
+   };
 
     dbCollections.insert(definedBody, function (err, result) {
         if (err) return cb(err);

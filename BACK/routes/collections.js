@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 
-var collectionsModel = require('../models/collections')
+var collectionsModel = require('../models/collections');
 
 
 //VIEW COLLECTION(S)  ---------------------------------------------------------------------------------
