@@ -58,9 +58,9 @@ exports.addNewItem = function(id, body, cb) {
     //  [ {"Dog3":"MOP"}]
     dbCollections.update({'_id': ObjectId(id)}, {
         $push: {Elements: {$each: body}}
-    }, function (err) {
+    }, function (err, result) {
         if (err) return cb(err);
-        cb();
+        cb(null, result);
     });
 }; // END OF ADD NEW ITEM(S) INTO AN EXISTING COLLECTION
 
