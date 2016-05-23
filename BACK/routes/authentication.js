@@ -32,16 +32,22 @@ var eventEmitter = new events.EventEmitter();
 //REGISTER NEW USER  ---------------------------------------------------------------------------------
 app.post('/register', function(req, res) {
 
-    function createUser() {
+    function encryptPass() {
+        console.log(req.body);
+        console.log("1");
         //PASSWORD ENCRYPTION
         bcrypt.genSalt(10, function(err, salt) {
             bcrypt.hash(req.body.password, salt, function(err, hash) {
                 req.body.password = hash;
+                delete req.body.password2;
+
+                createUser();
+
             });
         });
+    };// END OF ENCRYPTPASS
 
-        delete req.body.password2;
-
+    function createUser() {
         usersModel.addUser(req.body, function (err, result) {
             if (err) {
                 response.errorInternalServer(res, err);
@@ -53,67 +59,82 @@ app.post('/register', function(req, res) {
             }
             response.errorBadRequest(res, "Uknown error");
         });
-    };// END of createUser
+    } // END OF CREATEUSER
 
-    //eventEmitter.addListener('allowedToCreateUser', createUser);
-
-    //================================================================
-
-    MongoClient.connect(url, function(err, db) {
-
-        var collection = db.collection('users');
-        console.log("EMAIL IN QUERY");
-        console.log(req.body.email);
-        collection.find({'email':req.body.email}).toArray(function(err, xxx) {
-            var length = xxx.length;
-
-            if(length>0){
-                //eventEmitter.removeListener('allowedToCreateUser', createUser);
-                res.status(400);
-                res.send({'msg' : '409 Conflict'});
-
-            }
-            if(length==0){
-                //eventEmitter.emit('allowedToCreateUser');
-                createUser();
-            }
-            db.close();
-        });
+    console.log("EMAIL IN QUERY");
+    console.log(req.body.email);
+    usersModel.findEmail(req.body.email, function (err, data) {
+        if (err) {
+            return response.errorInternalServer(res, err);
+        }
+        //If no email
+        else if (data == null) {
+            return encryptPass();
+        }
+        else if (data[0].email === req.body.email){
+            return response.errorConflict(res, "Email is already registered")
+        }
+        response.errorBadRequest(res, "Unknown error");
     });
 }); // END of REGISTER
 
-//LOGIN NEW USER  ---------------------------------------------------------------------------------
+//LOGIN USER  ---------------------------------------------------------------------------------
 app.post('/login', function(req, res) {
     var user = req.body;
 
-    MongoClient.connect(url, function(err, db) {
+    usersModel.findEmail(user.email, function (err, data) {
 
-        var collection = db.collection('users');
+        if (err) {
+            response.errorInternalServer(res, err);
+        }
+        //If email available
+        else if (data == null) {
+            response.errorNotFound(res, "User" + user.email +  " not found!")
+        }
 
-        collection.find({'email':user.email}).toArray(function(err, data) {
-            var length = data.length;
+        else if (data[0].email === user.email){
+            console.log(data[0]);
 
-            if(length==0){
-                res.status(404);
-                res.send({'msg': 'User' + user.email + ' not found!'});
-            }
-            if(length>0){
-                var userFromDb = data[0];
-                // DECRYPT PASSWORDS AND COMPARE THEM
-                bcrypt.compare(user.password, userFromDb.password, function(err, answer) {
-                    if(answer==true){
-                        delete userFromDb.password;
-                        res.status(200);
-                        res.send(userFromDb);
-                    }else{//IF PASSWORDS DON'T MATCH
-                        res.status(401);
-                        res.send({'msg': 'Wrong password for user:' + user.email + '!'});
+            // DECRYPT PASSWORDS AND COMPARE THEM
+            bcrypt.compare(user.password, data[0].password, function(err, answer) {
+                if(answer==true){
+                    delete data[0].password;
+                    response.successOKData(res, data[0]);
+                }else{//IF PASSWORDS DON'T MATCH
+                    response.errorUnauthorized(res, "Wrong password for user:" + user.email + "!");
+                }
+            });
+        }
+        else {
+            console.log("Something went wrong")
+            response.errorBadRequest(res, "Unknown error");
+        }
 
-                    }
-                });
-            }
-            db.close();
-        });
+        /*
+         collection.find({'email':user.email}).toArray(function(err, data) {
+         var length = data.length;
+
+         if(length==0){
+         res.status(404);
+         res.send({'msg': 'User' + user.email + ' not found!'});
+         }
+         if(length>0){
+         var userFromDb = data[0];
+         // DECRYPT PASSWORDS AND COMPARE THEM
+         bcrypt.compare(user.password, userFromDb.password, function(err, answer) {
+         if(answer==true){
+         delete userFromDb.password;
+         res.status(200);
+         res.send(userFromDb);
+         }else{//IF PASSWORDS DON'T MATCH
+         res.status(401);
+         res.send({'msg': 'Wrong password for user:' + user.email + '!'});
+
+         }
+         });
+         }
+         db.close();
+         });*/
     });
 });//login
 

@@ -3,6 +3,7 @@ var app = express();
 var BodyParser = require('body-parser'); // middle
 var cors = require('cors');
 var db = require('./db.js');
+var port = 7000;
 
 /*
 app.engine('jade', require('jade').__express);
@@ -32,8 +33,10 @@ db.connect('mongodb://admin:suitsup22suke2016@ds055855.mlab.com:55855/infobaza',
             res.send({"msg":"Page Not Found"});
         });
 
-        app.listen(7000, function() {
-            console.log('Listening on port 7000...');
+
+
+        app.listen(port, function() {
+            console.log('Listening on port :' + port);
 
         })
     }

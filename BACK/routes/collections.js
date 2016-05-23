@@ -190,7 +190,7 @@ app.put('/collections/:id', function(req, res) {
                 }
                 //Did we find anything matching our query?
                 else if (result.result.n > 0) {
-                    return response.errorPreconFailed(res);
+                    return response.errorConflict(res, "Original item are the same as updated items");
 
                 }
                 response.errorNotFound(res);
@@ -254,7 +254,7 @@ app.patch('/collections/:id', function(req, res) {
                 }
                 //Did we find anything matching our query?
                 else if (result.result.n > 0) {
-                    return response.errorPreconFailed(res, "Collection is already empty")
+                    return response.errorConflict(res, "Collection is already empty")
 
                 }
                 response.errorNotFound(res);
