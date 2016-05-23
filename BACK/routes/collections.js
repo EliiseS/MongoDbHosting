@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 
 var collectionsModel = require('../models/collections');
+var response = require('../services/responses');
 
 
 //VIEW COLLECTION(S)  ---------------------------------------------------------------------------------
@@ -13,11 +14,11 @@ app.get('/collections/:id', function(req, res) {
         if (getAll) {
             collectionsModel.getAll(req.params.id, function (err, data) {
                 if (err) {
-                    errorInternalServer(res, err);
+                    response.errorInternalServer(res, err);
                     return;
                 }
                 else if (data == null) {
-                    errorNotFound(res, "User not found");
+                    response.errorNotFound(res, "User not found");
                     return;
                 }
                 res.status(200);
@@ -29,11 +30,11 @@ app.get('/collections/:id', function(req, res) {
         else {
             collectionsModel.getOne(req.params.id, function (err, data) {
                 if (err) {
-                    errorInternalServer(res, err);
+                    response.errorInternalServer(res, err);
                     return;
                 }
                 else if (data == null) {
-                    errorNotFound(res);
+                    response.errorNotFound(res);
                     return;
                 }
                 res.status(200);
@@ -43,7 +44,7 @@ app.get('/collections/:id', function(req, res) {
         }
 
     } else {
-        errorBadRequest(res);
+        response.errorBadRequest(res);
     }
 
 }); // END OF VIEW COLLECTION(S)
@@ -57,11 +58,11 @@ app.get('/collections', function(req, res) {
     if (getAllCollections) {
         collectionsModel.getAllCollections(function (err, data) {
             if (err) {
-                errorInternalServer(res, err);
+                response.errorInternalServer(res, err);
                 return;
             }
             if (data === null) {
-                errorNotFound(res, "No collections found");
+                response.errorNotFound(res, "No collections found");
                 return;
             }
             res.status(200);
@@ -74,25 +75,24 @@ app.get('/collections', function(req, res) {
 // ADD A NEW COLLECTION  ----------------------------------------------------------------------
 app.post('/collections', function(req, res) {
     if (req.body.name === undefined || req.body.user_id === undefined || req.body.Elements === undefined ){
-        errorRequestNotAcceptable(res);
+        response.errorRequestNotAcceptable(res);
         return;
     }
     if (req.body.user_id.length !== 12 && req.body.user_id.length !== 24) {
-        errorBadRequest(res);
+        response.errorBadRequest(res);
         return;
     }
     collectionsModel.addNewCol(req.body, function (err, result) {
-        console.log(result);
         if (err) {
-            errorInternalServer(res, err);
+            response.errorInternalServer(res, err);
             return;
         }
         else if (result.result.n == 1) {
-            successCreated(res, "New collection created");
+            response.successCreated(res, "New collection created");
             return;
         }
         //Could I get here? I don't know!
-        errorBadRequest(res, "Uknown error");
+        response.errorBadRequest(res, "Uknown error");
     });
 
 }); // END OF ADD A NEW COLLECTION
@@ -105,24 +105,24 @@ app.post('/collections', function(req, res) {
 app.post('/collections/:id', function(req, res) {
 
     if (Object.keys(req.body).length === 0 && req.body.constructor === Object){
-        errorRequestNotAcceptable(res);
+        response.errorRequestNotAcceptable(res);
         return;
     }
     if (req.params.id.length === 12 || req.params.id.length === 24) {
         collectionsModel.addNewItem(req.params.id, req.body, function (err, result) {
             if (err) {
-                errorInternalServer(res, err);
+                response.errorInternalServer(res, err);
                 return;
             }
             else if (result.result.nModified > 0) {
-                successOK(res, "New item added into collection");
+                response.successOK(res, "New item added into collection");
                 return;
             }
             //COLLECTION NOT FOUND
-            errorNotFound(res);
+            response.errorNotFound(res);
         });
     }else {
-        errorBadRequest(res);
+        response.errorBadRequest(res);
     }
 
 }); // END OF UPDATE AN EXISTING COLLECTION
@@ -132,7 +132,7 @@ app.put('/collections/:id', function(req, res) {
     var updateAll = req.query.updateAll;
     var updateName = req.query.updateName;
     if (Object.keys(req.body).length === 0 && req.body.constructor === Object){
-        errorRequestNotAcceptable(res);
+        response.errorRequestNotAcceptable(res);
         return;
     }
 
@@ -141,19 +141,19 @@ app.put('/collections/:id', function(req, res) {
         if (updateName) {
 
             if (req.body.name === undefined){
-                errorRequestNotAcceptable(res, "Name not defined");
+                response.errorRequestNotAcceptable(res, "Name not defined");
                 return;
             }
             collectionsModel.updateColName(req.params.id, req.body, function (err, result) {
                 if (err) {
-                    errorInternalServer(res, err);
+                    response.errorInternalServer(res, err);
                     return;
                 }
                 else if (result.result.nModified > 0) {
-                    successOK(res, "Collection renamed");
+                    response.successOK(res, "Collection renamed");
                     return;
                 }
-                errorNotFound(res);
+                response.errorNotFound(res);
             });
         }
         //UPDATE WHOLE 'Elements' ARRAY  USING COLLECTION ID
@@ -161,46 +161,46 @@ app.put('/collections/:id', function(req, res) {
 
             collectionsModel.updateAll(req.params.id, req.body, function (err, result) {
                 if (err) {
-                    errorInternalServer(res, err);
+                    response.errorInternalServer(res, err);
                     return;
                 }
                 else if (result.result.nModified > 0) {
-                    successOK(res, "All items updated in collection");
+                    response.successOK(res, "All items updated in collection");
                     return;
                 }
-                errorNotFound(res);
+                response.errorNotFound(res);
 
             });
         }
         //UPDATE ONE ELEMENT IN 'Elements' ARRAY  USING COLLECTION ID
         else {
             if (req.body.originalItem === undefined || req.body.updatedItem === undefined){
-                errorRequestNotAcceptable(res, "originalItem or updatedItem not defined");
+                response.errorRequestNotAcceptable(res, "originalItem or updatedItem not defined");
                 return;
             }
             collectionsModel.updateOne(req.params.id, req.body, function (err, result) {
                 console.log(result);
                 if (err) {
-                    errorInternalServer(res, err);
+                    response.errorInternalServer(res, err);
                     return;
                 }
                 else if (result.result.nModified > 0) {
-                    return successOK(res, "Item updated in collection");
+                    return response.successOK(res, "Item updated in collection");
 
                 }
                 //Did we find anything matching our query?
                 else if (result.result.n > 0) {
-                    return errorPreconFailed(res);
+                    return response.errorPreconFailed(res);
 
                 }
-                errorNotFound(res);
+                response.errorNotFound(res);
 
             });
 
         }
 
     }else {
-        errorBadRequest(res);
+        response.errorBadRequest(res);
     }
 
 }); // END OF UPDATE AN EXISTING COLLECTION
@@ -218,114 +218,75 @@ app.patch('/collections/:id', function(req, res) {
         if (deleteAllCol) {
             collectionsModel.deleteAllCol(req.params.id, function (err, result) {
                 if (err) {
-                    errorInternalServer(res, err);
+                    response.errorInternalServer(res, err);
                     return;
                 }
                 else if (result.result.n > 0) {
-                    return successOK(res, "All collections removed for user. Total number of removed: " + result.result.n);
+                    return response.successOK(res, "All collections removed for user. Total number of removed: " + result.result.n);
                 }
-                errorNotFound(res);
+                response.errorNotFound(res);
             });
         }
         //DELETE COLLECTION ITSELF PARSING COLLECTION ID
         else if (deleteCol) {
             collectionsModel.deleteCol(req.params.id, function (err, result) {
                 if (err) {
-                    return errorInternalServer(res, err);
+                    return response.errorInternalServer(res, err);
                 }
                 else if (result.result.n > 0) {
-                    return successOK(res, "Collection removed");
+                    return response.successOK(res, "Collection removed");
 
                 }
-                errorNotFound(res);
+                response.errorNotFound(res);
 
             });
         }
         //CLEAR ALL ELEMENTS IN THE 'Elements' ARRAY PARSING COLLECTION ID
         else if (deleteAll) {
             collectionsModel.deleteAll(req.params.id, function (err, result) {
-
-
                 if (err) {
-                    errorInternalServer(res, err);
+                    response.errorInternalServer(res, err);
                     return;
                 }
                 // Did we delete anything?
                 else if (result.result.nModified > 0) {
-                    return successOK(res, "Collection cleared");
+                    return response.successOK(res, "Collection cleared");
                 }
                 //Did we find anything matching our query?
                 else if (result.result.n > 0) {
-                    return errorPreconFailed(res, "Collection is already empty")
+                    return response.errorPreconFailed(res, "Collection is already empty")
 
                 }
-                errorNotFound(res);
+                response.errorNotFound(res);
             });
         }
         //DELETE ALL ELEMENTS FROM COLLECTION THAT MATCH THE QUERY
         else {
             if (Object.keys(req.body).length === 0 && req.body.constructor === Object){
-                errorRequestNotAcceptable(res);
+                response.errorRequestNotAcceptable(res);
                 return;
             }
             collectionsModel.deleteOne(req.params.id, req.body, function (err, result) {
                 console.log(result);
                 if (err) {
-                    errorInternalServer(res, err);
+                    response.errorInternalServer(res, err);
                     return;
                 }
                 //Did we modify any elements?
                 else if (result.result.nModified > 0) {
                     return successOK(res, "Item(s) deleted");
                 }
-                errorNotFound(res);
+                response.errorNotFound(res);
             });
         }
     } else {
-        errorBadRequest(res);
+        response.errorBadRequest(res);
     }
 
 }); // END OF UPDATE AN EXISTING COLLECTION
 
 
 //SERVER RESPONSES ---------------------------------------------------------------------
-
-function successOK(res, msg = "Successful operation" ){
-    res.status(200);
-    res.send({'msg': '200 OK - ' + msg});
-}
-
-function successCreated(res, msg = "" ){
-    res.status(200);
-    res.send({'msg': '201 Created - ' + msg});
-}
-
-function errorRequestNotAcceptable(res, msg = "Invalid request format" ){
-    res.status(406);
-    res.send({'msg': '406 Not Acceptable - ' + msg});
-}
-
-function errorBadRequest(res, msg = "Invalid ID") {
-    res.status(400);
-    res.send({'msg': '400 Bad request - ' + msg});
-}
-
-function errorNotFound(res, msg = "Collection not found") {
-    res.status(404);
-    res.send({'msg': '404 Not Found - ' + msg});
-}
-
-function errorInternalServer(res, err) {
-    res.status(500);
-    res.send({'msg': '404 Internal Server Error'});
-    console.log(err);
-}
-
-function errorPreconFailed(res, msg = "Original item are the same as updated items") {
-    res.status(412);
-    res.send({'msg': '412 Precondition Failed - ' + msg});
-}
-
 
 
 module.exports = app;

@@ -5,11 +5,10 @@ var ObjectId = require('mongodb').ObjectId;
 var dbUsers = db.get().collection('Users');
 
 //GET ALL COLLECTIONS FOR USER USING USER ID
-exports.resgiterUser = function(id, cb) {
+exports.addUser = function(body, cb) {
 
-    dbCollections.find({'user_id': id}).toArray(function (err, data) {
+    dbUsers.insert(body,function(err, result) {
         if (err) return cb(err);
-        if (data.length === 0) return cb();
-        cb(null, data);
+        cb(null, result);
     });
 };// END OF VIEW COLLECTION(S)

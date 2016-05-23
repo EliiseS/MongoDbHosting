@@ -6,6 +6,10 @@ var url = 'mongodb://admin:suitsup22suke2016@ds055855.mlab.com:55855/infobaza';
 var bcrypt = require('bcryptjs');
 var BodyParser = require('body-parser'); // middle
 
+//NEW
+var usersModel = require('../models/authentication');
+var response = require('../services/responses');
+
 
 //FOR GENERATING HASH
 var md5 = require('js-md5');
@@ -28,7 +32,7 @@ var eventEmitter = new events.EventEmitter();
 //REGISTER NEW USER  ---------------------------------------------------------------------------------
 app.post('/register', function(req, res) {
 
-    function listner0001() {
+    function createUser() {
         //PASSWORD ENCRYPTION
         bcrypt.genSalt(10, function(err, salt) {
             bcrypt.hash(req.body.password, salt, function(err, hash) {
@@ -38,19 +42,20 @@ app.post('/register', function(req, res) {
 
         delete req.body.password2;
 
-        MongoClient.connect(url, function(err, db) {
-
-            var collection = db.collection('users');
-
-            collection.insert(req.body,function(err, data) {
-                res.status(200);
-                res.send({'msg': '200 Successful Operation'});
-                db.close();
-            });
+        usersModel.addUser(req.body, function (err, result) {
+            if (err) {
+                response.errorInternalServer(res, err);
+                return;
+            }
+            else if (result.result.n == 1) {
+                response.successCreated(res, "New user created");
+                return;
+            }
+            response.errorBadRequest(res, "Uknown error");
         });
-    };// END of listner0001
+    };// END of createUser
 
-    //eventEmitter.addListener('allowedToCreateUser', listner0001);
+    //eventEmitter.addListener('allowedToCreateUser', createUser);
 
     //================================================================
 
@@ -63,14 +68,14 @@ app.post('/register', function(req, res) {
             var length = xxx.length;
 
             if(length>0){
-                //eventEmitter.removeListener('allowedToCreateUser', listner0001);
+                //eventEmitter.removeListener('allowedToCreateUser', createUser);
                 res.status(400);
                 res.send({'msg' : '409 Conflict'});
 
             }
             if(length==0){
                 //eventEmitter.emit('allowedToCreateUser');
-                listner0001();
+                createUser();
             }
             db.close();
         });
