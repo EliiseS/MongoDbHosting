@@ -141,6 +141,15 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard
 						for(var i = 0; i<items.length; i++){
 							$scope.selectedCollection.Elements.push(items[i]);
 						}
+							var object = $scope.selectedCollection.Elements[0];
+
+					   		Object.keys(object).forEach(function(key) {
+							    $scope.itemProperties.push(key);
+							});
+
+							for(var i = 0; i<$scope.itemProperties.length; i++){
+								console.log($scope.itemProperties[i]);
+							}
 						$scope.successMessage =   + " new items added into your collection";	
 					}else{
 						$scope.selectedCollection.Elements.push(items);

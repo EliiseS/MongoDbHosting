@@ -1,5 +1,5 @@
-myApp.controller('MainController', function($scope, $http, Authentication) {
-  
+myApp.controller('MainController', function($scope,$rootScope, $http, Authentication) {
+
   
 	$scope.sendMessage = function(contact){
 		$http({

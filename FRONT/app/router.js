@@ -1,14 +1,17 @@
     var module = angular.module("myApp");
 
-    module.run(['$rootScope', '$location', 'userPersistenceService','Authentication', function($rootScope, $location, userPersistenceService,Authentication) {
+    module.run(['$rootScope', '$state', '$location', 'userPersistenceService','Authentication', function($rootScope,$state, $location, userPersistenceService,Authentication) {
         var cookies = userPersistenceService.getCookieData();
 
         if(cookies.name===undefined){
             Authentication.setAuthentication(false);
             $rootScope.currentUser = undefined;
+            $rootScope.activeMenuItem = 'home';
         }else{
             $rootScope.currentUser = cookies;
             Authentication.setAuthentication(true);
+            $location.path('/cabinet');
+            $rootScope.activeMenuItem = 'cabinet';
         }
       }]); //run
 

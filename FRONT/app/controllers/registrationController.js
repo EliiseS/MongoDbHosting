@@ -1,6 +1,6 @@
 myApp.controller('RegistrationController',
   ['$rootScope','$scope', 'Authentication',function($rootScope,$scope, Authentication) {
-  
+
   $scope.login = function() {
     Authentication.login($scope.credentials);
   }; //login
@@ -12,7 +12,8 @@ myApp.controller('RegistrationController',
 
   $scope.register = function() {
     if(angular.equals($scope.user.password, $scope.user.password2)){
-        Authentication.register($scope.user);
+        var userForBackEnd = jQuery.extend({}, $scope.user); // CLONE OBJECT, TO SOLVE PROBLEMS WITH CAUSED BY DOUBLE BINDING
+        Authentication.register(userForBackEnd);
         $scope.errorMessage = null;
         $scope.showHint     = null;
      }else{
@@ -39,5 +40,12 @@ myApp.controller('RegistrationController',
     });
 
   }; // resetPassword
+
+  $scope.setActiveMenuItem = function(pageName){
+      $rootScope.activeMenuItem = pageName;
+  };
+
+
+
 
 }]); // Controller

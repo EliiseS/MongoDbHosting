@@ -1,11 +1,16 @@
-<form class="form-horizontal" name="loginForm" novalidate>
+<div class="form-group" ng-show="succesRegistration">
+  <div class="col-sm-12">
+    <p class="alert alert-success"><strong>{{succesRegistration}}</strong></p>
+  </div>
+</div>
 
-  <div class="form-group" ng-show="erroLogin">
+<div class="form-group" ng-show="erroLogin">
     <div class="col-sm-12">
       <p class="alert alert-danger"><strong>{{erroLogin}}</strong></p> 
     </div>
   </div>
 
+<form class="form-horizontal" name="loginForm" novalidate>
   <!-- EMAIL -->
   <div class="form-group">
     <label class="col-sm-2 control-label">Email</label>
@@ -24,7 +29,7 @@
 
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default" ng-disabled="loginForm.$invalid" ng-click="login()">Login</button>
+      <button type="submit" class="btn btn-default" ng-disabled="loginForm.$invalid" ng-click="login();succesRegistration=false">Login</button>
     </div>
   </div>
 

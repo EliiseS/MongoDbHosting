@@ -1,16 +1,38 @@
 <div class="header clearfix" ng-controller="RegistrationController">
   <nav>
     <ul class="nav nav-pills pull-left">
-      <h3 class="text-muted" ui-sref="main"><span class="pointer">MongoMango</span></h3>
+      <h3 class="text-muted" ui-sref="main" ng-click="setActiveMenuItem('home')"><span class="pointer">MongoMango</span></h3>
     </ul>
+    <!-- MENU ITEMS / NAVIGATION -->
     <ul class="nav nav-pills pull-right">
-      <li role="presentation" class="active" ng-hide="currentUser"><a ui-sref="main">Home</a></li>
-      <li role="presentation" class="active" ng-show="currentUser"><a ui-sref="cabinet">Cabinet</a></li>
-      <li role="presentation"><a ui-sref="contact">Contact</a></li>
-      <li role="presentation" ng-hide="currentUser"><a ui-sref="login">Login</a></li>
-      <li role="presentation" ng-hide="currentUser"><a ui-sref="register">Register</a></li>
-       <li role="presentation" ng-show="currentUser"><a ui-sref="profile.default">Profile</a></li>
-      <li role="presentation" ng-show="currentUser"><a href='' ng-click="logout()">Logout</a></li>
+      <!-- HOME -->
+      <li role="presentation" ng-class="{'active':activeMenuItem==='home'}"  ng-click="setActiveMenuItem('home')">
+          <a ui-sref="main"><i class="fa fa-home" aria-hidden="true"></i> Home</a>
+      </li>
+      <!-- CABINET -->
+      <li role="presentation" ng-show="currentUser" ng-class="{'active':activeMenuItem==='cabinet'}">
+          <a ui-sref="cabinet" ng-click="setActiveMenuItem('cabinet')"><i class="fa fa-database" aria-hidden="true"></i> Cabinet</a>
+      </li>
+      <!-- CONTACT -->
+      <li role="presentation" ng-class="{'active':activeMenuItem==='contact'}">
+          <a ui-sref="contact" ng-click="setActiveMenuItem('contact')"><i class="fa fa-comments-o" aria-hidden="true"></i> Contact</a>
+      </li>
+      <!-- LOGIN -->
+      <li role="presentation" ng-hide="currentUser" ng-class="{'active':activeMenuItem==='login'}">
+          <a ui-sref="login" ng-click="setActiveMenuItem('login')"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
+      </li>
+      <!-- REGISTER -->
+      <li role="presentation" ng-hide="currentUser" ng-class="{'active':activeMenuItem==='register'}">
+          <a ui-sref="register" ng-click="setActiveMenuItem('register')"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a>
+      </li>
+      <!-- PROFILE -->
+      <li role="presentation" ng-show="currentUser" ng-class="{'active':activeMenuItem==='profile'}">
+          <a ui-sref="profile.default" ng-click="setActiveMenuItem('profile')"><i class="fa fa-user" aria-hidden="true"></i> Profile</a>
+      </li>
+      <!-- LOGOUT -->
+      <li role="presentation" ng-show="currentUser">
+          <a href='' ng-click="logout();setActiveMenuItem('home')"><i class="fa fa-sign-out" aria-hidden="true"></i> <strong>Logout</strong></a>
+        </li>
     </ul>
   </nav>
 </div>

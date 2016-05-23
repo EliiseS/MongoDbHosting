@@ -24,6 +24,7 @@ myApp.factory('Authentication',['$rootScope','$http','$location','$q','userPersi
                   userPersistenceService.setCookieData($rootScope.currentUser);
                   isAuthenticated = true;
                   $location.path('/cabinet');
+                  $rootScope.activeMenuItem = 'cabinet';
                 }
             }).error(function(data, status) {
                if(status===404){
@@ -45,6 +46,7 @@ myApp.factory('Authentication',['$rootScope','$http','$location','$q','userPersi
     }, //logout
 
     register: function(user) {
+      delete user.password2;
         $http({
             url: "http://localhost:7000/register",
             method: "POST",
@@ -53,9 +55,11 @@ myApp.factory('Authentication',['$rootScope','$http','$location','$q','userPersi
             if(status===200){
               $rootScope.succesRegistration = "New user Successfully created. Please login using you username and password";
               $rootScope.errorRegistration  = null;
+              $location.path('/login');
+              $rootScope.activeMenuItem = 'login';
             }
         }).error(function(data, status) {
-          if(status===400){
+          if(status===409){
               $rootScope.errorRegistration = "Error! Email: " + user.email + " is already in use";
             }
         });
