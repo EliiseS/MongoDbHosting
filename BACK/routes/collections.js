@@ -52,7 +52,6 @@ app.get('/collections/:id', function(req, res) {
 
 // GET ALL COLLECTIONS - TESTING PURPOSES  ------------------------------------------------------------------
 app.get('/collections', function(req, res) {
-
     var getAllCollections = req.query.getAllCollections;
 
     if (getAllCollections) {
