@@ -11,6 +11,7 @@ myApp.controller('RegistrationController',
   }; //logout
 
   $scope.register = function() {
+
     if(angular.equals($scope.user.password, $scope.user.password2)){
         var userForBackEnd = jQuery.extend({}, $scope.user); // CLONE OBJECT, TO SOLVE PROBLEMS WITH CAUSED BY DOUBLE BINDING
         Authentication.register(userForBackEnd);
@@ -19,6 +20,7 @@ myApp.controller('RegistrationController',
      }else{
       $scope.errorMessage = "Passwords you entered are not equal";
      }
+     
   }; // register
 
   $scope.resetPassword = function() {
