@@ -273,7 +273,7 @@ app.patch('/collections/:id', function(req, res) {
                 }
                 //Did we modify any elements?
                 else if (result.result.nModified > 0) {
-                    return successOK(res, "Item(s) deleted");
+                    return response.successOK(res, "Item(s) deleted");
                 }
                 response.errorNotFound(res);
             });

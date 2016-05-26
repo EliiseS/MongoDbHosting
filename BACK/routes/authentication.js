@@ -41,13 +41,12 @@ app.post('/register', function(req, res) {
                 usersModel.addUser(req.body, function (err, result) {
                     if (err) {
                         response.errorInternalServer(res, err);
-                        return;
                     }
                     else if (result.result.n == 1) {
                         response.successCreated(res, "New user created");
-                        return;
+                    } else {
+                        response.errorBadRequest(res, "Uknown error");
                     }
-                    response.errorBadRequest(res, "Uknown error");
                 }); //End of addUser
 
             }); //End of hash
@@ -63,7 +62,7 @@ app.post('/login', function(req, res) {
     }
     //Trying to find user with the email
     getUser(req,res, true, function (data) {
-            console.log(data[0]);
+            //console.log(data[0]);
 
             // DECRYPT PASSWORDS AND COMPARE THEM
             bcrypt.compare(req.body.password, data[0].password, function(err, answer) {
@@ -71,6 +70,7 @@ app.post('/login', function(req, res) {
                     delete data[0].password;
                     response.successOKData(res, data[0]);
                 }else{//IF PASSWORDS DON'T MATCH
+                    console.log("Hello2");
                     response.errorUnauthorized(res, "Wrong password for user:" + req.body.email + "!");
                 }
             });
@@ -225,7 +225,7 @@ function getUser(req, res, isUserNeeded, cb) {
 
     usersModel.getUser(req.body.email, function (err, data) {
         if (err) {
-            return response.errorInternalServer(res, err);
+            response.errorInternalServer(res, err);
         }//No user found
         else if (data == null) {
             if (isUserNeeded){
@@ -238,10 +238,11 @@ function getUser(req, res, isUserNeeded, cb) {
             if (isUserNeeded) {
                 cb(data);
             } else {
-                return response.errorConflict(res, "Email is already registered");
+                response.errorConflict(res, "Email is already registered");
             }
+        } else {
+            response.errorBadRequest(res, "Unknown error");
         }
-        response.errorBadRequest(res, "Unknown error");
     });
 
 }
