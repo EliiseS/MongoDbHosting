@@ -147,7 +147,7 @@ exports.deleteOne = function(id, body, cb) {
      */
 
     dbCollections.update({'_id': ObjectId(id)}, {
-        $pull: {Elements: body}}, { multi: false },
+        $pull: {Elements: body}},
         function (err, result) {
         if (err) return cb(err);
         cb(null, result);
