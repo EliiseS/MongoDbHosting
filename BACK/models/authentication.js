@@ -2,11 +2,11 @@ var db = require('../db');
 
 var ObjectId = require('mongodb').ObjectId;
 
-var dbUsers = db.get().collection('Users');
+var dbUsers = db.get().collection('users');
 
 //ADD NEW USER TO THE DATABASE
 exports.addUser = function(body, cb) {
-    definedBody =  {
+    var definedBody =  {
         email : body.email,
         name : body.name,
         password : body.password
