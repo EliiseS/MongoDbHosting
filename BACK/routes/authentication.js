@@ -35,6 +35,10 @@ app.post('/register', function(req, res) {
         //PASSWORD ENCRYPTION
         bcrypt.genSalt(10, function(err, salt) {
             bcrypt.hash(req.body.password, salt, function(err, hash) {
+                if (err) {
+                    console.log(err);
+                    response.errorInternalServer(res, err);
+                }
                 req.body.password = hash;
 
                 usersModel.addUser(req.body, function (err, result) {
@@ -44,10 +48,9 @@ app.post('/register', function(req, res) {
                     else if (result.result.n == 1) {
                         response.successCreated(res, "New user created");
                     } else {
-                        response.errorBadRequest(res, "Uknown error");
+                        response.errorBadRequest(res, "Unknown error");
                     }
                 }); //End of addUser
-
             }); //End of hash
         });//End of gensalt
     });//
@@ -231,9 +234,10 @@ function getUser(req, res, isUserNeeded, cb) {
         }//No user found
         else if (data == null) {
             if (!isUserNeeded){
-                response.errorNotFound(res, "User with email" + req.body.email +  " not found!");
-            } else {
                 return cb();
+            } else {
+                response.errorNotFound(res, "User with email" + req.body.email +  " not found!");
+
             }
         }//We have a user
         else if (data[0].email === req.body.email) {
