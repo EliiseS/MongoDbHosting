@@ -66,11 +66,10 @@ app.post('/login', function(req, res) {
 
             // DECRYPT PASSWORDS AND COMPARE THEM
             bcrypt.compare(req.body.password, data[0].password, function(err, answer) {
-                if(answer==true){
+                if(answer){
                     delete data[0].password;
                     response.successOKData(res, data[0]);
                 }else{//IF PASSWORDS DON'T MATCH
-                    console.log("Hello2");
                     response.errorUnauthorized(res, "Wrong password for user:" + req.body.email + "!");
                 }
             });
@@ -182,14 +181,12 @@ app.post('/send-email', function(req, res) {
     };
 
     // send the message and get a callback with an error or details of the message that was sent
-    server.send(message, function(err, message) {
-        if(!err){
-            res.status(200);
-            res.send({'msg' : '200 message sent'});
+    server.send(message, function(err) {
+        if(err){
+            response.errorInternalServer(res, err);
         }
         else{
-            res.status(500);
-            res.send({'msg' : '500 server error, message not sent'});
+            response.successOK(res, "Message sent");
         }
     });
 
@@ -216,7 +213,13 @@ function sendEmail(user, password){
             to: email,
             subject: "Password reseted"
         }, function (err, message) {
-            console.log(err || message);
+            if(err){
+                response.errorInternalServer(res, err);
+            }
+            else{
+                response.successOK(res, "Message sent");
+                console.log(message);
+            }
         });
 };
 
