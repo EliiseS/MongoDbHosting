@@ -14,7 +14,7 @@ exports.connect = function(url, cb) {
 
         if (err) return cb(err);
         state.db = db;
-        cb()
+        cb();
     })
 }
 

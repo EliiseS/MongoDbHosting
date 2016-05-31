@@ -3,7 +3,7 @@ var app = express();
 
 var bcrypt = require('bcryptjs');
 
-//NEW
+//My modules
 var usersModel = require('../models/authentication');
 var response = require('../services/responses');
 
@@ -27,7 +27,6 @@ app.post('/register', function(req, res) {
 
     if (req.body.name === undefined || req.body.password === undefined || req.body.email === undefined ){
         return response.errorRequestNotAcceptable(res);
-
     }
 
     //Check if email exists, if no, continue function
@@ -231,7 +230,7 @@ function getUser(req, res, isUserNeeded, cb) {
             response.errorInternalServer(res, err);
         }//No user found
         else if (data == null) {
-            if (isUserNeeded){
+            if (!isUserNeeded){
                 response.errorNotFound(res, "User with email" + req.body.email +  " not found!");
             } else {
                 return cb();
