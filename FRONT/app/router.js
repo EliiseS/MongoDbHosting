@@ -1,22 +1,22 @@
-    var module = angular.module("myApp");
+var module = angular.module("myApp");
+//run = register work which should be performed when the injector is done loading all modules.
+module.run(['$rootScope', '$state', '$location', 'userPersistenceService','Authentication', function($rootScope,$state, $location, userPersistenceService,Authentication) {
+    var cookies = userPersistenceService.getCookieData();
 
-    module.run(['$rootScope', '$state', '$location', 'userPersistenceService','Authentication', function($rootScope,$state, $location, userPersistenceService,Authentication) {
-        var cookies = userPersistenceService.getCookieData();
+    if(cookies.name===undefined){
+        Authentication.setAuthentication(false);
+        $rootScope.currentUser = undefined;
+        $rootScope.activeMenuItem = 'home';
+    }else{
+        $rootScope.currentUser = cookies;
+        Authentication.setAuthentication(true);
+        $location.path('/cabinet');
+        $rootScope.activeMenuItem = 'cabinet';
+    }
+}]); //run
 
-        if(cookies.name===undefined){
-            Authentication.setAuthentication(false);
-            $rootScope.currentUser = undefined;
-            $rootScope.activeMenuItem = 'home';
-        }else{
-            $rootScope.currentUser = cookies;
-            Authentication.setAuthentication(true);
-            $location.path('/cabinet');
-            $rootScope.activeMenuItem = 'cabinet';
-        }
-      }]); //run
-
-    
-    module.config(function($stateProvider, $urlRouterProvider) {
+//Config = register work which needs to be performed on module loading
+module.config(function($stateProvider, $urlRouterProvider) {
 
     //LOGIN
     $stateProvider.state('login', {
@@ -69,14 +69,14 @@
         templateUrl: 'app/views/cabinet.html',
         controller: 'CabinetController',
         resolve: { authenticate: authenticate }
-      });
+    });
 
     $stateProvider.state('cabinet.collection', {
         url: '/collection',
         templateUrl: 'app/views/collection.html',
         controller: 'CabinetController',
         resolve: { authenticate: authenticate }
-      });
+    });
 
     //PROFILE -----------------------------------------------------------
     $stateProvider.state('profile', {
@@ -88,44 +88,45 @@
             autoActivateChild: 'profile.default'
         },
         resolve: { authenticate: authenticate }
-      });
+    });
 
-     $stateProvider.state('profile.default', {
+    $stateProvider.state('profile.default', {
         url: '/default',
         templateUrl: 'app/views/profile-default.html',
         controller: 'ProfileController',
         resolve: { authenticate: authenticate }
-      });
+    });
 
     $stateProvider.state('profile.change-password', {
         url: '/change-password',
         templateUrl: 'app/views/profile-change-password.html',
         controller: 'ProfileController',
         resolve: { authenticate: authenticate }
-      });
+    });
 
     $stateProvider.state('profile.change-email', {
         url: '/change-email',
         templateUrl: 'app/views/profile-change-email.html',
         controller: 'ProfileController',
         resolve: { authenticate: authenticate }
-      });
+    });
 
-     function authenticate($rootScope, $q, Authentication, $state, $timeout) {
-      if (Authentication.isAuthenticated()==false) {
-        $timeout(function() {
-          // This code runs after the authentication promise has been rejected.
-          // Go to the log-in page
-          $state.go('main');
-        })
-        // Reject the authentication promise to prevent the state from loading
-        return $q.reject();
-      }else{
-        $q.when();
-      }
+    function authenticate($q, Authentication, $state, $timeout) {
+        if (Authentication.isAuthenticated()==false) {
+            //Creates a delay between views
+            $timeout(function() {
+                // This code runs after the authentication promise has been rejected.
+                // Go to the log-in page
+                $state.go('main');
+            })
+            // Reject the authentication promise to prevent the state from loading
+            return $q.reject();
+        }else{
+            $q.when();
+        }
     };
 
-    
+
     $urlRouterProvider.otherwise('/');
-    
+
 });

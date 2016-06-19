@@ -8,11 +8,11 @@ myApp.factory('CollectionsService',['$rootScope','$http','$q', function($rootSco
             $http({
                 url: "http://localhost:7000/collections/" + $rootScope.currentUser._id + "?getAll=true",
                 method: "GET"
-            }).success(function (response,status) {
+            }).success(function (data, status) {
                 console.log("WE ARE IN GETCOLLECTION = STATUS = " + status);
-               deffered.resolve(response);
-            }).error(function(data, status) {
-               deffered.reject(data);
+               deffered.resolve(data);
+            }).error(function(response, status) {
+               deffered.reject(response);
             });
 
             return deffered.promise;

@@ -1,0 +1,26 @@
+{
+  "name": "ront",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "angular": "^1.5.0",
+    "angular-clipboard": "^1.4.1",
+    "angular-cookies": "^1.5.5",
+    "angular-messages": "^1.5.0",
+    "angular-ui-router": "^0.2.18",
+    "angular.less": "0.0.3",
+    "connect": "^3.4.1",
+    "gulp-less": "^3.1.0",
+    "serve-static": "^1.10.2"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

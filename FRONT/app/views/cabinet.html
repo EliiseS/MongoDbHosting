@@ -56,7 +56,7 @@
         </div>
         <div class="modal-body">
           <p>You need to confirm delete operation by typing collection name into input field.</p>
-          <input type="text" class="form-control" ng-model="userInput">
+            <input type="text" class="form-control" ng-model="userInput">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-dismiss="modal" ng-disabled="collectionForDeletion.name.toLowerCase()!==userInput.toLowerCase()" ng-click="deleteCollection(collectionForDeletion)">Delete</button>
