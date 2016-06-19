@@ -37,7 +37,7 @@ app.post('/register', function(req, res) {
             bcrypt.hash(req.body.password, salt, function(err, hash) {
                 if (err) {
                     console.log(err);
-                    response.errorInternalServer(res, err);
+                    return response.errorInternalServer(res, err);
                 }
                 req.body.password = hash;
 
@@ -228,16 +228,15 @@ function sendEmail(user, password){
 function getUser(req, res, isUserNeeded, cb) {
     console.log("Checking email: " + req.body.email);
 
-    usersModel.getUser(req.body.email, function (err, data) {
+    usersModel.getUser(req.body.email, function (err, data) { //Function (null, data)
         if (err) {
             response.errorInternalServer(res, err);
         }//No user found
         else if (data == null) {
             if (!isUserNeeded){
-                return cb();
+                cb();
             } else {
                 response.errorNotFound(res, "User with email" + req.body.email +  " not found!");
-
             }
         }//We have a user
         else if (data[0].email === req.body.email) {
