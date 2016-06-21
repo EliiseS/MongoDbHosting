@@ -55,6 +55,7 @@ app.post('/register', function(req, res) {
         });//End of gensalt
     });//
 
+
 }); // END of REGISTER
 
 //LOGIN USER  ---------------------------------------------------------------------------------

@@ -20,9 +20,9 @@ app.get('/collections/:id', function(req, res) {
                 else if (data == null) {
                     response.errorNotFound(res, "User not found");
                     return;
+                } else {
+                    response.successOKData(res, data);
                 }
-                res.status(200);
-                res.send(data);
             });
 
         }
@@ -36,9 +36,9 @@ app.get('/collections/:id', function(req, res) {
                 else if (data == null) {
                     response.errorNotFound(res);
                     return;
+                }else {
+                    response.successOKData(res, data);
                 }
-                res.status(200);
-                res.send(data);
 
             });
         }
@@ -63,9 +63,9 @@ app.get('/collections', function(req, res) {
             if (data === null) {
                 response.errorNotFound(res, "No collections found");
                 return;
+            } else {
+                response.successOKData(res, data);
             }
-            res.status(200);
-            res.send(data);
         });
     }
 });
@@ -286,6 +286,7 @@ app.patch('/collections/:id', function(req, res) {
 
 
 //SERVER RESPONSES ---------------------------------------------------------------------
+
 
 
 module.exports = app;
