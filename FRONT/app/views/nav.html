@@ -38,6 +38,8 @@
 </div>
   <div class="row" ng-show="currentUser" ng-controller="RegistrationController">
     <div class="container">
-      <p class="text-right"><a ui-sref="cabinet">Hello, <strong>{{currentUser.name}}</strong></a></p>
+
+      <user-info></user-info>
+      
     </div>
   </div>
