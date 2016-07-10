@@ -35,6 +35,13 @@
     </div>
   </div>
 
+  <!-- NAME ERRORS -->
+  <div ng-messages="registerForm.name.$error" ng-show="registerForm.name.$touched">
+    <div class="errorMsg">
+      <p ng-message="required" style="color:red">Name is required field.</p>
+    </div> 
+  </div>
+
   <!-- PASSWORD -->
   <div class="form-group">
     <label class="col-sm-2 control-label">Password</label>
@@ -47,6 +54,7 @@
   <div ng-messages="registerForm.password.$error" ng-show="registerForm.password.$touched">
     <div class="errorMsg">
       <p ng-message="minlength" style="color:red">Password is too short. Minimum length is 6</p>
+      <p ng-message="required" style="color:red">Password is required field.</p> 
     </div> 
   </div>
 
