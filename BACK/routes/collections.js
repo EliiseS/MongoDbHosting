@@ -49,7 +49,7 @@ app.get('/collections/:id', function(req, res) {
 
 }); // END OF VIEW COLLECTION(S)
 
-
+/*
 // GET ALL COLLECTIONS - TESTING PURPOSES  ------------------------------------------------------------------
 app.get('/collections', function(req, res) {
     var getAllCollections = req.query.getAllCollections;
@@ -69,7 +69,7 @@ app.get('/collections', function(req, res) {
         });
     }
 });
-
+*/
 
 // ADD A NEW COLLECTION  ----------------------------------------------------------------------
 app.post('/collections', function(req, res) {

@@ -5,7 +5,6 @@ var state = {
 }
 
 
-
 exports.connect = function(url, cb) {
     if (state.db) return cb();
 
@@ -14,7 +13,7 @@ exports.connect = function(url, cb) {
 
         if (err) return cb(err);
         state.db = db;
-        cb()
+        cb();
     })
 }
 

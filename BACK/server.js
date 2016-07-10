@@ -9,13 +9,14 @@ var port = 7000;
 app.engine('jade', require('jade').__express);
 app.set('view engine', 'jade');
 */
+
 db.connect('mongodb://admin:suitsup22suke2016@ds055855.mlab.com:55855/infobaza', function(err) {
     if (err) {
         console.log('Unable to connect to Mongo.');
         console.log(err);
         process.exit(1)
     } else {
-        app.use(express.static('apidocs'));
+        //app.use(express.static('apidocs'));
         app.use(cors());
 
         app.use(BodyParser.urlencoded({
@@ -23,8 +24,6 @@ db.connect('mongodb://admin:suitsup22suke2016@ds055855.mlab.com:55855/infobaza',
         }));
 
         app.use(BodyParser.json());
-
-
       
         app.use(require('./routes/authentication.js'));
         app.use(require('./routes/collections.js'));
@@ -33,11 +32,12 @@ db.connect('mongodb://admin:suitsup22suke2016@ds055855.mlab.com:55855/infobaza',
             res.send({"msg":"Page Not Found"});
         });
 
-
-
-        app.listen(port, function() {
+        //app.listen(process.env.PORT || port);
+        
+        app.listen(process.env.PORT || port, function() {
             console.log('Listening on port :' + port);
 
-        })
+        });
+        
     }
 });
