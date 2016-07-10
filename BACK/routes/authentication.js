@@ -25,6 +25,9 @@ var server  = email.server.connect({
 //REGISTER NEW USER  ---------------------------------------------------------------------------------
 app.post('/register', function(req, res) {
 
+    console.log("REQ BODY IN REGISTER");
+    console.log(req.body);
+
     if (req.body.name === undefined || req.body.password === undefined || req.body.email === undefined ){
         return response.errorRequestNotAcceptable(res);
 
@@ -57,6 +60,10 @@ app.post('/register', function(req, res) {
 
 //LOGIN USER  ---------------------------------------------------------------------------------
 app.post('/login', function(req, res) {
+
+    console.log("REQ BODY IN LOGIN");
+    console.log(req.body);
+
     if (req.body.email === undefined || req.body.password === undefined ){
         return response.errorRequestNotAcceptable(res);
     }
@@ -172,7 +179,7 @@ app.post('/send-email', function(req, res) {
     var message = {
         text:    contact.message,
         from:    contact.email,
-        to:      "kalistratov@live.com,selingeliise@gmail.com",//
+        to:      "kalistratov@live.com",//
         subject: "Message from MongoMango Contact form",
         attachment:
             [
