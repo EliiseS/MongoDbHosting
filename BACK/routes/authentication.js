@@ -3,7 +3,7 @@ var app = express();
 
 var bcrypt = require('bcryptjs');
 
-//NEW
+//My modules
 var usersModel = require('../models/authentication');
 var response = require('../services/responses');
 
@@ -30,7 +30,6 @@ app.post('/register', function(req, res) {
 
     if (req.body.name === undefined || req.body.password === undefined || req.body.email === undefined ){
         return response.errorRequestNotAcceptable(res);
-
     }
 
     //Check if email exists, if no, continue function
@@ -39,6 +38,10 @@ app.post('/register', function(req, res) {
         //PASSWORD ENCRYPTION
         bcrypt.genSalt(10, function(err, salt) {
             bcrypt.hash(req.body.password, salt, function(err, hash) {
+                if (err) {
+                    console.log(err);
+                    return response.errorInternalServer(res, err);
+                }
                 req.body.password = hash;
 
                 usersModel.addUser(req.body, function (err, result) {
@@ -48,13 +51,13 @@ app.post('/register', function(req, res) {
                     else if (result.result.n == 1) {
                         response.successCreated(res, "New user created");
                     } else {
-                        response.errorBadRequest(res, "Uknown error");
+                        response.errorBadRequest(res, "Unknown error");
                     }
                 }); //End of addUser
-
             }); //End of hash
         });//End of gensalt
     });//
+
 
 }); // END of REGISTER
 
@@ -233,15 +236,15 @@ function sendEmail(user, password){
 function getUser(req, res, isUserNeeded, cb) {
     console.log("Checking email: " + req.body.email);
 
-    usersModel.getUser(req.body.email, function (err, data) {
+    usersModel.getUser(req.body.email, function (err, data) { //Function (null, data)
         if (err) {
             response.errorInternalServer(res, err);
         }//No user found
         else if (data == null) {
-            if (isUserNeeded){
-                response.errorNotFound(res, "User with email" + req.body.email +  " not found!");
+            if (!isUserNeeded){
+                cb();
             } else {
-                return cb();
+                response.errorNotFound(res, "User with email" + req.body.email +  " not found!");
             }
         }//We have a user
         else if (data[0].email === req.body.email) {

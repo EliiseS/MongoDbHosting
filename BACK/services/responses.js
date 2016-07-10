@@ -13,7 +13,6 @@ exports.successCreated = function (res, msg = "Successful creation" ){
     res.send({'msg': '201 Created - ' + msg});
 };
 
-
 exports.errorBadRequest = function(res, msg = "Invalid ID") {
     res.status(400);
     res.send({'msg': '400 Bad request - ' + msg});
