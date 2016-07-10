@@ -4,12 +4,6 @@ myApp.factory('Authentication',['$rootScope','$http','$location','$q','userPersi
 
   var authObject = {
 
-            /*
-            var deffered = $q.defer();
-            deffered.resolve(response,status);
-            deffered.reject("505");
-            return deffered.promise;
-            */
     login: function(credentials) {
 
             $http({
@@ -52,7 +46,7 @@ myApp.factory('Authentication',['$rootScope','$http','$location','$q','userPersi
             method: "POST",
             data: user
         }).success(function (response,status) {
-            if(status===200){
+            if(status===201){
               $rootScope.succesRegistration = "New user Successfully created. Please login using you username and password";
               $rootScope.errorRegistration  = null;
               $location.path('/login');
