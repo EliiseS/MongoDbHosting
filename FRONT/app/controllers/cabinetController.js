@@ -62,15 +62,10 @@ myApp.controller('CabinetController',function($rootScope,$scope,$state,clipboard
    		var object = $scope.selectedCollection.Elements[0];
 
    		Object.keys(object).forEach(function(key) {
-		    $scope.itemProperties.push(key);
+   			if(key!=='$$hashKey'){
+		   		 $scope.itemProperties.push(key);
+   			}
 		});
-
-		for(var i = 0; i<$scope.itemProperties.length; i++){
-			console.log($scope.itemProperties[i]);
-		}
-   		//delete $scope.collectionAsJson._id;
-   		//delete $scope.collectionAsJson.user_id;
-   		//$scope.collectionAsJson = makeJsonView(data);
    };
 
    $scope.reloadItems = function(){
