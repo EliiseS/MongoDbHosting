@@ -10,7 +10,7 @@ app.engine('jade', require('jade').__express);
 app.set('view engine', 'jade');
 */
 
-db.connect('mongodb://admin:suitsup22suke2016@ds055855.mlab.com:55855/infobaza', function(err) {
+db.connect('<db_connection_string>/infobaza', function(err) {
     if (err) {
         console.log('Unable to connect to Mongo.');
         console.log(err);

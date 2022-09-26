@@ -18,10 +18,10 @@ io.on('connection', function(socket){
 
 
 
-var CONSUMER_KEY = "Fu73VKEP8NslOwV8lgGhS1PBJ";
-var CONSUMER_SECRET = "yOcnOe05S5HZf8BwnMlFBJPy3FjV6LbDHhVjRWUWuWkZzSnafT";
-var TOKEN = "83176730-woQKARN6d3zWaISzCICBRNv1q5Ta4BXnyeaSM0c3G";
-var TOKEN_SECRET = "E2zk0xuYn04RDGPI3VO5HZLF1a4Vfha8FpWE3yEpDy5zA";
+var CONSUMER_KEY = "<consumer_key>";
+var CONSUMER_SECRET = "<consumer_secret>";
+var TOKEN = "<token>";
+var TOKEN_SECRET = "<token_secret>";
 
 var Twitter = require('node-twitter');
 
